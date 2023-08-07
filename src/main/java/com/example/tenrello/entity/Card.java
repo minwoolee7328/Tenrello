@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.GenerationTime;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -44,4 +46,17 @@ public class Card extends Timestamped {
         this.title = title;
     }
 
+    @Transactional
+    public void updateTitle(String title){
+        this.title = title;
+    }
+    @Transactional
+    public void updateContent(String content){
+        this.content = content;
+    }
+
+    @Transactional
+    public void updatePosition(Long position){
+        this.position = position;
+    }
 }
