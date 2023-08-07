@@ -3,15 +3,16 @@ package com.example.tenrello.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
 @Getter
+@Setter
+@NoArgsConstructor
 @Table(name = "board")
 public class Board extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
     private Long id;
 
     @Column
@@ -20,9 +21,9 @@ public class Board extends Timestamped{
     @Column
     private String description;
 
-    //    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public Board(String title, String description) {
         this.title = title;
