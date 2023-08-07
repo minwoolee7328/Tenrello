@@ -22,16 +22,26 @@ public class Card extends Timestamped {
     private User user;
 
     // 컬럽과 연결
-    @ManyToOne
-    @JoinColumn(name = "column_id")
-    private ColumnEntity column;
+//    @ManyToOne
+//    @JoinColumn(name = "column_id")
+//    private ColumnEntity column;
+
+    // 임시 컬럼
+    @Column(name = "columnid", nullable = false)
+    private Long columnid;
 
     // 카드 제목
     @Column(name = "title", nullable = false)
     private String title;
 
     // 카드 내용
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = true)
     private String content;
+
+    public Card(User user, Long column, String title){
+        this.user = user;
+        this.columnid = column;
+        this.title = title;
+    }
 
 }
