@@ -1,11 +1,14 @@
 package com.example.tenrello.entity;
 
 import com.example.tenrello.board.dto.BoardRequestDto;
+import com.fasterxml.jackson.databind.util.LinkedNode;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -35,10 +38,14 @@ public class Board extends Timestamped{
     private List<UserBoard> userBoardList = new ArrayList<>();
 
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private LinkedList<ColumnEntity> columnEntityLinkedList = new LinkedList<>();        //Column의 순서를 가지게 해줄 링크드리스트
+
     public Board(BoardRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
         this.user = user;
+        columnEntityLinkedList = new LinkedList<>();  //임시
     }
 
     public void updateBoard(BoardRequestDto requestDto) {

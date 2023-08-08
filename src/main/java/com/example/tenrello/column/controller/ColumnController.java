@@ -20,19 +20,19 @@ import java.util.List;
 public class ColumnController {
     private final ColumnService columnService;
 
-    @GetMapping("/board/{boardId}/column")
+    @GetMapping("/boards/{boardId}/columns")
     public List<ColumnResponseDto> getBoardColumn(@PathVariable Long boardId){//board별 컬럼 전체 조회
         return columnService.getBoardColumn(boardId);
     }
-    @PostMapping("/board/{boardId}/column")
+    @PostMapping("/boards/{boardId}/columns")
     public ResponseEntity<ApiResponseDto> createColumn(@PathVariable Long boardId, @RequestBody ColumnRequestDto columnRequestDto){
         return columnService.createcolumn(boardId,columnRequestDto);
     }
-    @PutMapping("/column/{columnId}")
+    @PutMapping("/columns/{columnId}")
     public ResponseEntity<ApiResponseDto> updateColumnName(@PathVariable Long columnId, @RequestBody ColumnRequestDto columnRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return columnService.updateColumnName(columnId, columnRequestDto, userDetails.getUser());
     }
-    @DeleteMapping("/column/{columnId}")
+    @DeleteMapping("/columns/{columnId}")
     public ResponseEntity<ApiResponseDto> deleteColumnName(@PathVariable Long columnId,@AuthenticationPrincipal UserDetailsImpl userDetails)
     {
         return columnService.deleteColumnName(columnId,userDetails);

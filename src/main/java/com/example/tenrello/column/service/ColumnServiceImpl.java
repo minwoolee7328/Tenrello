@@ -1,6 +1,6 @@
 package com.example.tenrello.column.service;
 
-import com.example.tenrello.board.BoardRepository;
+import com.example.tenrello.board.repository.BoardRepository;
 import com.example.tenrello.column.dto.ColumnRequestDto;
 import com.example.tenrello.column.dto.ColumnResponseDto;
 import com.example.tenrello.column.repository.ColumnRepository;
@@ -9,7 +9,6 @@ import com.example.tenrello.entity.Board;
 import com.example.tenrello.entity.ColumnEntity;
 import com.example.tenrello.entity.User;
 import com.example.tenrello.security.details.UserDetailsImpl;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +31,8 @@ public class ColumnServiceImpl implements ColumnService{
         Board board = findBoard(boardId);
         ColumnEntity column = new ColumnEntity(board,columnRequestDto);
         columnRepository.save(column);
+
+        board.getColumnEntityLinkedList().add(column);          //보드가 가진 링크드리스트에도 추가
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("새 컬럼 등록 성공",HttpStatus.OK.value()));
     }
 

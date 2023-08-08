@@ -8,7 +8,7 @@ import lombok.Getter;
 @Entity
 @Table(name="columns")
 @Getter
-public class ColumnEntity extends TimeStamped {
+public class ColumnEntity extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
