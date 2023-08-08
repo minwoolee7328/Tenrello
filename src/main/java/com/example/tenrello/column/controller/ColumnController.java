@@ -23,7 +23,10 @@ public class ColumnController {
     @GetMapping("/boards/{boardId}/columns")
     public List<ColumnResponseDto> getBoardColumn(@PathVariable Long boardId){//board별 컬럼 전체 조회
         return columnService.getBoardColumn(boardId);
+
     }
+
+
     @PostMapping("/boards/{boardId}/columns")
     public ResponseEntity<ApiResponseDto> createColumn(@PathVariable Long boardId, @RequestBody ColumnRequestDto columnRequestDto){
         return columnService.createcolumn(boardId,columnRequestDto);

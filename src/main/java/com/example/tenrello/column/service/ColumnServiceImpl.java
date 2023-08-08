@@ -32,7 +32,6 @@ public class ColumnServiceImpl implements ColumnService{
         ColumnEntity column = new ColumnEntity(board,columnRequestDto);
         columnRepository.save(column);
 
-        board.getColumnEntityLinkedList().add(column);          //보드가 가진 링크드리스트에도 추가
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("새 컬럼 등록 성공",HttpStatus.OK.value()));
     }
 
@@ -70,15 +69,25 @@ public class ColumnServiceImpl implements ColumnService{
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("컬럼 삭제 성공",HttpStatus.OK.value()));
     }
 
+//    @Override
+//    public List<ColumnResponseDto> getBoardColumn(Long boardId) {
+//
+//        List<ColumnResponseDto> columnResponseDtoList = columnRepository
+//                .findAllByBoardId(boardId)
+//                .stream()
+//                .map(ColumnResponseDto::new)
+//                .toList();
+//
+//
+//        return columnResponseDtoList;
+//    }
     @Override
     public List<ColumnResponseDto> getBoardColumn(Long boardId) {
+        List<ColumnResponseDto> columnEntities = columnRepository
+                .findAllByBoardId(boardId).stream().map(ColumnResponseDto::new).toList();
 
-        List<ColumnResponseDto> columnResponseDtoList = columnRepository.findAllByboardId(boardId).stream().map(ColumnResponseDto::new).toList();
-
-
-        return columnResponseDtoList;
+        return columnEntities;
     }
-
 
     public Board findBoard(Long id) {
         return boardRepository.findById(id).orElseThrow(() ->

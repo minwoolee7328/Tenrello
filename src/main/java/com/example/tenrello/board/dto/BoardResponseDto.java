@@ -18,7 +18,7 @@ public class BoardResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
-    private List<ColumnResponseDto> columnEntities = new LinkedList<>();
+//    private List<ColumnResponseDto> columnEntities = new LinkedList<>();
 
     public BoardResponseDto(Board board) {
         this.userId = board.getUser().getId();
@@ -27,6 +27,5 @@ public class BoardResponseDto {
         this.description = board.getDescription();
         this.createAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
-        this.columnEntities = board.getColumnEntityLinkedList().stream().map(ColumnResponseDto::new).toList();;
     }
 }

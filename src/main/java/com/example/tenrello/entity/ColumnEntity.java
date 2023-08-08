@@ -11,14 +11,14 @@ import lombok.Getter;
 public class ColumnEntity extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;        //id
 
     @Column(nullable = false)
-    private String title;
+    private String title;       //제목
 
     @ManyToOne
     @JoinColumn(name="board_id")
-    private Board board;
+    private Board board;        //보드
 
     public void setTitle(String title){
         this.title =title;

@@ -13,14 +13,14 @@ import java.time.LocalDateTime;
 public class ColumnResponseDto {
     Long id;
     String title;
-    Board board;
+    BoardResponseDto board;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
     public ColumnResponseDto(ColumnEntity column){
         this.id = column.getId();
         this.title = column.getTitle();
-        this.board = column.getBoard();
+        this.board = new BoardResponseDto(column.getBoard());
         this.createdAt = column.getCreatedAt();
         this.modifiedAt = column.getModifiedAt();
     }
