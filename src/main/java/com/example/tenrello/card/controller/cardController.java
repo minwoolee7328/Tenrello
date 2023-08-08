@@ -14,42 +14,47 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/card")
+@RequestMapping("/api")
 @Slf4j(topic = "CardController")
 public class cardController {
 
     private final CardService cardService;
 
     // 카드생성
-    @PostMapping("/columnId/{columnId}")
-    public CardResponseDto createCard(@PathVariable Long columnId, @RequestBody CardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-      return cardService.createCard(columnId, requestDto, userDetails);
+    @PostMapping("/card/columns/{id}")
+    public CardResponseDto createCard(@PathVariable Long id, @RequestBody CardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+      return cardService.createCard(id, requestDto, userDetails);
     }
 
     // 카드 제목 변경
-    @PutMapping("/cardTitle/{id}")
+    @PutMapping("/card/cardTitles/{id}")
     public CardResponseDto updateCardTitle(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
       return cardService.updateCardTitle(id, requestDto);
     }
 
     // 카드 내용 변경
-    @PutMapping("/cardContent/{id}")
+    @PutMapping("/card/cardContents/{id}")
     public CardResponseDto updateCardContent(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
         return cardService.updateCardContent(id, requestDto);
     }
 
     //카드 삭제
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/cards/{id}")
     public ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         cardService.deleteCard(id, userDetails);
         return ResponseEntity.status(201).body(new ApiResponseDto("카드 삭제 성공", HttpStatus.OK.value()));
     }
 
     // 카드 컬럼내 변경
-    @PatchMapping("/{id}")
+    @PatchMapping("/cards/{id}")
     public CardResponseDto chId(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
         return cardService.chId(id, requestDto);
     }
 
+    // 특정 카드 조회
+    @GetMapping("/cards/{id}")
+    public CardResponseDto getCard(@PathVariable Long id){
+        return cardService.getCard(id);
+    }
 
 }

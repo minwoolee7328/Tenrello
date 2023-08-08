@@ -40,10 +40,15 @@ public class Card extends Timestamped {
     @Column(name = "content", nullable = true)
     private String content;
 
-    public Card(User user, Long column, String title){
+    // 카드 위치 내용
+    @Column(name = "position", nullable = false)
+    private int position;
+
+    public Card(User user, Long column, String title, int position){
         this.user = user;
         this.columnid = column;
         this.title = title;
+        this.position = position;
     }
 
     @Transactional
@@ -56,7 +61,12 @@ public class Card extends Timestamped {
     }
 
     @Transactional
-    public void updatePosition(Long position){
+    public void updatePosition(int position){
         this.position = position;
+    }
+
+    @Transactional
+    public void updateColumnId(Long columnid){
+        this.columnid = columnid;
     }
 }
