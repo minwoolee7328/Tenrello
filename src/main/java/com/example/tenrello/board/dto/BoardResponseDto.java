@@ -1,15 +1,25 @@
 package com.example.tenrello.board.dto;
 
+import com.example.tenrello.entity.Board;
 import lombok.Getter;
+
+import java.time.LocalDateTime;
 
 @Getter
 public class BoardResponseDto {
-    Long id;
-    String title;
-    String description;
-    public BoardResponseDto(Long id, String title, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
+    private Long userId;
+    private Long boardId;
+    private String title;
+    private String description;
+    private LocalDateTime createAt;
+    private LocalDateTime modifiedAt;
+
+    public BoardResponseDto(Board board) {
+        this.userId = board.getUser().getId();
+        this.boardId = board.getId();
+        this.title = board.getTitle();
+        this.description = board.getDescription();
+        this.createAt = board.getCreateAt();
+        this.modifiedAt = board.getModifiedAt();
     }
 }
