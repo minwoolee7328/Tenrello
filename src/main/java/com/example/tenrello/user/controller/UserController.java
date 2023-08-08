@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 @Slf4j(topic = "UserController")
 public class UserController {
 
@@ -24,6 +24,7 @@ public class UserController {
 
     @DeleteMapping("")
     public ResponseEntity<ApiResponseDto> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody CheckPasswordDto passwordDto) {
+        log.info("회원 탈퇴 컨트롤러");
         userService.deleteUser(userDetails.getUser(), passwordDto);
         return ResponseEntity.ok().body(new ApiResponseDto("탈퇴 완료", HttpStatus.OK.value()));
     }

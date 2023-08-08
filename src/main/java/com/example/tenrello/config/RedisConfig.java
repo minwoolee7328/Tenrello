@@ -23,15 +23,13 @@ public class RedisConfig {
         return new LettuceConnectionFactory(redisHost, redisPort);
     }
 
-    /***
-     * Redis 서버와 통신
-     * StringRedisTemplate를 사용하여 Key, value를 모두 문자열로 저장
-     */
+    // Redis 서버와 통신
+    // StringRedisTemplate를 사용하여 Key, value를 모두 문자열로 저장
     @Bean
     public StringRedisTemplate redisTemplate() {
         final StringRedisTemplate redisTemplate = new StringRedisTemplate();
 
-        // RedisTemplate을 사용할 때 Spring-Redis 간 데이터 직렬화/역직렬화 시 사용하는 방식이 jdk 지결ㄹ화 방식
+        // RedisTemplate을 사용할 때 Spring-Redis 간 데이터 직렬화/역직렬화 시 사용하는 방식이 jdk 직렬화 방식
         // 동작에는 문제가 없지만 redis-cli를 통해 데이터를 확인할 때 알아볼 수 없는 형태로 출력되기 때문
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());
