@@ -28,12 +28,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // request의 header에서 token value 값 꺼내기
+        // request 의 cookie에서 token 꺼내기
         String tokenValue = jwtUtil.getJwtFromCookie(request);
 
         if (StringUtils.hasText(tokenValue)) {
             tokenValue = tokenValue.substring(7);
-            log.info("tokenValue" + tokenValue);
+            log.info("tokenValue : " + tokenValue);
             if (!jwtUtil.validateToken(tokenValue)) {
                 return;
             }
@@ -51,7 +51,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    // token -> authentication 객체에 담기 -> security context에 담기 -> context holder에 담기 -> 인증 처리
+    // token -> authentication 객체에 담기 -> SecurityContext에 담기 -> ContextHolder에 담기
     // 인증 처리
     public void setAuthentication(String nickname) {
         log.info("로그인 성공");
@@ -62,7 +62,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         SecurityContextHolder.setContext(context);
     }
 
-    // 인증 객체 생성
+    // 인증 객체 생성 (아직 인증 전)
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

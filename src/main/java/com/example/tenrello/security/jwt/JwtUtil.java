@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -21,12 +21,9 @@ import java.util.Date;
 @Slf4j(topic = "JwtUtil")
 public class JwtUtil {
 
-    // Header key 값 (cookie의 name 값)
     public static final String AUTHORIZATION_HEADER = "Authorization";
-
-    // token 식별자 규칙 (이 뒤는 token 이구나! value 앞에 붙이기, 한 칸 띄우기)
     public static final String BEARER_PREFIX = "Bearer ";
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분 (millisec)
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey(application.properties)
     private String secretKey;
@@ -44,13 +41,13 @@ public class JwtUtil {
     }
 
     // 토큰 생성
-    public String createToken(String nickname){
-        log.info(nickname + "의 토큰 생성");
+    public String createToken(String username){
+        log.info(username + "의 토큰 생성");
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
-                        .setSubject(nickname) // 사용자 id
+                        .setSubject(username) // 사용자 id
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) // 만료 시간
                         .setIssuedAt(date) // 발급 시간
                         .signWith(key,signatureAlgorithm) // 키, 암호화 알고리즘
@@ -60,17 +57,13 @@ public class JwtUtil {
     // 토큰 쿠키에 담기
     public void addJwtToCookie(String token, HttpServletResponse response) {
         log.info("토큰 쿠키에 담기");
-        try {
-            token = URLEncoder.encode(token, "utf-8").replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
-            log.info("token = " + token);
-            Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
-            cookie.setPath("/");
+        token = URLEncoder.encode(token, StandardCharsets.UTF_8).replaceAll("\\+", "%20"); // Cookie Value 에는 공백이 불가능해서 encoding 진행
+        log.info("token = " + token);
+        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, token); // Name-Value
+        cookie.setPath("/");
 
-            // Response 객체에 Cookie 추가
-            response.addCookie(cookie);
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage());
-        }
+        // Response 객체에 Cookie 추가
+        response.addCookie(cookie);
     }
 
     // Cookie에서 토큰 가져오기
@@ -79,12 +72,8 @@ public class JwtUtil {
         if(cookies != null) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(AUTHORIZATION_HEADER)) {
-                    try {
-                        log.info("쿠키에서 토큰 꺼내기" + URLDecoder.decode(cookie.getValue(), "UTF-8"));
-                        return URLDecoder.decode(cookie.getValue(), "UTF-8"); // Encode 되어 넘어간 Value 다시 Decode
-                    } catch (UnsupportedEncodingException e) {
-                        return null;
-                    }
+                    log.info("쿠키에서 토큰 꺼내기" + URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8));
+                    return URLDecoder.decode(cookie.getValue(), StandardCharsets.UTF_8); // Encode 되어 넘어간 Value 다시 Decode
                 }
             }
         }
