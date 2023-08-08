@@ -6,13 +6,17 @@ import com.example.tenrello.entity.User;
 import com.example.tenrello.security.jwt.JwtUtil;
 import com.example.tenrello.security.redis.RedisUtil;
 import com.example.tenrello.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j(topic = "AuthServiceImpl")
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
@@ -48,10 +52,31 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.createToken(user.getUsername());
         String refreshToken = jwtUtil.createRefreshToken();
 
-        // RefreshToken Redis 저장 (ExpirationTime 설정을 통해 자동 삭제 처리)
+        // RefreshToken Redis 저장
         redisUtil.saveRefreshToken(user.getUsername(), refreshToken);
 
         jwtUtil.addJwtToCookie(token, response);
+    }
+
+    @Transactional
+    @Override
+    public void logout(User user, HttpServletRequest request, HttpServletResponse response) {
+        log.info("로그아웃 서비스");
+        String bearerAccessToken = jwtUtil.getJwtFromCookie(request);
+        String accessToken = jwtUtil.substringToken(bearerAccessToken);
+        String username = user.getUsername();
+
+        // refresh token 삭제
+        if (redisUtil.getRefreshToken(username) != null) {
+            log.info("로그아웃 시 리프레시 토큰 확인");
+            redisUtil.deleteRefreshToken(username);
+        }
+
+        // access token blacklist 로 저장
+        log.info("액세스 토큰 블랙리스트로 저장 : " + accessToken);
+        redisUtil.addBlackList(accessToken, jwtUtil.remainExpireTime(accessToken));
+
+        jwtUtil.expireCookie(response);
     }
 
 }

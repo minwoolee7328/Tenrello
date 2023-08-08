@@ -35,7 +35,9 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             log.info("액세스 토큰 값 : " + accessToken);
 
             String newAccessToken = jwtUtil.reissueAccessToken(accessToken);
-            jwtUtil.addJwtToCookie(newAccessToken,response);
+            if (newAccessToken != null) {
+                jwtUtil.addJwtToCookie(newAccessToken, response);
+            }
 
             if (!jwtUtil.validateToken(accessToken)) {
                 log.info("액세스 토큰 유효하지 않음");
