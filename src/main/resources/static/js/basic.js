@@ -5,11 +5,6 @@ function submitLogin() {
     console.log('로그인 시도 : ' + loginUser);
     console.log('비밀번호 : ' + loginPass);
 
-    let data = {
-        username: loginUser,
-        password: loginPass
-    };
-
     if (loginUser.trim() === '') {
         alert('아이디를 입력하세요');
         return;
@@ -18,6 +13,11 @@ function submitLogin() {
         alert('비밀번호를 입력하세요');
         return;
     }
+
+    let data = {
+        username: loginUser,
+        password: loginPass
+    };
 
     $.ajax({
         type: "POST",
@@ -41,6 +41,15 @@ function submitSignup() {
 
     console.log('로그인 시도 : ' + signupUser);
     console.log('비밀번호 : ' + signupPass);
+
+    if (signupUser.trim() === '') {
+        alert('아이디를 입력하세요');
+        return;
+    }
+    if (signupPass.trim() === '') {
+        alert('비밀번호를 입력하세요');
+        return;
+    }
 
     let data = {
         username: signupUser,
