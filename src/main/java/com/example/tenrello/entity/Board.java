@@ -27,22 +27,23 @@ public class Board extends Timestamped{
     @Column
     private String color;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
     private List<UserBoard> userBoardList = new ArrayList<>();
 
-
     public Board(BoardRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
         this.user = user;
     }
 
     public void updateBoard(BoardRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
     }
 }
