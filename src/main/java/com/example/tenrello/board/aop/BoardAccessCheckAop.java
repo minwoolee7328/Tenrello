@@ -27,10 +27,6 @@ public class BoardAccessCheckAop {
     private void accessCheckMethods() {
     }
 
-    @Pointcut("@annotation(com.example.tenrello.board.aop.AuthCheck)")
-    private void authCheckMethods() {
-    }
-
     @Around("accessCheckMethods()")
     public Object boardAccessCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
@@ -46,6 +42,10 @@ public class BoardAccessCheckAop {
             }
 
         return joinPoint.proceed();
+    }
+
+    @Pointcut("@annotation(com.example.tenrello.board.aop.AuthCheck)")
+    private void authCheckMethods() {
     }
 
     @Around("authCheckMethods()")
