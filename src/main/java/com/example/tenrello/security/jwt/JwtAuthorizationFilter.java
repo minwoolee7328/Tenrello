@@ -23,49 +23,58 @@ import java.io.IOException;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
-    private final UserDetailsServiceImpl userDetailsService; // 사용자가 존재하는지
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        // request의 header에서 token value 값 꺼내기
-        String tokenValue = jwtUtil.getJwtFromCookie(request);
+        String accessToken = jwtUtil.getJwtFromCookie(request);
 
-        if (StringUtils.hasText(tokenValue)) {
-            tokenValue = tokenValue.substring(7);
-            log.info("tokenValue" + tokenValue);
-            if (!jwtUtil.validateToken(tokenValue)) {
+        if (StringUtils.hasText(accessToken)) {
+            accessToken = jwtUtil.substringToken(accessToken);
+            log.info("액세스 토큰 값 : " + accessToken);
+
+            String newAccessToken = jwtUtil.reissueAccessToken(accessToken);
+            if (newAccessToken != null) {
+                jwtUtil.addJwtToCookie(newAccessToken, response);
+            }
+
+            if (!jwtUtil.validateToken(accessToken)) {
+                log.info("액세스 토큰 유효하지 않음");
                 return;
             }
-            // body의 내용 꺼내기
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+
+            log.info("body의 사용자 정보 꺼내기");
+            Claims info = jwtUtil.getUserInfoFromToken(accessToken);
 
             try {
                 // token 생성 시 subject에 username 넣어둠
+                log.info(info.getSubject());
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
+                log.info("오류 발생");
                 return;
             }
         }
-
         filterChain.doFilter(request, response);
     }
 
-    // token -> authentication 객체에 담기 -> security context에 담기 -> context holder에 담기 -> 인증 처리
+    // token -> authentication 객체에 담기 -> SecurityContext에 담기 -> ContextHolder에 담기
     // 인증 처리
-    public void setAuthentication(String nickname) {
-        log.info("로그인 성공");
+    public void setAuthentication(String username) {
+        log.info("인증 성공");
         SecurityContext context = SecurityContextHolder.createEmptyContext();
-        Authentication authentication = createAuthentication(nickname);
+        Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
 
         SecurityContextHolder.setContext(context);
     }
 
-    // 인증 객체 생성
+    // 인증 객체 생성 (아직 인증 전)
     private Authentication createAuthentication(String username) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
+
 }
 
