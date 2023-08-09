@@ -35,8 +35,10 @@
         <div class="modal-form container--signup">
             <form action="#" class="form" id="form1">
                 <h2 class="form__title">Sign Up</h2>
-                <input type="text" placeholder="Username" class="input"/>
-                <input type="password" placeholder="Password" class="input"/>
+                <label for="signupUser" class="label">Username</label>
+                <input type="text" id="signupUser" placeholder="Username" class="input"/>
+                <label for="signupPass" class="label">Username</label>
+                <input type="password" id="signupPass" placeholder="Password" class="input"/>
                 <button class="btn" id="signUp">Sign Up</button>
             </form>
         </div>
@@ -48,7 +50,7 @@
 <script>
     // 모달 창 관련 js
     const submitSignUpBtn = document.getElementById("signUp");  // 회원가입 완료 버튼
-    const showSignUpBtn = document.getElementById("showSignUp");
+    const showSignUpBtn = document.getElementById("showSignUp"); // 로그인 창에서 회원가입 창으로 넘어가는 버튼
     const modalSignup = document.querySelector(".modal-form");
 
     showSignUpBtn.addEventListener("click", function () {
@@ -61,6 +63,9 @@
 
     // 로그인
     $('#signIn').click(submitLogin);
+
+    // 회원가입
+    $('#signUp').click(submitSignup);
 
 </script>
 </html>
