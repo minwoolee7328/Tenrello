@@ -16,8 +16,8 @@ public class ColumnResponseDto {
     String title;
     BoardResponseDto board;
 
-    private Long prevColumn;    //Node
-    private Long nextColumn;
+//    private Long prevColumn;    //Node
+//    private Long nextColumn;
 
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;

@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -29,30 +30,30 @@ public class ColumnServiceImpl implements ColumnService{
     @Override
     @Transactional
     public ResponseEntity<ApiResponseDto> createcolumn(Long boardId, ColumnRequestDto  columnRequestDto) {
-        if(columnRepository.findAll().isEmpty()){
-            Board board = findBoard(boardId);
+        Board board = findBoard(boardId);
+        if(columnRepository.findAllByBoardId(boardId).isEmpty()){// 해당 Board의 컬럼 DB가 비었을 때
+
             ColumnEntity column = new ColumnEntity(board,columnRequestDto);
-            column.setPrevColumn(null);
+            column.setPrevColumn(null);                         //첫 컬럼 생성 이므로 다음과 이전 컬럼 null
             column.setNextColumn(null);
-            column.setFirstnode(1L);
+            column.setFirstnode(1L);                            //첫 마지막 노드 설정
             column.setLastnode(1L);
 
-            columnRepository.save(column);
+            columnRepository.save(column);                      //저장
         }
         else{
-            Board board = findBoard(boardId);
             ColumnEntity column = new ColumnEntity(board,columnRequestDto);
-            ColumnEntity lastColumn = columnRepository.findByLastnode(1L);
-            columnRepository.save(column);
+            ColumnEntity lastColumn = columnRepository.findByLastnode(1L);      //마지막 컬럼 찾기
+            columnRepository.save(column);                                      //컬럼 저장
 
-            Long id =column.getId();
+            Long id =column.getId();                                            //컬럼 id받아와서 마지막 컬럼의 다음 컬럼을 가리키는 id값에 넣어주기
             lastColumn.setNextColumn(id);
-            lastColumn.setLastnode(0L);
+            lastColumn.setLastnode(0L);                                         //마지막 컬럼 설정풀기, 등록할 컬럼이 마지막 컬럼이 될 것이기 때문
 
-            column.setPrevColumn(lastColumn.getId());
-            column.setLastnode(1L);
-            column.setNextColumn(null);
-            column.setFirstnode(0L);
+            column.setPrevColumn(lastColumn.getId());                           //등록한 컬럼의 이전컬럼 설정
+            column.setLastnode(1L);                                             //등록한 컬럼을 마지막 컬럼으로 설정
+            column.setNextColumn(null);                                         //등록한 컬럼이 마지막 컬럼이기에 다음 컬럼 null
+            column.setFirstnode(0L);                                            //첫 노드는 아니기에 첫 노드 설정 풀기
 
 
         }
@@ -118,24 +119,27 @@ public class ColumnServiceImpl implements ColumnService{
 
     }
 
-//    @Override
-//    public List<ColumnResponseDto> getBoardColumn(Long boardId) {
-//
-//        List<ColumnResponseDto> columnResponseDtoList = columnRepository
-//                .findAllByBoardId(boardId)
-//                .stream()
-//                .map(ColumnResponseDto::new)
-//                .toList();
-//
-//
-//        return columnResponseDtoList;
-//    }
+
     @Override
     public List<ColumnResponseDto> getBoardColumn(Long boardId) {
-        List<ColumnResponseDto> columnEntities = columnRepository
-                .findAllByBoardId(boardId).stream().map(ColumnResponseDto::new).toList();
+        List<ColumnResponseDto> columnResponseDtoList = new ArrayList<>();
 
-        return columnEntities;
+        ColumnEntity head;  //현재 찾을 헤드
+        ColumnEntity firstColumn = columnRepository.findAllByBoardIdAndFirstnode(boardId,1L);//첫 컬럼 찾기
+        head = firstColumn;
+        while(true) {       //아래 break문에 걸릴 때까지 반복
+            columnResponseDtoList.add(new ColumnResponseDto(head));//내보내줄 List에 해당 Entity변환해서 추가
+            if(head.getNextColumn() == null)                        //헤드 다음 컬럼이 null이면 반복 나가기
+                break;
+            head = findColumn(head.getNextColumn());                //헤드 다음 컬럼으로 넘기기
+        }
+
+//        List<ColumnResponseDto> columnEntities = columnRepository
+//                .findAllByBoardId(boardId).stream()
+//                .map(ColumnResponseDto::new)
+//                .toList();
+
+        return columnResponseDtoList;
     }
 
     public Board findBoard(Long id) {
