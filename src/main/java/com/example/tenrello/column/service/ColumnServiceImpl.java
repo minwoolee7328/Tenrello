@@ -148,7 +148,15 @@ public class ColumnServiceImpl implements ColumnService{
         }
         ColumnEntity column = findColumn(columnPositionId);     //옮길 컬럼
         ColumnEntity targetColumn = findColumn(columnTargetPositionId);     //옮길위치의 컬럼
-
+        ColumnEntity head = column;
+        Boolean isRight = false;
+        while(!(head.getNextColumn() == null)){
+            if(head.getNextColumn().equals(targetColumn.getId())){
+                isRight =true;
+                break;
+            }
+            head = findColumn(head.getNextColumn());
+        }
 
         if(column.getFirstnode().equals(1L)) {   //해당 컬럼이 첫 컬럼일 때
             if (targetColumn.getLastnode().equals(1L)) {            //타겟 컬럼이 마지막 컬럼일 때
@@ -197,7 +205,7 @@ public class ColumnServiceImpl implements ColumnService{
                 Long prev = targetColumn.getPrevColumn();       //target의 다음컬럼 id값 빼두기
 
                 ColumnEntity newLastNode = findColumn(column.getPrevColumn());
-                newLastNode.setLastnode(null);
+                newLastNode.setNextColumn(null);
                 newLastNode.setLastnode(1L);
 
                 column.setLastnode(0L);
@@ -224,15 +232,24 @@ public class ColumnServiceImpl implements ColumnService{
             column.setNextColumn(null);
             column.setLastnode(1L);
         }
-        else{
+        else if(isRight){
             columnConnect(column);           //양쪽 컬럼 연결
 
             Long targetNextId =targetColumn.getNextColumn();   //옮길 위치의 컬럼 다음 id 저장해두기 temp같은 역할
             targetColumn.setNextColumn(column.getId());              //옮길 위치걸럼 다음 컬럼 값을 옮긴 컬럼으로 바꿔주기
-
+            findColumn(targetNextId).setPrevColumn(column.getId());
             column.setPrevColumn(targetColumn.getId());             //옮긴 컬럼 이전 컬럼 값을 옮길 위치 컬럼으로 변경
             column.setNextColumn(targetNextId);                     //저장해뒀던 id 값 옮긴 컬럼 다음 컬럼id값으로 저왼
         }       //그 외 중간 컬럼들 아직 오른쪽 이동만 생각한...
+        else if(!isRight){
+            columnConnect(column);           //양쪽 컬럼 연결
+
+            Long targetPrevId =targetColumn.getPrevColumn();   //옮길 위치의 컬럼 다음 id 저장해두기 temp같은 역할
+            targetColumn.setPrevColumn(column.getId());              //옮길 위치걸럼 다음 컬럼 값을 옮긴 컬럼으로 바꿔주기
+            findColumn(targetPrevId).setNextColumn(column.getId());
+            column.setNextColumn(targetColumn.getId());             //옮긴 컬럼 이전 컬럼 값을 옮길 위치 컬럼으로 변경
+            column.setPrevColumn(targetPrevId);                     //저장해뒀던 id 값 옮긴 컬럼 다음 컬럼id값으로 저왼
+        }
 
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("컬럼 이동 성공", HttpStatus.OK.value()));
