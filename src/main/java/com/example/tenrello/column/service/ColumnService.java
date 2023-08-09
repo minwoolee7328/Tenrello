@@ -20,4 +20,5 @@ public interface ColumnService {
     ResponseEntity<ApiResponseDto> deleteColumnName(Long columnId, UserDetailsImpl userDetails);
 
     List<ColumnResponseDto> getBoardColumn(Long boardId);
+    ResponseEntity<ApiResponseDto> updateColumnPosition(Long PositionId, Long targetPositionId);
 }

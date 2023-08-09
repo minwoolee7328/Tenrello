@@ -40,4 +40,8 @@ public class ColumnController {
     {
         return columnService.deleteColumnName(columnId,userDetails);
     }
+    @PutMapping("/columns/{columnId}/position/{targetId}")
+    public ResponseEntity<ApiResponseDto> updateColumnPosition(@PathVariable Long columnId, @PathVariable Long targetId){
+        return columnService.updateColumnPosition(columnId,targetId);
+    }
 }
