@@ -6,4 +6,5 @@ import lombok.Getter;
 public class BoardRequestDto {
     private String title;
     private String description;
+    private String color;
 }
