@@ -2,6 +2,7 @@ package com.example.tenrello.card.service;
 
 import com.example.tenrello.card.dto.CardRequestDto;
 import com.example.tenrello.card.dto.CardResponseDto;
+import com.example.tenrello.card.dto.CardTimeRequestDto;
 import com.example.tenrello.card.repository.CardRepository;
 import com.example.tenrello.entity.Card;
 import com.example.tenrello.entity.User;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,6 +88,7 @@ public class CardService {
     }
 
     //카드 삭제
+    @Transactional
     public void deleteCard(Long id, UserDetailsImpl userDetails) {
         // 카드가 존재하는지 확인
         Optional<Card> card = cardRepository.findById(id);
@@ -94,6 +99,15 @@ public class CardService {
 
         //보더 생성자인지 확인
 
+        //카드 삭제전 position 값 변경
+
+        // 해당하는 컬럼
+
+        List<Card> cardList = cardRepository.findAllByColumnid(card.get().getColumnid());
+
+        for(int i = card.get().getPosition()-1; i<cardList.size(); i++){
+            cardList.get(i).updatePosition(cardList.get(i).getPosition()-1);
+        }
 
         cardRepository.delete(card.get());
 
@@ -116,14 +130,15 @@ public class CardService {
 
         // 움직일 번호 (어떤 컬럼의 카드인지)
         int ids = card.get().getPosition();
-        System.out.println("ids = " + ids);
+//        System.out.println("ids = " + ids);
 
         // 도착할 장소
         int requestDtos = Math.toIntExact(requestDto.getPosition());
-        System.out.println("requestDtos = " + requestDtos);
+//        System.out.println("requestDtos = " + requestDtos);
 
         // 같은 컬럼내 이동
         if(card.get().getColumnid().equals(requestDto.getColumnId())){
+
             // ex) 2 < 4
             //id 가  requestDto 보다 작을때
             if(ids < requestDtos){
@@ -134,6 +149,7 @@ public class CardService {
                     cardList.get(i+1).updateTitle(temp);
                 }
             }
+
             // ex)  4 > 1
             //id 가 requestDto 보다 클때
             if(ids > requestDtos){
@@ -143,7 +159,6 @@ public class CardService {
                     cardList.get(i).updateTitle(cardList.get(i-1).getTitle());
                     cardList.get(i-1).updateTitle(temp);
                 }
-
             }
 
             return new CardResponseDto(cardList);
@@ -155,6 +170,7 @@ public class CardService {
             // 기존 카드 컬럼 id
             Long col = card.get().getColumnid();
             int cardPositionTemp = card.get().getPosition();
+
             // 선택한 컬럼으로 카드 이동 (기존데이터의 컬럼 id 변경)
             // 컴럼 과 병합시 변경 가능성 있음
             card.get().updateColumnId(requestDto.getColumnId());
@@ -163,8 +179,8 @@ public class CardService {
 
             String titleTemp = "";
             int positionTemp = 0;
+
             // 선택한 컬럼 정렬
-            // ex) i = 3 ; 3 < 1; i--
             for(int i = cardList.size()-1; i>=requestDto.getPosition(); i--){
                 System.out.println("\"동작\" = " + "동작");
                 titleTemp = cardList.get(i).getTitle();
@@ -206,6 +222,52 @@ public class CardService {
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
 
+        // 카드 조회시 시간 정보는 startTime 과 endTime 의 데이터를 이용해 보여줄 형식 지정
+
         return new CardResponseDto(card.get());
+    }
+    // 시간 데이터 저장
+    @Transactional
+    public Card createTime(Long id, CardTimeRequestDto timeRequestDto) {
+
+        // 카드가 존재하는지 확인
+        // 선택한 카드
+        Optional<Card> card = cardRepository.findById(id);
+
+        if(!card.isPresent()){
+            throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
+        }
+
+        // 시작 날짜 는 생성할때 시간으로 고정 (시작날짜를 선택했는지 여부)
+        if(timeRequestDto.isStartTime()){
+            // 시작 날짜와 마감날짜의 데이터를 저장
+            LocalDateTime dateTime;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            // 시작 날짜 저장
+            String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            dateTime = LocalDateTime.parse(startTime, formatter);
+            card.get().updateStartTime(dateTime);
+
+
+            // 사용자에게 받아온 시간 데이터를 변환
+            dateTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+
+            // 마감시간 저장
+            card.get().updateEndTime(dateTime);
+
+            return card.get();
+        }
+
+        // 시작날짜가 선택 안되었을때
+        // 마감날짜의 데이터를 저장
+
+        // 사용자에게 받아온 시간 데이터를 변환
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime dateTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+
+        // 마감시간 저장
+        card.get().updateEndTime(dateTime);
+
+        return card.get();
     }
 }

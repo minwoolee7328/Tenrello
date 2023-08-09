@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.hibernate.annotations.GenerationTime;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -44,6 +46,15 @@ public class Card extends Timestamped {
     @Column(name = "position", nullable = false)
     private int position;
 
+    // 시작 데이터
+    @Column(name = "startTime", nullable = true)
+    private LocalDateTime startTime;
+
+    // 마감시간 데이터
+    @Column(name = "endTime", nullable = true)
+    private LocalDateTime endTime;
+
+
     public Card(User user, Long column, String title, int position){
         this.user = user;
         this.columnid = column;
@@ -68,5 +79,15 @@ public class Card extends Timestamped {
     @Transactional
     public void updateColumnId(Long columnid){
         this.columnid = columnid;
+    }
+
+    @Transactional
+    public void updateStartTime(LocalDateTime startTime){
+        this.startTime = startTime;
+    }
+
+    @Transactional
+    public void updateEndTime(LocalDateTime endTime){
+        this.endTime = endTime;
     }
 }

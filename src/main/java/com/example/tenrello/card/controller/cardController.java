@@ -2,8 +2,10 @@ package com.example.tenrello.card.controller;
 
 import com.example.tenrello.card.dto.CardRequestDto;
 import com.example.tenrello.card.dto.CardResponseDto;
+import com.example.tenrello.card.dto.CardTimeRequestDto;
 import com.example.tenrello.card.service.CardService;
 import com.example.tenrello.common.dto.ApiResponseDto;
+import com.example.tenrello.entity.Card;
 import com.example.tenrello.security.details.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +57,12 @@ public class cardController {
     @GetMapping("/cards/{id}")
     public CardResponseDto getCard(@PathVariable Long id){
         return cardService.getCard(id);
+    }
+
+    // 시간 지정
+    @PostMapping("/cards/{id}/time")
+    public Card createTime(@PathVariable Long id, @RequestBody CardTimeRequestDto timeRequestDto){
+       return cardService.createTime(id, timeRequestDto);
     }
 
 }

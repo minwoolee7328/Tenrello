@@ -7,7 +7,4 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card,Long> {
     List<Card> findAllByColumnid(Long columnId);
-
-    int findByColumnidAndPosition(Long columnId, Long id);
-//    List<Card> findAllByTitle();
 }
