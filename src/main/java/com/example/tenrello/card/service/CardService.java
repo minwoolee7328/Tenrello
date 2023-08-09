@@ -247,7 +247,7 @@ public class CardService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             // 시작 날짜 저장
             String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            dateTime = LocalDateTime.parse(startTime, formatter);
+            dateTime = LocalDateTime.parse(startTime,formatter);
             card.get().updateStartTime(dateTime);
 
 

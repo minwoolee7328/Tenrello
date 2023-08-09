@@ -39,7 +39,7 @@ public class Card extends Timestamped {
     private String title;
 
     // 카드 내용
-    @Column(name = "content", nullable = true)
+    @Column(name = "content")
     private String content;
 
     // 카드 위치 내용
@@ -47,12 +47,16 @@ public class Card extends Timestamped {
     private int position;
 
     // 시작 데이터
-    @Column(name = "startTime", nullable = true)
+    @Column(name = "startTime")
     private LocalDateTime startTime;
 
     // 마감시간 데이터
-    @Column(name = "endTime", nullable = true)
+    @Column(name = "endTime")
     private LocalDateTime endTime;
+
+    // 일정 결과
+    @Column(name = "result")
+    private String result;
 
 
     public Card(User user, Long column, String title, int position){
@@ -89,5 +93,10 @@ public class Card extends Timestamped {
     @Transactional
     public void updateEndTime(LocalDateTime endTime){
         this.endTime = endTime;
+    }
+
+    @Transactional
+    public void updateResult(String result){
+        this.result = result;
     }
 }
