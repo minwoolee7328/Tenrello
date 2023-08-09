@@ -10,4 +10,6 @@ import java.util.List;
 public interface ColumnRepository extends JpaRepository<ColumnEntity,Long> {
 
     List<ColumnEntity> findAllByBoardId(Long boardId);
+
+    ColumnEntity findByLastnode(Long i);
 }

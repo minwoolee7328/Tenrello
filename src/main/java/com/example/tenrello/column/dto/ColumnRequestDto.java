@@ -6,4 +6,9 @@ import lombok.Getter;
 @Getter
 public class ColumnRequestDto {
     String title;
+//    Long prev_column;
+//    Long next_column;
+//    private Long firstnode;
+//    private Long lastnode;
+
 }

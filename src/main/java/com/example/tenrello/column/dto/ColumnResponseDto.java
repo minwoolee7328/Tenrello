@@ -3,6 +3,7 @@ package com.example.tenrello.column.dto;
 import com.example.tenrello.board.dto.BoardResponseDto;
 import com.example.tenrello.entity.Board;
 import com.example.tenrello.entity.ColumnEntity;
+import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,10 @@ public class ColumnResponseDto {
     Long id;
     String title;
     BoardResponseDto board;
+
+    private Long prevColumn;    //Node
+    private Long nextColumn;
+
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
 
