@@ -97,12 +97,10 @@ public class CardService {
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
 
-        //보더 생성자인지 확인
+        //보더 생성자인지 확인 (미구현)
 
         //카드 삭제전 position 값 변경
-
         // 해당하는 컬럼
-
         List<Card> cardList = cardRepository.findAllByColumnid(card.get().getColumnid());
 
         for(int i = card.get().getPosition()-1; i<cardList.size(); i++){
@@ -222,10 +220,14 @@ public class CardService {
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
 
-        // 카드 조회시 시간 정보는 startTime 과 endTime 의 데이터를 이용해 보여줄 형식 지정
+        // 카드 조회시 시간 정보는 startTime 과 endTime 의 데이터를 이용해 보여줄 형식 지정 (미구현)
+        // 시작데이터가 있을시 시작시간 ~ 마각시간
+        // 시작데이터가 없을시 마감시가만 표시
 
         return new CardResponseDto(card.get());
     }
+
+
     // 시간 데이터 저장
     @Transactional
     public Card createTime(Long id, CardTimeRequestDto timeRequestDto) {
