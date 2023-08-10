@@ -25,6 +25,7 @@ function getColumns(boardId){
                                     <button onclick="DeleteColumnBtn(${column.id})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
                                     <button onclick="modifyColumnBtn(${column.id})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
                                 </div>
+<!--                                이쪽에 card들이 들어가면 됩니다.-->
                                 
                                 </div>`
                 $('.list-container').append(temp_html);
