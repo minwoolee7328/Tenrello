@@ -37,13 +37,15 @@ function submitLogin() {
 
 function submitSignup() {
     let signupUser = $('#signupUser').val();
+    let signupNick = $('#signupNick').val();
     let signupPass = $('#signupPass').val();
-
-    console.log('로그인 시도 : ' + signupUser);
-    console.log('비밀번호 : ' + signupPass);
 
     if (signupUser.trim() === '') {
         alert('아이디를 입력하세요');
+        return;
+    }
+    if (signupNick.trim() === '') {
+        alert('닉네임을 입력하세요');
         return;
     }
     if (signupPass.trim() === '') {
@@ -53,6 +55,7 @@ function submitSignup() {
 
     let data = {
         username: signupUser,
+        nickname: signupNick,
         password: signupPass
     };
 

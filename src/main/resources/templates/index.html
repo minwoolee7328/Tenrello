@@ -31,12 +31,18 @@
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
              id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
+                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">My boards</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <p>Try scrolling the rest of the page to see this option in action.</p>
+                <ul class="list-group list-group-flush" id="boardListUl">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item">And a fifth one</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -70,22 +76,111 @@
 
 </header>
 <!-- End of masthead -->
-<div id="board">
-    <div  class="list-container" id="listContainer">
-        <div class="list" id="firstList" draggable="true">
-            <div class="list-header">List 1</div>
-            <div class="card" draggable="true">Card 1</div>
-            <div class="card" draggable="true">Card 2</div>
+
+<!-- Board modal -->
+<div class="modal-board" style="display: none">
+    <div id="board">
+        <div class="list-container" id="listContainer">
+            <div class="list" id="firstList" draggable="true">
+                <div class="list-header">List 1</div>
+                <div class="card" draggable="true">Card 1</div>
+                <div class="card" draggable="true">Card 2</div>
+            </div>
+            <div class="list" draggable="true">
+                <div class="list-header">List 2</div>
+                <div class="card" draggable="true">Card 3</div>
+                <div class="card" draggable="true">Card 4</div>
+            </div>
+            <!-- Add more lists here -->
         </div>
-        <div class="list" draggable="true">
-            <div class="list-header">List 2</div>
-            <div class="card" draggable="true">Card 3</div>
-            <div class="card" draggable="true">Card 4</div>
-        </div>
-        <!-- Add more lists here -->
     </div>
 </div>
 
 <script src="/js/index.js"></script>
+
+<script>
+    $(document).ready(function () {
+
+        // 내가 속한 보드 리스트 가져오기
+        $.ajax({
+            url: 'http://localhost:8080/api/boards/include',
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+            },
+            success: function (response) {
+                console.log(response);
+                let temp_htmls = '';
+                $('#boardListUl').empty();
+
+                response.forEach((a) => {
+                    let boardName = a['title'];
+                    let boardId = a['boardId'];
+
+                    let temp_html = `
+                        <li class="list-group-item" id="${boardId}">${boardName}</li>
+                    `;
+
+                    temp_htmls += temp_html;
+                });
+                console.log('forEach문 끝');
+                $('#boardListUl').append(temp_htmls);
+            },
+            error: function () {
+                console.log('AJAX 요청 실패');
+            }
+        });
+    })
+
+    const modalBoard = document.querySelector(".modal-board");
+
+    // 보드 리스트에서 보드 선택
+    $(document).on("click", ".list-group-item", function () {
+        var clickedBoardId = $(this).attr('id');
+        var clickedBoardName = $(this).text();
+
+        console.log('Clicked Board ID:', clickedBoardId);
+        console.log('Clicked Board Name:', clickedBoardName);
+
+        $.ajax({
+            url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/columns',
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+            },
+            success: function (response) {
+                console.log(response);
+                let temp_htmls = '';
+                $('#listContainer').empty();
+
+                response.forEach((a) => {
+                    let columnId = a['id'];
+                    let columnTitle = a['title'];
+
+
+                    let temp_html = `
+                        <div class="list" id="${columnId}" draggable="true">
+                            <div class="list-header">${columnTitle}</div>
+                            <div class="card" draggable="true">Card 1</div>
+                            <div class="card" draggable="true">Card 2</div>
+                        </div>
+                    `;
+
+                    temp_htmls += temp_html;
+                });
+                console.log('forEach문 끝');
+                $('#listContainer').append(temp_htmls);
+            },
+            error: function () {
+                console.log('AJAX 요청 실패');
+            }
+        });
+
+        modalBoard.style.display = "block";
+    })
+
+</script>
 </body>
 </html>
