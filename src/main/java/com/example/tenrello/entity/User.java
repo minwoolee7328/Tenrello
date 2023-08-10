@@ -27,4 +27,8 @@ public class User {
         this.nickname = nickname;
         this.password = password;
     }
+
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
 }
