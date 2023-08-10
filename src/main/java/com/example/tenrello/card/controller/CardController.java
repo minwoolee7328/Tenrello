@@ -1,9 +1,6 @@
 package com.example.tenrello.card.controller;
 
-import com.example.tenrello.card.dto.CardRequestDto;
-import com.example.tenrello.card.dto.CardResponseDto;
-import com.example.tenrello.card.dto.CardTimeRequestDto;
-import com.example.tenrello.card.dto.CardTimeResponseDto;
+import com.example.tenrello.card.dto.*;
 import com.example.tenrello.card.service.CardService;
 import com.example.tenrello.common.dto.ApiResponseDto;
 import com.example.tenrello.security.details.UserDetailsImpl;
@@ -49,7 +46,7 @@ public class CardController {
 
     // 카드 컬럼내 변경
     @PatchMapping("/cards/{id}")
-    public CardResponseDto chId(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
+    public CardListCangeResponseDto chId(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
         return cardService.chId(id, requestDto);
     }
 
@@ -63,6 +60,24 @@ public class CardController {
     @PostMapping("/cards/{id}/time")
     public CardTimeResponseDto createTime(@PathVariable Long id, @RequestBody CardTimeRequestDto timeRequestDto){
        return cardService.createTime(id, timeRequestDto);
+    }
+
+    // 보드에 속한 유저들 불러오기
+    @PostMapping("/cards/{id}/user")
+    public BordUsersResponseDto Users(@PathVariable Long id){
+       return cardService.Users(id);
+    }
+
+    // 카드에 유저 할당하기
+    @PostMapping("/cards/{id}/users/{userid}")
+    public void allotUser(@PathVariable Long id,@PathVariable Long userid){
+        cardService.allotUser(id,userid);
+    }
+
+    // 카드 작업자 변경
+    @PutMapping("/cards/{id}/users/{userid}")
+    public void updateUser(@PathVariable Long id,@PathVariable Long userid){
+        cardService.updateUser(id, userid);
     }
 
 }
