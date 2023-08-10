@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나의 멋진 페이지</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F4F4F4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #666;
+        }
+
+        button {
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .profile-picture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: 0 auto 20px;
+        }
+
+        .profile-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        footer {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        #backToTop {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: none;
+        }
+
+        #backToTop:hover {
+            background-color: #555;
+        }
+
+        #goBack {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+            background-color: #333;
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+        }
+
+        #goBack:hover {
+            background-color: #555;
+        }
+
+        #registerPasswordModal, #registerNicknameModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        #passwordModalOverlay, #nicknameModalOverlay{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+        }
+
+        #nicknameModalTitle {
+            margin-bottom: 10px;
+        }
+
+        /* Style the modal content */
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Style the input fields */
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Style the modal buttons */
+        .modal-buttons {
+            display: flex;
+            justify-content:center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        #passwordModalTitle {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>마이 페이지</h1>
+</header>
+<button id="goBack" onclick="goBack()">뒤로 가기</button>
+<div class="container">
+    <div class="profile-picture">
+        <img src="프로필사진.jpg" alt="프로필 사진">
+    </div>
+    <h2>환영합니다, <span id="username" th:text="${profile.username}">${profile.username}</span>님!</h2>
+    <p>안녕하세요! 이곳은 나만의 멋진 페이지입니다. 여기에서 정보를 공유하거나 소개할 수 있어요.</p>
+    <p>즐거운 시간 되세요!</p>
+    <button id="changeNickname">닉네임 변경</button>
+    <button id="changePassword">비밀번호 변경</button>
+
+</div>
+<button id="backToTop" onclick="scrollToTop()">위로</button>
+<footer>
+    <p>Tenrello</p>
+</footer>
+
+<!-- 닉네임 변경하기 모달 -->
+<div id="nicknameModalOverlay"></div>
+<div id="registerNicknameModal">
+    <h3 id="nicknameModalTitle">닉네임 변경하기</h3>
+    <div class="modal-content">
+        <input type="text" id="nicknameInput" placeholder="새로운 닉네임">
+        <div class="modal-buttons">
+            <button id="closeNicknameModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<!-- 비밀번호 변경하기 모달 -->
+<div id="passwordModalOverlay"></div>
+<div id="registerPasswordModal">
+    <h3 id="passwordModalTitle">비밀번호 변경하기</h3>
+    <div class="modal-content">
+        <input type="text" id="passwordInput" placeholder="현재 비밀번호">
+        <input type="text" id="newPasswordInput" placeholder="새로운 비밀번호">
+        <div class="modal-buttons">
+            <button id="submitPasswordModal">변경</button>
+            <button id="closePasswordModal">닫기</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 스크립트 코드는 여기에 추가하세요
+    function goBack() {
+        window.history.back();
+    }
+
+    function scrollToTop() {
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    window.onscroll = function () {
+        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+            document.getElementById('backToTop').style.display = 'block';
+        } else {
+            document.getElementById('backToTop').style.display = 'none';
+        }
+    };
+
+    // 닉네임 변경하기 모달
+    const changeNicknameButton = document.getElementById('changeNickname');
+    const closeNicknameModalButton = document.getElementById('closeNicknameModal');
+    const registerNicknameModal = document.getElementById('registerNicknameModal');
+    const nicknameModalOverlay = document.getElementById('nicknameModalOverlay');
+
+    changeNicknameButton.addEventListener('click', function () {
+        registerNicknameModal.style.display = 'block';
+        nicknameModalOverlay.style.display = 'block';
+    });
+    closeNicknameModalButton.addEventListener('click', function () {
+        registerNicknameModal.style.display = 'none';
+        nicknameModalOverlay.style.display = 'none';
+    });
+
+    // 비밀번호 변경하기 모달
+    const changePasswordButton = document.getElementById('changePassword');
+    const closePasswordModalButton = document.getElementById('closePasswordModal');
+    const registerPasswordModal = document.getElementById('registerPasswordModal');
+    const passwordModalOverlay = document.getElementById('passwordModalOverlay');
+
+    changePasswordButton.addEventListener('click', function () {
+        registerPasswordModal.style.display = 'block';
+        passwordModalOverlay.style.display = 'block';
+    });
+    closePasswordModalButton.addEventListener('click', function () {
+        registerPasswordModal.style.display = 'none';
+        passwordModalOverlay.style.display = 'none';
+    });
+</script>
+</body>
+</html>

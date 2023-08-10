@@ -44,7 +44,25 @@
                     <li class="list-group-item">And a fifth one</li>
                 </ul>
             </div>
+            <div>
+                <div class="board-buttons" id="board-buttons-button">
+                    <!-- 모달을 위한 HTML -->
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">×</span>
+                            <input type="text" id="boardTitle" placeholder="Enter board title">
+                            <input type="text" id="boardDescription" placeholder="Enter board description">
+                            <button id="saveBoard">Save</button>
+                        </div>
+                    </div>
+                    <!-- 모달을 호출하는 버튼 -->
+                    <button id="createBoard">생성</button>
+
+                    <button class="board-delete-button"><i class="bi bi-trash"></i>삭제</button>
+                </div>
+            </div>
         </div>
+        <!--  End of offcanvas  -->
     </div>
 
     <div class="logo">
@@ -56,8 +74,8 @@
 
     <div class="user-settings">
 
-        <button class="user-settings-btn btn" aria-label="Create">
-            <i class="fas fa-plus" aria-hidden="true"></i>
+        <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
+            <i class="fas fa-plus" aria-hidden="true">마이</i>
         </button>
 
         <button class="user-settings-btn btn" aria-label="Information">
@@ -99,6 +117,62 @@
 <script src="/js/index.js"></script>
 
 <script>
+    // 마이페이지 이동
+    const mypageBtn = document.getElementById("move-mypage");
+    mypageBtn.addEventListener("click", function () {
+        window.location.href = "/view/mypage";
+    })
+
+    // board 생성
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById('myModal');
+        const createButton = document.getElementById('createBoard');
+        const saveButton = document.getElementById('saveBoard');
+        const closeButton = document.getElementsByClassName('close')[0];
+
+        createButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        saveButton.addEventListener('click', () => {
+            const boardTitle = document.getElementById('boardTitle').value;
+            const boardDescription = document.getElementById('boardDescription').value;
+
+            if (boardTitle) {
+                const boardData = {
+                    title: boardTitle,
+                    description: boardDescription,
+                };
+
+                saveBoardToDatabase(boardData);
+            }
+
+            modal.style.display = 'none';
+        });
+
+        function saveBoardToDatabase(boardData) {
+            fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(boardData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Created board:', data);
+                    // Perform any further actions based on the response
+                })
+                .catch(error => {
+                    console.error('Error creating board:', error);
+                });
+        }
+    });
+
     $(document).ready(function () {
 
         // 내가 속한 보드 리스트 가져오기
