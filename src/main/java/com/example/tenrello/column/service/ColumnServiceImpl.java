@@ -1,6 +1,7 @@
 package com.example.tenrello.column.service;
 
 import com.example.tenrello.board.repository.BoardRepository;
+import com.example.tenrello.board.repository.UserBoardRepository;
 import com.example.tenrello.column.dto.ColumnRequestDto;
 import com.example.tenrello.column.dto.ColumnResponseDto;
 import com.example.tenrello.column.repository.ColumnRepository;
