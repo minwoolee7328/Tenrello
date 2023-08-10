@@ -243,36 +243,54 @@ public class CardService {
         // 시작 날짜 는 생성할때 시간으로 고정 (시작날짜를 선택했는지 여부)
         if(timeRequestDto.isStartTime()){
             // 시작 날짜와 마감날짜의 데이터를 저장
-            LocalDateTime dateTime;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
             // 시작 날짜 저장
             String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            dateTime = LocalDateTime.parse(startTime,formatter);
+            LocalDateTime startLocalTime = LocalDateTime.parse(startTime,formatter);
 
-            card.get().updateStartTime(dateTime);
+            card.get().updateStartTime(startLocalTime);
 
             // 사용자에게 받아온 시간 데이터를 변환
-            dateTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+            LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
 
             // 마감시간 저장
-            card.get().updateEndTime(dateTime);
+            card.get().updateEndTime(endLocalTime);
 
-            // 시간을 저장할대 이미 과거시간을 넣으면 result에 마감이라고 넣기(미구현)
+            // 시간을 저장할때 이미 과거시간을 넣으면 result에 마감이라고 넣기
+            boolean result = endLocalTime.isBefore(startLocalTime);
+
+            if(result){
+                // 마감시간이 지남
+                card.get().updateResult("마감");
+            }else{
+                card.get().updateResult("진행중");
+            }
 
             return card.get();
         }
 
         // 시작날짜가 선택 안되었을때
         // 마감날짜의 데이터를 저장
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        LocalDateTime startLocalTime = LocalDateTime.parse(startTime,formatter);
 
         // 사용자에게 받아온 시간 데이터를 변환
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime dateTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+        LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
 
         // 마감시간 저장
-        card.get().updateEndTime(dateTime);
+        card.get().updateEndTime(endLocalTime);
 
-        // 시간을 저장할대 이미 과거시간을 넣으면 result에 마감이라고 넣기(미구현)
+        // 시간을 저장할때 이미 과거시간을 넣으면 result에 마감이라고 넣기
+        boolean result = startLocalTime.isBefore(endLocalTime);
+
+        if(result){
+            // 마감시간이 지남
+            card.get().updateResult("마감");
+        }else{
+            card.get().updateResult("진행중");
+        }
 
         return card.get();
     }
