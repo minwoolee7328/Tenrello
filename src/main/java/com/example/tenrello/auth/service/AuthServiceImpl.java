@@ -80,8 +80,6 @@ public class AuthServiceImpl implements AuthService {
         // access token blacklist 로 저장
         log.info("액세스 토큰 블랙리스트로 저장 : " + accessToken);
         redisUtil.addBlackList(accessToken, jwtUtil.remainExpireTime(accessToken));
-
-        jwtUtil.expireCookie(response);
     }
 
 }

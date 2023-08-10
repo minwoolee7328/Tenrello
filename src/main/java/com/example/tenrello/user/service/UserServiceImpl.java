@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(User user, PasswordRequestDto requestDto) {
         log.info("비밀번호 변경 서비스");
         // 새로운 비밀번호

@@ -31,6 +31,7 @@ function submitLogin() {
         },
         error: function () {
             console.log('실패');
+            alert('로그인 실패');
         }
     })
 }

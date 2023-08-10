@@ -161,12 +161,5 @@ public class JwtUtil {
         return expirationTime - dateTime;
     }
 
-    public void expireCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
-    }
-
 }
 
