@@ -27,7 +27,7 @@ public class Board extends Timestamped{
     @Column
     private String color;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -35,17 +35,16 @@ public class Board extends Timestamped{
     private List<UserBoard> userBoardList = new ArrayList<>();
 
 
-//    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
-//    private LinkedList<ColumnEntity> columnEntityLinkedList = new LinkedList<>();        //Column의 순서를 가지게 해줄 링크드리스트
-
     public Board(BoardRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
         this.user = user;
     }
 
     public void updateBoard(BoardRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
     }
 }
