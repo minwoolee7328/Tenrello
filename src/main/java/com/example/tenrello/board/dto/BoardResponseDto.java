@@ -4,6 +4,7 @@ import com.example.tenrello.entity.Board;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 
 @Getter
 public class BoardResponseDto {
