@@ -152,3 +152,31 @@ body {
     padding: 10px;
     /* Add padding for spacing */
 }
+
+/* Custom styling for offcanvas */
+.offcanvas-footer {
+    margin-top: auto; /* Pushes the footer section to the bottom */
+    padding: 10px; /* Add some padding for spacing */
+    background-color: #f8f9fa; /* Set a background color for the footer */
+    border-top: 1px solid #dee2e6; /* Add a top border for separation */
+}
+
+.board-buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: center; /* Vertically center the buttons */
+}
+
+.board-delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Style for icon inside the button */
+.board-delete-button i {
+    font-size: 1.2rem;
+}
