@@ -173,3 +173,8 @@ addListButton.addEventListener('click', () => {
 
     container.appendChild(newList);
 });
+
+function logout() {
+    Cookies.remove('Authorization', {path: '/'});
+    window.location.href = "/view/main";
+}
