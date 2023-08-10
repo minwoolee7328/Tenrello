@@ -6,6 +6,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Array;
+import java.util.ArrayList;
+
 @Entity
 @Table(name="columns")
 @Getter
@@ -33,6 +36,8 @@ public class ColumnEntity extends Timestamped {
     @Column(name="lastnode")
     private Long lastnode;      //lastnode =1
 
+    //@OneToMany(mappedBy = "column", cascade = CascadeType.REMOVE)
+    //private List<Card> cardList = new ArrayList<>();
 
     public void setTitle(String title){
         this.title =title;
@@ -41,12 +46,6 @@ public class ColumnEntity extends Timestamped {
     public ColumnEntity(Board board, ColumnRequestDto columnRequestDto) {
         this.board = board;
         this.title = columnRequestDto.getTitle();
-
-//        this.prevColumn = columnRequestDto.getPrev_column();
-//        this.nextColumn = columnRequestDto.getNext_column();
-//
-//        this. firstnode = columnRequestDto.getFirstnode();
-//        this.lastnode = columnRequestDto.getLastnode();
     }
 
     public ColumnEntity() {
