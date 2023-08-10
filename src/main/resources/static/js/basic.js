@@ -27,7 +27,7 @@ function submitLogin() {
         success: function (xhr) {       // xhr : response로 받은 데이터
             console.log(xhr);
             alert(xhr.msg);                 // ResponseEntity<ApiResponseDto> 의 메세지
-            window.location.href = "/next";
+            window.location.href = "/view/next";
         },
         error: function () {
             console.log('실패');
