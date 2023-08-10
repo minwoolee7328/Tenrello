@@ -19,7 +19,7 @@ public class UserBoardResponseDto {
         this.boardId = userBoard.getBoard().getId();
         this.title = userBoard.getBoard().getTitle();
         this.description = userBoard.getBoard().getDescription();
-        this.createAt = userBoard.getBoard().getCreateAt();
+        this.createAt = userBoard.getBoard().getCreatedAt();
         this.modifiedAt = userBoard.getBoard().getModifiedAt();
     }
 }
