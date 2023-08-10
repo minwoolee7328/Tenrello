@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.sql.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name="columns")
@@ -36,8 +37,8 @@ public class ColumnEntity extends Timestamped {
     @Column(name="lastnode")
     private Long lastnode;      //lastnode =1
 
-    //@OneToMany(mappedBy = "column", cascade = CascadeType.REMOVE)
-    //private List<Card> cardList = new ArrayList<>();
+    @OneToMany(mappedBy = "column", cascade = CascadeType.REMOVE)
+    private List<Card> cardList = new ArrayList<>();
 
     public void setTitle(String title){
         this.title =title;
