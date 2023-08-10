@@ -58,7 +58,6 @@ public class Card extends Timestamped {
     @Column(name = "result")
     private String result;
 
-
     public Card(User user, Long column, String title, int position){
         this.user = user;
         this.columnid = column;
@@ -99,4 +98,5 @@ public class Card extends Timestamped {
     public void updateResult(String result){
         this.result = result;
     }
+
 }

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api")
 @Slf4j(topic = "CardController")
-public class cardController {
+public class CardController {
 
     private final CardService cardService;
 

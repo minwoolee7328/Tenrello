@@ -7,11 +7,11 @@ import com.example.tenrello.card.repository.CardRepository;
 import com.example.tenrello.entity.Card;
 import com.example.tenrello.entity.User;
 import com.example.tenrello.security.details.UserDetailsImpl;
+import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -222,11 +222,11 @@ public class CardService {
 
         // 카드 조회시 시간 정보는 startTime 과 endTime 의 데이터를 이용해 보여줄 형식 지정 (미구현)
         // 시작데이터가 있을시 시작시간 ~ 마각시간
-        // 시작데이터가 없을시 마감시가만 표시
+        // 시작데이터가 없을시 마감시간만 표시
+        // 프론트에서 해결
 
         return new CardResponseDto(card.get());
     }
-
 
     // 시간 데이터 저장
     @Transactional
@@ -248,14 +248,16 @@ public class CardService {
             // 시작 날짜 저장
             String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
             dateTime = LocalDateTime.parse(startTime,formatter);
-            card.get().updateStartTime(dateTime);
 
+            card.get().updateStartTime(dateTime);
 
             // 사용자에게 받아온 시간 데이터를 변환
             dateTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
 
             // 마감시간 저장
             card.get().updateEndTime(dateTime);
+
+            // 시간을 저장할대 이미 과거시간을 넣으면 result에 마감이라고 넣기(미구현)
 
             return card.get();
         }
@@ -270,6 +272,9 @@ public class CardService {
         // 마감시간 저장
         card.get().updateEndTime(dateTime);
 
+        // 시간을 저장할대 이미 과거시간을 넣으면 result에 마감이라고 넣기(미구현)
+
         return card.get();
     }
+
 }

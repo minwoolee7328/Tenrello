@@ -37,16 +37,19 @@ public class testTasklet implements Tasklet {
 
         // 시간 데이터를 이용해서 현재 시간과 비교해 결과를 나타내보자.
         // 마감시간이 현재 시간보다 과거인지
-        boolean result = cardList.get(0).getEndTime().isBefore(dateTime);
 
-        if(result){
-            // 마감시간이 지남
-            cardList.get(0).updateResult("마감");
-            return RepeatStatus.FINISHED;
+
+
+        for(Card card :cardList){
+
+            boolean result = card.getEndTime().isBefore(dateTime);
+
+            if(result){
+                // 마감시간이 지남
+                card.updateResult("마감");
+            }
+
         }
-
-        cardList.get(0).updateResult("진행중");
-
 
         return RepeatStatus.FINISHED;
     }
