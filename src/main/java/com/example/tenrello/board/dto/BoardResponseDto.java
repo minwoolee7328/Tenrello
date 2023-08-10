@@ -4,7 +4,6 @@ import com.example.tenrello.entity.Board;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.LinkedList;
 
 @Getter
 public class BoardResponseDto {
@@ -14,6 +13,8 @@ public class BoardResponseDto {
     private String description;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
+
+//    private List<ColumnResponseDto> columnEntities = new LinkedList<>();
 
     public BoardResponseDto(Board board) {
         this.userId = board.getUser().getId();

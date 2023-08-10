@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/style.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <!-- js Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <meta charset="UTF-8">
+    <title>TENRELLO 로그인</title>
+
+</head>
+<body>
+<div class="container right-panel-active">
+    <!-- Log In -->
+    <div class="container__form container--signin">
+        <form action="#" class="form" id="form2">
+            <h2 class="form__title">LogIn</h2>
+            <label for="loginUser" class="label">Username</label>
+            <input type="text" id="loginUser" placeholder="Username" class="input"/>
+            <label for="loginPass" class="label">Password</label>
+            <input type="password" id="loginPass" placeholder="Password" class="input"/>
+            <button class="btn" id="signIn">Sign In</button>
+            <button class="btn" id="showSignUp">Sign Up</button>
+        </form>
+    </div>
+
+    <!-- Sign Up modal-->
+    <div id="modal-signup">
+        <div class="modal-form container--signup">
+            <form action="#" class="form" id="form1">
+                <h2 class="form__title">Sign Up</h2>
+                <label for="signupUser" class="label">Username</label>
+                <input type="text" id="signupUser" placeholder="Username" class="input"/>
+                <label for="signupPass" class="label">Username</label>
+                <input type="password" id="signupPass" placeholder="Password" class="input"/>
+                <button class="btn" id="signUp">Sign Up</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- static js -->
+<script src="/js/basic.js"></script>
+</body>
+<script>
+    // 모달 창 관련 js
+    const submitSignUpBtn = document.getElementById("signUp");  // 회원가입 완료 버튼
+    const showSignUpBtn = document.getElementById("showSignUp"); // 로그인 창에서 회원가입 창으로 넘어가는 버튼
+    const modalSignup = document.querySelector(".modal-form");
+
+    showSignUpBtn.addEventListener("click", function () {
+        modalSignup.style.display = "block"; // 모달 보이기
+    });
+
+    submitSignUpBtn.addEventListener("click", function () {
+        modalSignup.style.display = "none"; // 모달 닫기
+    });
+
+    // 로그인
+    $('#signIn').click(submitLogin);
+
+    // 회원가입
+    $('#signUp').click(submitSignup);
+
+</script>
+</html>
