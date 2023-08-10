@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- static 스타일 시트 -->
-    <link rel="stylesheet" type="text/css" href="/css/index.css">
+<!--    <link rel="stylesheet" type="text/css" href="/css/index.css">-->
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
@@ -15,6 +16,163 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <title>Trello Board</title>
+
+    <style>
+        /* Masthead */
+
+        .masthead .btn {
+            background-color: #4c94be;
+            border-radius: 0.3rem;
+            transition: background-color 150ms;
+        }
+
+        .masthead .btn:hover {
+            background-color: #3385b5;
+        }
+
+        .boards-menu {
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        .boards-btn {
+            flex-basis: 4rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 0.8rem;
+            padding: 0.3rem 0.3rem;
+        }
+
+        .boards-btn-icon {
+            font-size: 1.5rem;
+        }
+
+        .logo:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .logo-icon {
+            padding-right: 0.4rem;
+        }
+
+        .user-settings {
+            display: flex;
+            height: 3rem;
+            color: #fff;
+        }
+
+        .user-settings-btn {
+            font-size: 1.5rem;
+            width: 3rem;
+            margin-right: 0.8rem;
+        }
+
+        .user-settings-btn:last-of-type {
+            margin-right: 0;
+        }
+
+        /* End of head css */
+        /* Your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .list-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            margin-top: 70px;
+            /* Adjust this value as needed */
+        }
+
+        .list {
+            background-color: #e0e0e0;
+            min-width: 250px;
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            margin-right: 10px;
+            /* Add spacing between lists */
+        }
+
+        .list-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background-color: white;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .highlight {
+            border: 2px dashed #666;
+        }
+
+        /* ---------------------------------- */
+        #addList {
+            margin-top: 10px;
+        }
+
+        .highlight {
+            border: 2px dashed #666;
+        }
+
+        .masthead {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #0067a3;
+            box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
+            width: 100%;
+            z-index: 100;
+            /* Ensure the header is on top */
+        }
+
+        .logo {
+            font-family: "Courgette", cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .board-container {
+            display: flex;
+            /* Display children horizontally */
+            overflow-x: auto;
+            /* Add horizontal scrolling */
+            padding: 10px;
+            /* Add padding for spacing */
+        }
+    </style>
 </head>
 <body>
 <!-- Masthead -->
@@ -30,12 +188,18 @@
         <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
              id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Colored with scrolling</h5>
+                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">My boards</h5>
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
                         aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
-                <p>Try scrolling the rest of the page to see this option in action.</p>
+                <ul class="list-group list-group-flush" id="boardListUl">
+                    <li class="list-group-item">An item</li>
+                    <li class="list-group-item">A second item</li>
+                    <li class="list-group-item">A third item</li>
+                    <li class="list-group-item">A fourth item</li>
+                    <li class="list-group-item">And a fifth one</li>
+                </ul>
             </div>
         </div>
     </div>
@@ -86,5 +250,37 @@
 </div>
 
 <script src="/js/index.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            url: 'http://localhost:8080/api/board/include',
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+            },
+            success: function (response) {
+                console.log(response);
+                let temp_htmls = '';
+                $('#boardListUl').empty();
+
+                response.forEach((a) => {
+                    let boardName = a['title'];
+
+                    let temp_html = `
+                        <li class="list-group-item">${boardName}</li>
+                    `;
+                    temp_htmls += temp_html;
+                });
+                console.log('forEach문 끝');
+                $('#boardListUl').append(temp_htmls);
+            },
+            error: function () {
+                console.log('AJAX 요청 실패');
+            }
+        });
+    })
+</script>
 </body>
 </html>
