@@ -27,12 +27,17 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
+        String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
-        User user = new User(username, password);
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
+
+        User user = new User(username, nickname, password);
         userRepository.save(user);
     }
 
