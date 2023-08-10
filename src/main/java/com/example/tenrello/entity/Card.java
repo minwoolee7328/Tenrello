@@ -26,13 +26,9 @@ public class Card extends Timestamped {
     private User user;
 
     // 컬럽과 연결
-//    @ManyToOne
-//    @JoinColumn(name = "column_id")
-//    private ColumnEntity column;
-
-    // 임시 컬럼
-    @Column(name = "columnid", nullable = false)
-    private Long columnid;
+    @ManyToOne
+    @JoinColumn(name = "column_id")
+    private ColumnEntity column;
 
     // 카드 제목
     @Column(name = "title", nullable = false)
@@ -58,9 +54,9 @@ public class Card extends Timestamped {
     @Column(name = "result")
     private String result;
 
-    public Card(User user, Long column, String title, int position){
+    public Card(User user, ColumnEntity column, String title, int position){
         this.user = user;
-        this.columnid = column;
+        this.column = column;
         this.title = title;
         this.position = position;
     }
@@ -80,8 +76,8 @@ public class Card extends Timestamped {
     }
 
     @Transactional
-    public void updateColumnId(Long columnid){
-        this.columnid = columnid;
+    public void updateColumnId(ColumnEntity column){
+        this.column = column;
     }
 
     @Transactional

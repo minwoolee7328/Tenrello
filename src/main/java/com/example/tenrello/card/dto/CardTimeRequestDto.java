@@ -7,4 +7,5 @@ import java.time.LocalDateTime;
 public class CardTimeRequestDto {
     private boolean startTime;
     private String endTime;
+
 }

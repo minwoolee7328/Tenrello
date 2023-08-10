@@ -3,11 +3,13 @@ package com.example.tenrello.card.service;
 import com.example.tenrello.card.dto.CardRequestDto;
 import com.example.tenrello.card.dto.CardResponseDto;
 import com.example.tenrello.card.dto.CardTimeRequestDto;
+import com.example.tenrello.card.dto.CardTimeResponseDto;
 import com.example.tenrello.card.repository.CardRepository;
+import com.example.tenrello.column.repository.ColumnRepository;
 import com.example.tenrello.entity.Card;
+import com.example.tenrello.entity.ColumnEntity;
 import com.example.tenrello.entity.User;
 import com.example.tenrello.security.details.UserDetailsImpl;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +24,7 @@ import java.util.Optional;
 public class CardService {
 
     private final CardRepository cardRepository;
-//    private final ColumnEntityRepository columnEntityRepository;
+    private final ColumnRepository columnRepository;
 
     @Transactional
     public CardResponseDto createCard(Long columnId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -35,16 +37,20 @@ public class CardService {
         // 사용자 정보
         User user = userDetails.getUser();
 
+        //컬럼 정보
+
         // position값 생성
         // 각 컬럼에 해당하는 포지션값을 가져야함
         // ex) a 123 , b 123
         // 컬럼 id 필요 / 컬럼의 최종 포지션값 필요
 
         // 컬럼의 최종 포지션값
-        List<Card> cardS = cardRepository.findAllByColumnid(columnId);
+        List<Card> cardS = cardRepository.findAllByColumn_id(columnId);
+
+        Optional<ColumnEntity> column = columnRepository.findById(columnId);
 
         //카드 생성
-        Card card = new Card(user, columnId, title,cardS.size()+1);
+        Card card = new Card(user, column.get(), title,cardS.size()+1);
 
         cardRepository.save(card);
 
@@ -101,7 +107,7 @@ public class CardService {
 
         //카드 삭제전 position 값 변경
         // 해당하는 컬럼
-        List<Card> cardList = cardRepository.findAllByColumnid(card.get().getColumnid());
+        List<Card> cardList = cardRepository.findAllByColumn_id(card.get().getColumn().getId());
 
         for(int i = card.get().getPosition()-1; i<cardList.size(); i++){
             cardList.get(i).updatePosition(cardList.get(i).getPosition()-1);
@@ -124,7 +130,7 @@ public class CardService {
         }
 
         // 도착할 카드의 모든값을 가져옴
-        List<Card> cardList = cardRepository.findAllByColumnid(requestDto.getColumnId());
+        List<Card> cardList = cardRepository.findAllByColumn_id(requestDto.getColumnId());
 
         // 움직일 번호 (어떤 컬럼의 카드인지)
         int ids = card.get().getPosition();
@@ -135,7 +141,7 @@ public class CardService {
 //        System.out.println("requestDtos = " + requestDtos);
 
         // 같은 컬럼내 이동
-        if(card.get().getColumnid().equals(requestDto.getColumnId())){
+        if(card.get().getColumn().getId().equals(requestDto.getColumnId())){
 
             // ex) 2 < 4
             //id 가  requestDto 보다 작을때
@@ -166,12 +172,17 @@ public class CardService {
             // 도착할 컬럼의 id 가 다를경우
 
             // 기존 카드 컬럼 id
-            Long col = card.get().getColumnid();
+            Long col = card.get().getColumn().getId();
             int cardPositionTemp = card.get().getPosition();
 
             // 선택한 컬럼으로 카드 이동 (기존데이터의 컬럼 id 변경)
             // 컴럼 과 병합시 변경 가능성 있음
-            card.get().updateColumnId(requestDto.getColumnId());
+
+            //컬럼아이디
+
+            Optional<ColumnEntity> column = columnRepository.findById(col);
+
+            card.get().updateColumnId(column.get());
             card.get().updatePosition(Math.toIntExact(requestDto.getPosition()));
             cardList.add(card.get());
 
@@ -192,7 +203,7 @@ public class CardService {
             }
 
             // 기존 컬럼에 속하는 카드들
-            List<Card> cards = cardRepository.findAllByColumnid(col);
+            List<Card> cards = cardRepository.findAllByColumn_id(col);
 
             for(Card cardss:cards){
                 System.out.println("cardss = " + cardss.getPosition());
@@ -230,7 +241,7 @@ public class CardService {
 
     // 시간 데이터 저장
     @Transactional
-    public Card createTime(Long id, CardTimeRequestDto timeRequestDto) {
+    public CardTimeResponseDto createTime(Long id, CardTimeRequestDto timeRequestDto) {
 
         // 카드가 존재하는지 확인
         // 선택한 카드
@@ -239,7 +250,7 @@ public class CardService {
         if(!card.isPresent()){
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
-
+        System.out.println("timeRequestDto.getEndTime() = " + timeRequestDto.getEndTime());
         // 시작 날짜 는 생성할때 시간으로 고정 (시작날짜를 선택했는지 여부)
         if(timeRequestDto.isStartTime()){
             // 시작 날짜와 마감날짜의 데이터를 저장
@@ -267,7 +278,7 @@ public class CardService {
                 card.get().updateResult("진행중");
             }
 
-            return card.get();
+            return new CardTimeResponseDto(startLocalTime,endLocalTime);
         }
 
         // 시작날짜가 선택 안되었을때
@@ -292,7 +303,7 @@ public class CardService {
             card.get().updateResult("진행중");
         }
 
-        return card.get();
+        return new CardTimeResponseDto(endLocalTime);
     }
 
 }

@@ -40,12 +40,15 @@ public class testTasklet implements Tasklet {
 
         for(Card card :cardList){
 
-            boolean result = card.getEndTime().isBefore(dateTime);
+            // 마감시간이 있는 카드인지 확인
+            if(card.getEndTime() != null){
 
-            System.out.println("result = " + result);
-            if(result){
-                // 마감시간이 지남
-                card.updateResult("마감");
+                boolean result = card.getEndTime().isBefore(dateTime);
+                if(result){
+                    // 마감시간이 지남
+                    card.updateResult("마감");
+                }
+
             }
 
         }

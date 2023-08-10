@@ -16,6 +16,8 @@ public class CardResponseDto {
     private String title;
     private String content;
     private String username;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
     private List<CardResponseListDto> cardList = new ArrayList<>();
 
     public CardResponseDto(Card card){
@@ -24,6 +26,8 @@ public class CardResponseDto {
         this.title = card.getTitle();
         this.content = card.getContent();
         this.username = card.getUser().getUsername();
+        this.startTime = card.getStartTime();
+        this.endTime = card.getEndTime();
     }
     public CardResponseDto(List<Card> cards){
        setCardList(cards);
