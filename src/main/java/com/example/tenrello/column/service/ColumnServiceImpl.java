@@ -1,13 +1,12 @@
 package com.example.tenrello.column.service;
 
 import com.example.tenrello.board.repository.BoardRepository;
+import com.example.tenrello.board.repository.UserBoardRepository;
 import com.example.tenrello.column.dto.ColumnRequestDto;
 import com.example.tenrello.column.dto.ColumnResponseDto;
 import com.example.tenrello.column.repository.ColumnRepository;
 import com.example.tenrello.common.dto.ApiResponseDto;
-import com.example.tenrello.entity.Board;
-import com.example.tenrello.entity.ColumnEntity;
-import com.example.tenrello.entity.User;
+import com.example.tenrello.entity.*;
 import com.example.tenrello.security.details.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +24,7 @@ public class ColumnServiceImpl implements ColumnService{
 
     private final BoardRepository boardRepository;
     private final ColumnRepository columnRepository;
-
+    private final UserBoardRepository userBoardRepository;
 
     @Override
     @Transactional      //컬럼 생성
@@ -84,10 +83,12 @@ public class ColumnServiceImpl implements ColumnService{
     @Override
     @Transactional//  컬럼 삭제
     public ResponseEntity<ApiResponseDto> deleteColumnName(Long columnId, UserDetailsImpl userDetails) {
-        //유저 권한이 Admin이 아니라면 삭제하지 않기
-
-
         ColumnEntity column = findColumn(columnId);
+
+        UserBoard userBoard = userBoardRepository.findByBoardIdAndUserId(column.getBoard().getId(),userDetails.getUser().getId()).orElse(null);
+        if(!userBoard.getRole().equals(UserRoleEnum.ADMIN)){
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("어드민이 아니어서 삭제할 수 없습니다.", HttpStatus.FORBIDDEN.value()));
+        }
 
         if(column == null) {
             throw new IllegalArgumentException("해당 컬럼이 존재하지 않습니다.");

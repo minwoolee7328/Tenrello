@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardServiceImpl boardService;
@@ -65,7 +65,7 @@ public class BoardController {
     }
 
     /*보드 권한 부여*/
-    @PutMapping("/{boardId}/member/{userId}")
+    @PutMapping("/{boardId}/members/{userId}")
     public ResponseEntity<ApiResponseDto> changeUserRoleInBoard(@PathVariable Long boardId,
                                                                 @PathVariable Long userId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
