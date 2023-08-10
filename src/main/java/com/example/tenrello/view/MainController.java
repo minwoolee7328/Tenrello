@@ -11,8 +11,8 @@ public class MainController {
         return "login";
     }
 
-    @GetMapping("next")
+    @GetMapping("/next")
     public String getNextPage() {
-        return "nextpage";
+        return "index";
     }
 }
