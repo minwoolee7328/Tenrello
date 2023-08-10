@@ -1,13 +1,13 @@
 /* Masthead */
 
 .masthead .btn {
-    background-color: #4c94be;
+    background-color: #fff;
     border-radius: 0.3rem;
     transition: background-color 150ms;
 }
 
 .masthead .btn:hover {
-    background-color: #3385b5;
+    background-color: #5a6670;
 }
 
 .boards-menu {
@@ -120,7 +120,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 10px;
-    background-color: #0067a3;
+    background-color: #333;
     box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
     width: 100%;
     z-index: 100;

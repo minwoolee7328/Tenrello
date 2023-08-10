@@ -62,6 +62,7 @@
                 </div>
             </div>
         </div>
+        <!--  End of offcanvas  -->
     </div>
 
     <div class="logo">
@@ -73,8 +74,8 @@
 
     <div class="user-settings">
 
-        <button class="user-settings-btn btn" aria-label="Create">
-            <i class="fas fa-plus" aria-hidden="true"></i>
+        <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
+            <i class="fas fa-plus" aria-hidden="true">마이</i>
         </button>
 
         <button class="user-settings-btn btn" aria-label="Information">
@@ -137,6 +138,62 @@
             }
         });
     });
+
+    // board 생성
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById('myModal');
+        const createButton = document.getElementById('createBoard');
+        const saveButton = document.getElementById('saveBoard');
+        const closeButton = document.getElementsByClassName('close')[0];
+
+        createButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        saveButton.addEventListener('click', () => {
+            const boardTitle = document.getElementById('boardTitle').value;
+            const boardDescription = document.getElementById('boardDescription').value;
+
+            if (boardTitle) {
+                const boardData = {
+                    title: boardTitle,
+                    description: boardDescription,
+                };
+
+                saveBoardToDatabase(boardData);
+            }
+
+            modal.style.display = 'none';
+        });
+
+        function saveBoardToDatabase(boardData) {
+            fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(boardData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Created board:', data);
+                    // Perform any further actions based on the response
+                })
+                .catch(error => {
+                    console.error('Error creating board:', error);
+                });
+        }
+    });
+
+    // 마이페이지 이동
+    const mypageBtn = document.getElementById("move-mypage");
+    mypageBtn.addEventListener("click", function () {
+        window.location.href = "/view/mypage";
+    })
 
     // board 생성
     document.addEventListener("DOMContentLoaded", function () {
