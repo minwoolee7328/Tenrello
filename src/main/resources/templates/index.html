@@ -162,7 +162,11 @@
 
                     let temp_html = `
                         <div class="list" id="${columnId}" draggable="true">
-                            <div class="list-header">${columnTitle}</div>
+                            <div class="list-header">${columnTitle}
+                                   <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
+                                   <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
+                            </div>
+
                             <div class="card" draggable="true">Card 1</div>
                             <div class="card" draggable="true">Card 2</div>
                         </div>

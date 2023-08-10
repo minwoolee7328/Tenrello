@@ -5,34 +5,9 @@ const jwtToken = getJwtFromCookie();
 $(document).ready(function () {
     console.log("(document).ready");
 
-    getColumns(1);//임시 나중에 board연결시 클릭시 API로 boarId값 받아서 넣어주기
 })
 
-function getColumns(boardId){
-    $.ajax({
-        url: `/api/boards/${boardId}/columns`,
-        method: 'GET',
-        headers: {
-            "Authorization": jwtToken,
-        },
-        contentType: 'application/json',
-        success: function (response) {
-            $('.list-container').empty();
-            console.log(response)
-            response.forEach(function (column) {
-                var temp_html = `<div class="list" id="columnList" draggable="true">
-                                <div class="list-header">${column.title}
-                                    <button onclick="DeleteColumnBtn(${column.id})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
-                                    <button onclick="modifyColumnBtn(${column.id})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
-                                </div>
-<!--                                이쪽에 card들이 들어가면 됩니다.-->
-                                
-                                </div>`
-                $('.list-container').append(temp_html);
-            })
-        }
-    })
-}
+
 function DeleteColumnBtn(id){
     $.ajax({
         url: `/api/columns/${id}`, // 요청을 보낼 서버의 URL
