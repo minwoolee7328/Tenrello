@@ -1,32 +1,52 @@
 package com.example.tenrello.entity;
 
+import com.example.tenrello.board.dto.BoardRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
 @NoArgsConstructor
+@Getter
 @Table(name = "board")
 public class Board extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @Column
     private String description;
 
-    @ManyToOne
+    @Column
+    private String color;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
-    public Board(String title, String description) {
-        this.title = title;
-        this. description = description;
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<UserBoard> userBoardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.REMOVE)
+    private List<ColumnEntity> columnEntityList = new ArrayList<>();
+
+    public Board(BoardRequestDto requestDto, User user) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
+        this.user = user;
+    }
+
+    public void updateBoard(BoardRequestDto requestDto) {
+        this.title = requestDto.getTitle();
+        this.description = requestDto.getDescription();
+        this.color = requestDto.getColor();
     }
 }

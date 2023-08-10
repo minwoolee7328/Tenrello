@@ -22,40 +22,36 @@ repositories {
 }
 
 dependencies {
-
-    // Security
+    /* Spring Security */
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    // JPA 설정
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    // JWT
+    /* Jwt */
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-    // Validation
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
-
-    // MySQL
-    implementation 'mysql:mysql-connector-java:8.0.28'
-
     //Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 
-    // Batch
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
+    // Validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
-    // redis lettuce
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // JPA
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    /* mysql */
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    //thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // redis lettuce
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }
 
 tasks.named('test') {
