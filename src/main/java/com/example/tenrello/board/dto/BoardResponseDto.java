@@ -1,13 +1,9 @@
 package com.example.tenrello.board.dto;
 
-import com.example.tenrello.column.dto.ColumnResponseDto;
 import com.example.tenrello.entity.Board;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 @Getter
 public class BoardResponseDto {

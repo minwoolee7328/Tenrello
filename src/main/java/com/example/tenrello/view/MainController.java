@@ -17,4 +17,9 @@ public class MainController {
     public String getNextPage() {
         return "index";
     }
+
+    @GetMapping("/index")
+    public String getIndexPage() {
+        return "index";
+    }
 }
