@@ -19,6 +19,9 @@
 </head>
 <body>
 <!-- Masthead -->
+
+
+
 <header class="masthead">
 
     <div class="boards-menu">
@@ -113,12 +116,21 @@
     </div>
 </div>
 
+
+
+<div id="registerNicknameModal">
+    <h3 id="nicknameModalTitle">타이틀 이름</h3>
+    <input type="text" id="nicknameInput" placeholder="타이틀">
+    <button onclick="addColumn()">등록</button>
+    <button id="closeNicknameModal">닫기</button>
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
+</div>
 </body>
 <script>
-
+    function addColumn(){
+        console.log("등록기능");
+    }
     // board 삭제
     $(document).on('click', '.board-delete-button', function () {
         $.ajax({
