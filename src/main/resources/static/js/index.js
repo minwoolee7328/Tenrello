@@ -177,6 +177,7 @@ function showSelectedBoard(boardId) {
             response.forEach((a) => {
                 let columnId = a['id'];
                 let columnTitle = a['title'];
+                let cardTitles = a['cardList'];
 
                 columnSettingArr[i] = columnId;
                 i+=1;
@@ -187,11 +188,25 @@ function showSelectedBoard(boardId) {
                                    <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
                                    <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
                             </div>
-<!--                            카드-->
-                        </div>
                     `;
 
-                temp_htmls += temp_html;
+                cardTitles.forEach((a)=>{
+                    let card_html =`<div id=${a['id']}" class="card" draggable="true" onclick="model(${a['id']})">${a['title']}</div>`;
+
+                    temp_html+=card_html;
+                })
+
+                temp_htmls += temp_html +`
+                                             <div id="cardInsertDiv-${columnId}" class="insertDid" style="display: none">
+                                             <input id="cardInsert-${columnId}"  type="text"/>
+                                             <button id="insert" onclick="insertData(${columnId},${a['id']})">확인</button>
+                                             <button id="cancle" onclick="cancleBtn(${columnId})">취소</button>
+                                             </div>
+
+                                             <button id="createBtn-${columnId}" class="createBtn" onclick="createBtn(${columnId})">카드 추가하기</button>
+
+                                       </div>`;
+
             });
             console.log('forEach문 끝');
             $('#listContainer').append(temp_htmls);
@@ -310,7 +325,7 @@ function insertData(id, cardid){
         },
         success: function (response) {
             // 저장된 테이터 넣기
-            $(`<div id="card-${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+            $(`<div id="${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
 
             // 추가버튼 / insert버튼 제어
             $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
