@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name="columns")
 @Getter
 @Setter
-public class ColumnEntity extends Timestamped {
+public class    ColumnEntity extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;        //id

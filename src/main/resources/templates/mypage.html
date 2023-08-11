@@ -1,9 +1,20 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/mypage.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <!-- js Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>나의 멋진 페이지</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -108,7 +119,7 @@
             background-color: #555;
         }
 
-        #registerPasswordModal, #registerNicknameModal {
+        #registerPasswordModal, #registerNicknameModal, #registerDeleteUserModal {
             display: none;
             position: fixed;
             z-index: 1000;
@@ -122,7 +133,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
 
-        #passwordModalOverlay, #nicknameModalOverlay{
+        #passwordModalOverlay, #nicknameModalOverlay, #deleteUserModalOverlay {
             display: none;
             position: fixed;
             top: 0;
@@ -133,7 +144,7 @@
             z-index: 900;
         }
 
-        #nicknameModalTitle {
+        #nicknameModalTitle, #passwordModalTitle, #deleteUserModalTitle {
             margin-bottom: 10px;
         }
 
@@ -159,9 +170,6 @@
             margin-top: 20px;
         }
 
-        #passwordModalTitle {
-            margin-bottom: 10px;
-        }
     </style>
 </head>
 <body>
@@ -173,8 +181,8 @@
     <div class="profile-picture">
         <img src="프로필사진.jpg" alt="프로필 사진">
     </div>
-    <h2>환영합니다, <span id="username" th:text="${profile.username}">${profile.username}</span>님!</h2>
-    <p>안녕하세요! 이곳은 나만의 멋진 페이지입니다. 여기에서 정보를 공유하거나 소개할 수 있어요.</p>
+    <h2><span id="nickname" th:text="${profile.nickname}">${profile.nickname}</span>의 페이지</h2>
+    <p><span id="username" th:text="${profile.username}">${profile.username}</span></p>
     <p>즐거운 시간 되세요!</p>
     <button id="changeNickname">닉네임 변경</button>
     <button id="changePassword">비밀번호 변경</button>
@@ -183,6 +191,7 @@
 <button id="backToTop" onclick="scrollToTop()">위로</button>
 <footer>
     <p>Tenrello</p>
+    <button id="deleteUserBtn">회원 탈퇴</button>
 </footer>
 
 <!-- 닉네임 변경하기 모달 -->
@@ -192,6 +201,7 @@
     <div class="modal-content">
         <input type="text" id="nicknameInput" placeholder="새로운 닉네임">
         <div class="modal-buttons">
+            <button id="submitNicknameModal">변경</button>
             <button id="closeNicknameModal">닫기</button>
         </div>
     </div>
@@ -211,53 +221,21 @@
     </div>
 </div>
 
-<script>
-    // 스크립트 코드는 여기에 추가하세요
-    function goBack() {
-        window.history.back();
-    }
+<!-- 회원 탈퇴하기 모달 -->
+<div id="deleteUserModalOverlay"></div>
+<div id="registerDeleteUserModal">
+    <h3 id="deleteUserModalTitle">회원 탈퇴하기</h3>
+    <div class="modal-content">
+        <input type="text" id="deleteUserInput" placeholder="비밀번호 입력">
+        <div class="modal-buttons">
+            <button id="submitDeleteUserModal">탈퇴</button>
+            <button id="closeDeleteUserModal">닫기</button>
+        </div>
+    </div>
+</div>
 
-    function scrollToTop() {
-        window.scrollTo({top: 0, behavior: 'smooth'});
-    }
+<!-- static js -->
+<script src="/js/mypage.js"></script>
 
-    window.onscroll = function () {
-        if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
-            document.getElementById('backToTop').style.display = 'block';
-        } else {
-            document.getElementById('backToTop').style.display = 'none';
-        }
-    };
-
-    // 닉네임 변경하기 모달
-    const changeNicknameButton = document.getElementById('changeNickname');
-    const closeNicknameModalButton = document.getElementById('closeNicknameModal');
-    const registerNicknameModal = document.getElementById('registerNicknameModal');
-    const nicknameModalOverlay = document.getElementById('nicknameModalOverlay');
-
-    changeNicknameButton.addEventListener('click', function () {
-        registerNicknameModal.style.display = 'block';
-        nicknameModalOverlay.style.display = 'block';
-    });
-    closeNicknameModalButton.addEventListener('click', function () {
-        registerNicknameModal.style.display = 'none';
-        nicknameModalOverlay.style.display = 'none';
-    });
-
-    // 비밀번호 변경하기 모달
-    const changePasswordButton = document.getElementById('changePassword');
-    const closePasswordModalButton = document.getElementById('closePasswordModal');
-    const registerPasswordModal = document.getElementById('registerPasswordModal');
-    const passwordModalOverlay = document.getElementById('passwordModalOverlay');
-
-    changePasswordButton.addEventListener('click', function () {
-        registerPasswordModal.style.display = 'block';
-        passwordModalOverlay.style.display = 'block';
-    });
-    closePasswordModalButton.addEventListener('click', function () {
-        registerPasswordModal.style.display = 'none';
-        passwordModalOverlay.style.display = 'none';
-    });
-</script>
 </body>
 </html>

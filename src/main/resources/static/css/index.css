@@ -102,6 +102,45 @@ body {
     border: 2px dashed #666;
 }
 
+ #registerNicknameModal {
+     display: none;
+     position: fixed;
+     z-index: 1000;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     width: 300px;
+     padding: 20px;
+     background-color: #fff;
+     border-radius: 5px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+ }
+ #columnModify{
+     display: none;
+     position: fixed;
+     z-index: 1000;
+     left: 50%;
+     top: 50%;
+     transform: translate(-50%, -50%);
+     width: 300px;
+     padding: 20px;
+     background-color: #fff;
+     border-radius: 5px;
+     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+ }
+#modalOverlay, #nicknameModalOverlay{
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+#nicknameModalTitle {
+    margin-bottom: 10px;
+}
 /* ---------------------------------- */
 #addList {
     margin-top: 10px;
@@ -279,4 +318,11 @@ input[type="text"] {
 }
 #passwordModalTitle {
     margin-bottom: 10px;
+}
+
+/* 보드 삭제 버튼 */
+#deleteThisBoard {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
 }
