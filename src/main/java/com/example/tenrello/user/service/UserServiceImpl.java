@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
         // 비밀번호 확인
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException("현재 비밀번호를 다시 확인하세요.");
         }
 
         if (passwordEncoder.matches(newPassword, user.getPassword())) {

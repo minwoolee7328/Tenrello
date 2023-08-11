@@ -29,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
         String username = requestDto.getUsername();
         String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
+
         if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
@@ -47,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         String password = requestDto.getPassword();
 
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new IllegalArgumentException("존재하지 않는 사용자 아이디입니다.")
         );
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
