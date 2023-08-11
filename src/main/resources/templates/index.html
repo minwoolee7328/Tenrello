@@ -46,11 +46,11 @@
             </div>
 
             <!-- 보드 변경 모달 -->
-            <div id="boardModalOverlay"></div>
-            <div id="registerBoardModal">
+            <div id="createBoardModalOverlay"></div>
+            <div id="registerCreateBoardModal">
                 <div class="modal-content">
-                    <input type="text" id="boardTitle" placeholder="title">
-                    <input type="text" id="boardDescription" placeholder="description">
+                    <input type="text" id="createBoardTitle" placeholder="title">
+                    <input type="text" id="createBoardDescription" placeholder="description">
                     <input type="hidden" id="boardNo">
                     <div class="modal-buttons">
                         <button id="saveBoard">저장</button>
@@ -60,25 +60,6 @@
             </div>
             <!-- 모달을 호출하는 버튼 -->
             <button id="createBoard">보드생성</button>
-
-
-            <button id="updateBoard">보드수정</button>
-            <div id="editBoardModalOverlay"></div>
-            <div id="registerEditBoardModal">
-                <div class="modal-content">
-                    <input type="text" id="title" th:text="${board.title}" placeholder="title">
-                    <input type="text" id="description" th:text="${board.description}" placeholder="description">
-                    <div class="modal-buttons">
-                        <button id="editBoard" onclick="update()">수정</button>
-                        <button id="close-edit">닫기</button>
-                    </div>
-                </div>
-            </div>
-
-            <button id="deleteBoard">보드삭제</button>
-            <button id="accessBoard">권한부여</button>
-            <button id="inviteBoardToUser">유저초대</button>
-
         </div>
     </div>
 
@@ -136,27 +117,8 @@
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-</body>
-<script>
 
-    // board 삭제
-    // $(document).on('click', '.board-delete-button', function () {
-    //     $.ajax({
-    //         url: `/api/boards/${boardId}`,
-    //         type: 'DELETE',
-    //         headers: {
-    //             'Authorization': document.cookie
-    //         },
-    //         success: function (response) {
-    //             if (response.statusCode == 200) {
-    //                 alert('보드 삭제 성공');
-    //             }
-    //         },
-    //         error: function () {
-    //             alert('삭제 권한이 없습니다.');
-    //         }
-    //     });
-    // });
+<script>
 
     // 마이페이지 이동
     const mypageBtn = document.getElementById("move-mypage");
@@ -165,21 +127,24 @@
     })
 
     const createBoardButton = document.getElementById('createBoard');
-    const boardModalOverlay = document.getElementById('boardModalOverlay');
+    const editBoardModalOverlay = document.getElementById('editBoardModalOverlay');
     const registerBoardModal = document.getElementById('registerBoardModal');
-    const boardTitleInput = document.getElementById('boardTitle');
+    const registerEditBoardModal = document.getElementById('registerEditBoardModal');
+    const boardTitleInput = document.getElementById('createBoardTitle');
     const boardDescriptionInput = document.getElementById('boardDescription');
     const saveBoardButton = document.getElementById('saveBoard');
     const closeButton = document.getElementById('close');
 
     createBoardButton.addEventListener('click', () => {
-        boardModalOverlay.style.display = 'block';
         registerBoardModal.style.display = 'block';
+        registerEditBoardModal.style.display = 'block';
+        editBoardModalOverlay.style.display = 'block';
     });
 
     closeButton.addEventListener('click', () => {
-        boardModalOverlay.style.display = 'none';
         registerBoardModal.style.display = 'none';
+        registerEditBoardModal.style.display = 'none';
+        editBoardModalOverlay.style.display = 'none';
     });
 
     // 보드 생성
@@ -208,33 +173,6 @@
                 console.error('Error:', error);
             });
     });
-
-    // 보드 수정
-    // function update(boardNo) {
-    //     var title = $('#title').val();
-    //     var description = $('#description').val();
-    //
-    //     console.log(title,description);
-    //
-    //     $.ajax({
-    //         type : "PUT",
-    //         url: `/api/boards/{boardNo}`,
-    //         contentType: "application/json",
-    //         data: JSON.stringify({title: title, description: description}),
-    //         success: function (response, status, xhr) {
-    //             Swal.fire({
-    //                 icon: 'success',
-    //                 title: '수정 완료!'
-    //             })
-    //         },
-    //         error: function (xhr, status, error) {
-    //             Swal.fire({
-    //                 icon: 'error',
-    //                 title: '수정 실패 !'
-    //             })
-    //         }
-    //     });
-    // }
 
     $(document).ready(function () {
 
