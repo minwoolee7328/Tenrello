@@ -13,6 +13,7 @@ import java.util.List;
 @Setter
 public class CardResponseDto {
     private Long id;
+    private Long columnId;
     private LocalDateTime createAt;
     private String title;
     private String content;
@@ -23,6 +24,7 @@ public class CardResponseDto {
 
     public CardResponseDto(Card card){
         this.id = card.getId();
+        this.columnId = card.getColumn().getId();
         this.createAt = card.getCreatedAt();
         this.title = card.getTitle();
         this.content = card.getContent();

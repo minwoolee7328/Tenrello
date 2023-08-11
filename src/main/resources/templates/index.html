@@ -236,6 +236,7 @@
                 response.forEach((a) => {
                     let columnId = a['id'];
                     let columnTitle = a['title'];
+                    let cardTitles = a['cardList']; // 카드가 담겨있는 배열
 
 
                     let temp_html = `
@@ -244,13 +245,24 @@
                                    <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
                                    <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
                             </div>
-
-                            <div class="card" draggable="true">Card 1</div>
-                            <div class="card" draggable="true">Card 2</div>
-                        </div>
                     `;
 
-                    temp_htmls += temp_html;
+                    cardTitles.forEach((a)=>{
+                        let card_html =`<div class="card" draggable="true">${a['title']}</div>`;
+
+                        temp_html+=card_html;
+                    })
+
+                    temp_htmls += temp_html +`
+                                             <div id="cardInsertDiv-${columnId}" style="display: none">
+                                             <input id="cardInsert"  type="text"/>
+                                             <button id="insert" onclick="insertData()">확인</button>
+                                             <button id="cancle" onclick="cancle">취소</button>
+                                             </div>
+
+                                             <button id="createBtn-${columnId}" onclick="createBtn(${columnId})">카드 추가하기</button>
+
+                                       </div>`;
                 });
                 console.log('forEach문 끝');
                 $('#listContainer').append(temp_htmls);

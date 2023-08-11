@@ -178,3 +178,18 @@ function logout() {
     Cookies.remove('Authorization', {path: '/'});
     window.location.href = "/view/main";
 }
+
+//카드추가 test
+function createBtn(id){
+    //추가하기 버튼 해당 컬럼 id 불러오기
+    console.log("id",id);
+
+    // 카드 부분에 insert 창 만들기
+
+    // 카드 추가하기 버튼 숨기기
+    $(`#createBtn-${id}`).hide();
+
+    //insert 창 만들기 show (컬럼에 해당하는)
+    $(`#cardInsertDiv-${id}`).show();
+
+}
