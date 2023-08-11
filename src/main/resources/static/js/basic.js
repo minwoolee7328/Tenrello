@@ -29,9 +29,9 @@ function submitLogin() {
             alert(xhr.msg);                 // ResponseEntity<ApiResponseDto> 의 메세지
             window.location.href = "/view/next";
         },
-        error: function () {
-            console.log('실패');
-            alert('로그인 실패');
+        error: function (response) {
+            console.log('로그인 실패');
+            alert(response.responseJSON.msg);
         }
     })
 }
@@ -70,8 +70,10 @@ function submitSignup() {
             alert(xhr.msg);                 // ResponseEntity<ApiResponseDto> 의 메세지
             location.reload();
         },
-        error: function () {
+        error: function (response) {
+            console.log(response.responseJSON.msg);     // exception message
             console.log('회원가입 실패');
+            alert(response.responseJSON.msg);
         }
     })
 }

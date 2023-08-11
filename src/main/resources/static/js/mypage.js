@@ -22,8 +22,9 @@ function changeNickname() {
                 '\n' + '새로운 닉네임 : ' + xhr.nicknameAfter);                 // ResponseEntity<ApiResponseDto> 의 메세지
             location.reload();
         },
-        error: function () {
+        error: function (response) {
             console.log('닉네임 변경 실패');
+            console.log(response.responseJSON.msg);
         }
     })
 }
@@ -46,6 +47,7 @@ function changePassword() {
         newPassword:newPasswordInput
     };
 
+    // 비밀번호 변경 ajax 요청
     $.ajax({
         type: "PUT",
         url: `/api/users/password`,
@@ -55,6 +57,7 @@ function changePassword() {
             console.log(xhr);
             alert(xhr.msg + '\n 다시 로그인 하세요.');
 
+            // 변경 성공 > 로그아웃 ajax 요청
             $.ajax({
                 type: "POST",
                 url: `/api/logout`,
@@ -64,15 +67,16 @@ function changePassword() {
                     Cookies.remove('Authorization', {path: '/'});
                     window.location.href = "/view/main";
                 },
-                error: function() {
+                error: function(response) {
                     console.log('변경 후 로그아웃 실패');
+                    console.log(response.responseJSON.msg);
                     location.reload();
                 }
             })
         },
-        error: function (xhr) {
-            console.log(xhr.msg);
-            alert(xhr.msg);
+        error: function (response) {
+            console.log(response.responseJSON.msg);
+            alert(response.responseJSON.msg);
         }
     })
 }
