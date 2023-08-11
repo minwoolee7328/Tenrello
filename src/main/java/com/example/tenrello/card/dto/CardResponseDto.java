@@ -1,6 +1,7 @@
 package com.example.tenrello.card.dto;
 
 import com.example.tenrello.entity.Card;
+import com.example.tenrello.entity.Comment;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,7 +19,7 @@ public class CardResponseDto {
     private String username;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private List<CardResponseListDto> cardList = new ArrayList<>();
+    private List<CardCommentResponseDto> commetList = new ArrayList<>();
 
     public CardResponseDto(Card card){
         this.id = card.getId();
@@ -28,14 +29,24 @@ public class CardResponseDto {
         this.username = card.getUser().getUsername();
         this.startTime = card.getStartTime();
         this.endTime = card.getEndTime();
-    }
-    public CardResponseDto(List<Card> cards){
-       setCardList(cards);
+
     }
 
-    public void setCardList(List<Card> cards){
-        for (Card card :cards){
-            cardList.add(new CardResponseListDto(card));
+    public CardResponseDto(Card card, List<Comment> commentList){
+        this.id = card.getId();
+        this.createAt = card.getCreatedAt();
+        this.title = card.getTitle();
+        this.content = card.getContent();
+        this.username = card.getUser().getUsername();
+        this.startTime = card.getStartTime();
+        this.endTime = card.getEndTime();
+        setCommentList(commentList);
+    }
+
+
+    public void setCommentList(List<Comment> commentList){
+        for(Comment comment:commentList){
+            this.commetList.add(new CardCommentResponseDto(comment));
         }
     }
 }

@@ -1,15 +1,14 @@
 package com.example.tenrello.card.service;
 
-import com.example.tenrello.card.dto.CardRequestDto;
-import com.example.tenrello.card.dto.CardResponseDto;
-import com.example.tenrello.card.dto.CardTimeRequestDto;
-import com.example.tenrello.card.dto.CardTimeResponseDto;
+import com.example.tenrello.board.repository.UserBoardRepository;
+import com.example.tenrello.card.comment.repository.CommentRepository;
+import com.example.tenrello.card.dto.*;
 import com.example.tenrello.card.repository.CardRepository;
+import com.example.tenrello.card.repository.UserCardRepository;
 import com.example.tenrello.column.repository.ColumnRepository;
-import com.example.tenrello.entity.Card;
-import com.example.tenrello.entity.ColumnEntity;
-import com.example.tenrello.entity.User;
+import com.example.tenrello.entity.*;
 import com.example.tenrello.security.details.UserDetailsImpl;
+import com.example.tenrello.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +24,10 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final ColumnRepository columnRepository;
+    private final UserBoardRepository userBoardRepository;
+    private final UserRepository userRepository;
+    private final UserCardRepository userCardRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public CardResponseDto createCard(Long columnId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
@@ -120,7 +123,7 @@ public class CardService {
     // 카드 컬럼내 변경
     // 변경될 컬럼명 추가
     @Transactional
-    public CardResponseDto chId(Long id, CardRequestDto requestDto) {
+    public CardListCangeResponseDto chId(Long id, CardRequestDto requestDto) {
         // 카드가 존재하는지 확인
         // 선택한 카드
         Optional<Card> card = cardRepository.findById(id);
@@ -165,7 +168,7 @@ public class CardService {
                 }
             }
 
-            return new CardResponseDto(cardList);
+            return new CardListCangeResponseDto(cardList);
         }else{
 
             // 현재 id 의 값의 컬럼과
@@ -176,11 +179,14 @@ public class CardService {
             int cardPositionTemp = card.get().getPosition();
 
             // 선택한 컬럼으로 카드 이동 (기존데이터의 컬럼 id 변경)
-            // 컴럼 과 병합시 변경 가능성 있음
 
-            //컬럼아이디
+            // 변경될 컬럼아이디 (변결할 컬럼이 없으면 오류)
+            Optional<ColumnEntity> column = columnRepository.findById(requestDto.getColumnId());
 
-            Optional<ColumnEntity> column = columnRepository.findById(col);
+            if(!column.isPresent()){
+                //변결할 컬럼이 없으면
+                throw new IllegalArgumentException("해당 컬럼이 없습니다.");
+            }
 
             card.get().updateColumnId(column.get());
             card.get().updatePosition(Math.toIntExact(requestDto.getPosition()));
@@ -191,7 +197,7 @@ public class CardService {
 
             // 선택한 컬럼 정렬
             for(int i = cardList.size()-1; i>=requestDto.getPosition(); i--){
-                System.out.println("\"동작\" = " + "동작");
+
                 titleTemp = cardList.get(i).getTitle();
                 positionTemp = cardList.get(i).getPosition();
 
@@ -205,10 +211,6 @@ public class CardService {
             // 기존 컬럼에 속하는 카드들
             List<Card> cards = cardRepository.findAllByColumn_id(col);
 
-            for(Card cardss:cards){
-                System.out.println("cardss = " + cardss.getPosition());
-            }
-
             // 기존 컬럼 데이터 정렬
             // ex> 0 <= 1
 
@@ -216,7 +218,7 @@ public class CardService {
                     cards.get(i).updatePosition(cards.get(i).getPosition()-1);
             }
 
-            return new CardResponseDto(cardList);
+            return new CardListCangeResponseDto(cardList);
         }
 
     }
@@ -236,7 +238,10 @@ public class CardService {
         // 시작데이터가 없을시 마감시간만 표시
         // 프론트에서 해결
 
-        return new CardResponseDto(card.get());
+        // 해당 카드에 달린 댓글 같이출력
+        List<Comment> commentList = commentRepository.findAllByCardId(card.get().getId());
+
+        return new CardResponseDto(card.get(),commentList);
     }
 
     // 시간 데이터 저장
@@ -306,4 +311,63 @@ public class CardService {
         return new CardTimeResponseDto(endLocalTime);
     }
 
+    // 보드에 속한 유저들 불러오기
+    public BordUsersResponseDto Users(Long id) {
+        // 카드가 존재하는지 확인
+        // 선택한 카드
+        Optional<Card> card = cardRepository.findById(id);
+
+        // 카드에 유저 할당
+        // 보드에 초대된 유저가 있어야함
+        // 보드 id 에 해당하는 유저들을 뽑아서
+        Long boardId = card.get().getColumn().getBoard().getId();
+
+        List<UserBoard> userList = userBoardRepository.findByBoardId(boardId);
+
+
+        return new BordUsersResponseDto(userList);
+    }
+
+    // 유저 작업 할당
+    public void allotUser(Long id, Long userid) {
+
+        Optional<UserCard> checkUserCard = userCardRepository.findByCardIdAndUserId(id,userid);
+
+
+        if(checkUserCard.isPresent()){
+            //유저 정보가 있다면
+            throw new IllegalArgumentException("사용자가 이미 할당되어 있습니다.");
+        }
+
+        // 유저 정보가 없다면 생성
+
+        // user_card 생성
+        Optional<Card> card = cardRepository.findById(id);
+        Optional<User> user = userRepository.findById(userid);
+
+        UserCard userCard = new UserCard(user.get(),card.get());
+
+        userCardRepository.save(userCard);
+    }
+
+    // 카드 작업자 변경
+    public void updateUser(Long id, Long userid) {
+
+        Optional<UserCard> checkUserCard = userCardRepository.findByCardIdAndUserId(id,userid);
+
+        if(!checkUserCard.isPresent()){
+            //유저 정보가 없다면
+            throw new IllegalArgumentException("사용자가 할당되어있지 않습니다.");
+        }
+
+        //유저 정보가 있다면 사용자를 userCard 테이블에서 삭제
+
+        Optional<Card> card = cardRepository.findById(id);
+        Optional<User> user = userRepository.findById(userid);
+
+        UserCard userCard = new UserCard(user.get(),card.get());
+
+        userCardRepository.delete(userCard);
+
+    }
 }
