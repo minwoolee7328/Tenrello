@@ -134,3 +134,14 @@ function logout() {
     Cookies.remove('Authorization', {path: '/'});
     window.location.href = "/view/main";
 }
+
+function openModal(modalId) {
+    var modal = document.getElementById(modalId);
+    modal.style.display = "block";
+}
+
+// 모달 닫기 함수
+function closeModal(modalId) {
+    var modal = document.getElementById(modalId);
+    modal.style.display = "none";
+}
