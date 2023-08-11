@@ -101,7 +101,7 @@
     </div>
 
     <div>
-        <button id="deleteThisBoard" data-board-id="">보드 삭제</button>
+        <button id="deleteThisBoard" data-board-id="" data-board-name="">보드 삭제</button>
     </div>
 </div>
 
@@ -262,7 +262,7 @@
         })
     }
     // board 삭제
-    $(document).on('click', '.board-delete-button', function () {
+    /*$(document).on('click', '.board-delete-button', function () {
         $.ajax({
             url: `http://localhost:8080/api/boards/${boardId}`,
             type: 'DELETE',
@@ -278,7 +278,7 @@
                 alert('삭제 권한이 없습니다.');
             }
         });
-    });//보드 삭제
+    });//보드 삭제*/
 
     // 로그아웃
     const logoutBtn = document.getElementById("logout");
@@ -382,7 +382,6 @@
         }
     }
 
-
     const modalBoard = document.querySelector(".modal-board");
 
     // 보드 리스트에서 보드 선택
@@ -395,6 +394,7 @@
         console.log('Clicked Board Name:', clickedBoardName);
 
         $('#deleteThisBoard').attr('data-board-id', clickedBoardId);
+        $('#deleteThisBoard').attr('data-board-name', clickedBoardName);
 
         $.ajax({
             url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/columns',
@@ -502,13 +502,8 @@
         modalBoard.style.display = "block";
     })
 
-    // 보드 삭제 버튼 눌렀을 때 해당 보드 id 콘솔에 출력
-    $(document).on("click", "#deleteThisBoard", function () {
-        var boardIdToDelete = $(this).attr('data-board-id');
-
-        console.log(boardIdToDelete);
-
-    });
+    // 현재 보이는 보드 삭제
+    $(document).on("click", "#deleteThisBoard", deleteThisBoard);
 
 </script>
 </html>

@@ -134,3 +134,32 @@ function logout() {
     Cookies.remove('Authorization', {path: '/'});
     window.location.href = "/view/main";
 }
+
+// 보드 삭제 함수
+function deleteThisBoard() {
+    // 지금 보이는 보드의 id, title
+    var boardIdToDelete = $(this).attr('data-board-id');
+    var boardNameToDelete = $(this).attr('data-board-name');
+
+    console.log(boardIdToDelete);
+
+    // alert 창으로 한 번 더 확인 후
+    if (confirm("정말 " + boardNameToDelete + "을(를) 삭제하시겠습니까?")) {
+        // 삭제 요청
+        $.ajax({
+            type: "DELETE",
+            url: `/api/boards/` + boardIdToDelete,
+            contentType: "application/json",
+            success: function (xhr) {
+                console.log(xhr.msg);                   // 삭제되었습니다.
+                alert(xhr.msg);                   // 삭제되었습니다.
+                location.reload();
+            },
+            error: function (response) {
+                console.log('보드 삭제 실패');
+                console.log(response.responseJSON.msg);
+                alert(response.responseJSON.msg);       // 관리자만 ~ 있습니다.
+            }
+        })
+    }
+}
