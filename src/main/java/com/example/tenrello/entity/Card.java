@@ -8,6 +8,8 @@ import org.hibernate.annotations.GenerationTime;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -53,6 +55,12 @@ public class Card extends Timestamped {
     // 일정 결과
     @Column(name = "result")
     private String result;
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
+    private List<UserCard> UserCardList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "card", cascade = CascadeType.REMOVE)
+    private List<Comment> cardCommentList = new ArrayList<>();
 
     public Card(User user, ColumnEntity column, String title, int position){
         this.user = user;
