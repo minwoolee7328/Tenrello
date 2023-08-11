@@ -135,10 +135,13 @@ function logout() {
     window.location.href = "/view/main";
 }
 
-//카드추가 test
+//카드추가 버튼
 function createBtn(id){
     //추가하기 버튼 해당 컬럼 id 불러오기
     console.log("id",id);
+
+    $(`#listContainer`).find($(`div[class^='insertDid']`)).hide();
+    $(`#listContainer`).find($(`button[class^='createBtn']`)).show();
 
     // 카드 부분에 insert 창 만들기
 
@@ -149,3 +152,77 @@ function createBtn(id){
     $(`#cardInsertDiv-${id}`).show();
 
 }
+
+
+
+// 카드추가 취소
+function cancleBtn(id){
+    // 카드 추가하기 버튼 나타내기
+    $(`#createBtn-${id}`).show();
+
+    //컬럼에 해당하는 insert창 숨기기
+    $(`#cardInsertDiv-${id}`).hide();
+}
+
+// 카드추가 기능
+function insertData(id, cardid){
+
+    $.ajax({
+        url: `/api/card/columns/${id}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({title: $(`#cardInsert-${id}`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 저장된 테이터 넣기
+            $(`<div id="card-${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+
+            // 추가버튼 / insert버튼 제어
+            $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
+            $(`#column-${id}`).find($(`button[id^='createBtn-${id}']`)).show();
+
+        },
+        error: function () {
+
+            console.log('카드생성 실패');
+            toggleElements(false);
+        }
+    });
+}
+
+// 카드 모달창 띄우기
+
+$("#cardName")
+
+
+function model(id){
+    $(".cardModal").fadeIn();
+
+    $("#cardName").text("카드이름");
+    // 카드 데이터 불러오기
+
+    $.ajax({
+        url: `/api/cards/${id}`,
+        type: 'GET',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            $("#cardName").text(response.title);
+
+        },
+        error: function () {
+            alert('카드데이터 불러오기 실패');
+            toggleElements(false);
+        }
+    });
+
+}
+
+function cardClose(){
+    $(".cardModal").fadeOut();
+}
+

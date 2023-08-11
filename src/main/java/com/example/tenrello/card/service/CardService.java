@@ -33,7 +33,7 @@ public class CardService {
     public CardResponseDto createCard(Long columnId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
         // 해당 컬럼 조회 (해당컬림이 존재하는지 확인 밑 조히)
 //        ColumnEntity column = ColumnEntityRepository.findById(id);
-
+        System.out.println("\"카드생성\" = " + "카드생성");
         // 사용자 입력값
         String title = requestDto.getTitle();
 
