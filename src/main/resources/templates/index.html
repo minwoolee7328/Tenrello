@@ -197,7 +197,7 @@
             data: JSON.stringify(data),
             success: function (response) {
                 const container = document.getElementById('listContainer');
-                const newList = document.createElement('div');
+                const newList = document.querySelectorAll('.list');
                 newList.className = 'list';
                 newList.draggable = true;
                 newList.innerHTML = `
@@ -207,6 +207,7 @@
                             </div>
 <!--                카드추가-->
                 `;
+                // const lists = document.querySelectorAll('.list');
 
                 newList.addEventListener('dragstart', e => {
                     draggedItem = e.target;
@@ -236,6 +237,7 @@
                 });
 
                 newList.addEventListener('drop', e => {
+
                     if (draggedItem) {
                         const container = document.getElementById('listContainer');
                         if (draggedItem.classList.contains('card')) {
@@ -252,14 +254,33 @@
                             } else {
                                 container.insertBefore(draggedItem, newList.nextSibling);
                             }
+
                         }
                         newList.classList.remove('highlight');
+
+
                     }
                 });
 
                 container.appendChild(newList);
                 alert("컬럼 등록 완료");
 
+            }
+        })
+    }
+    function moveColumn(dragColumn, targetColumn){
+        console.log("moveColumn");
+        $.ajax({
+            type: "PUT",
+            url: `/api/columns/${dragColumn}/position/${targetColumn}`,
+            contentType: "application/json",
+            success: function (response) {
+                alert(response['msg']);
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                console(xhr);
+                alert("위치이동을 DB에 업데이트하는 과정에서 오류발생");
             }
         })
     }
@@ -457,11 +478,41 @@
                                 if (newList.contains(draggedItem)) {
                                     return;
                                 }
-                                if (newList.nextSibling === draggedItem) {
+                                // 이동한 열을 적절한 위치에 삽입합니다.
+                                if (newList.nextSibling === draggedItem.nextSibling) {
                                     container.insertBefore(draggedItem, newList);
-                                } else {
-                                    container.insertBefore(draggedItem, newList.nextSibling);
+                                    console.log("if");
                                 }
+                                else {
+                                    var item = draggedItem;
+                                    while(true){
+
+                                        if(item === null|| item.id === newList.id)
+                                            break;
+                                        if(item.nextSibling ===null)
+                                            item = null;
+                                        else
+                                            item =item.nextSibling;
+
+                                    }
+                                    if(item === newList) {
+                                        console.log("오른이동");
+                                        // console.log("draggedItem"+draggedItem);
+                                        // console.log("newList"+newList);
+                                        container.insertBefore(draggedItem, newList.nextSibling);
+                                    }
+                                    else if(item === null){
+                                        // console.log("왼쪽이동");
+                                        container.insertBefore(draggedItem, newList);
+                                    }
+                                }
+
+                                // 이동한 열의 위치를 변경한 후, 리스트 순서를 업데이트합니다.
+                                lists.forEach((list, index) => {
+                                    container.appendChild(list);
+                                });
+                                console.log("함수전");
+                                moveColumn(draggedItem.id,newList.id);
                             }
                             newList.classList.remove('highlight');
                         }

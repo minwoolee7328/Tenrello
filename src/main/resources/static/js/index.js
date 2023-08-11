@@ -50,6 +50,8 @@ function modifyColumnBtn(id){
 
         return null; // JWT가 존재하지 않는 경우 null 반환
     }
+
+    //더미 데이터로 들어오는 컬럼 혹은 카드들을 움직이게 이벤트 설정 해주는 코드
 document.addEventListener("DOMContentLoaded", function () {
     var offcanvasElement = document.querySelector("#offcanvasScrolling");
     var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
@@ -106,8 +108,15 @@ lists.forEach(list => {
                 }
                 if (list.nextSibling === draggedItem) {
                     container.insertBefore(draggedItem, list);
+                    console.log("if이동");
                 } else {
-                    container.insertBefore(draggedItem, list.nextSibling);
+                    if (list.contains(draggedItem.nextSibling)) {
+                        container.insertBefore(draggedItem, list);
+                        console.log("한 열 더 이동");
+                    } else {
+                        container.insertBefore(draggedItem, list.previousSibling);
+
+                    }
                 }
             }
             list.classList.remove('highlight');
