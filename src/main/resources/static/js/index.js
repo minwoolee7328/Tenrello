@@ -1,4 +1,49 @@
 <!--  offcanvas  -->
+
+
+const jwtToken = getJwtFromCookie();
+$(document).ready(function () {
+    console.log("(document).ready");
+
+})
+
+
+function DeleteColumnBtn(id){
+    $.ajax({
+        url: `/api/columns/${id}`, // 요청을 보낼 서버의 URL
+        method: 'DELETE', // 요청 메소드 (GET, POST 등)
+        headers: {
+            "Authorization": jwtToken,
+        },
+        success: function (response) {
+            alert("메뉴 삭제 완료")
+            window.location.href = "/index";
+        },
+        error: function (xhr, status, error) {
+            alert("메뉴 삭제 실패")
+            console.log(xhr);
+        }
+    });
+
+}
+function modifyColumnBtn(){
+
+}
+    function getJwtFromCookie() {
+        const cookieName = 'Authorization'; // JWT가 저장된 쿠키의 이름
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+
+            if (cookie.startsWith(`${cookieName} = `)) {
+                const jwtCookie = cookie.substring(cookieName.length + 1);
+                return jwtCookie;
+            }
+        }
+
+        return null; // JWT가 존재하지 않는 경우 null 반환
+    }
 document.addEventListener("DOMContentLoaded", function () {
     var offcanvasElement = document.querySelector("#offcanvasScrolling");
     var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
@@ -128,3 +173,8 @@ addListButton.addEventListener('click', () => {
 
     container.appendChild(newList);
 });
+
+function logout() {
+    Cookies.remove('Authorization', {path: '/'});
+    window.location.href = "/view/main";
+}

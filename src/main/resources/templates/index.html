@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- static 스타일 시트 -->
-    <!--    <link rel="stylesheet" type="text/css" href="/css/index.css">-->
-
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
@@ -15,9 +14,8 @@
     <!--  부트스트랩  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
     <title>Trello Board</title>
-
-
 </head>
 <body>
 <!-- Masthead -->
@@ -46,7 +44,25 @@
                     <li class="list-group-item">And a fifth one</li>
                 </ul>
             </div>
+            <div>
+                <div class="board-buttons" id="board-buttons-button">
+                    <!-- 모달을 위한 HTML -->
+                    <div id="myModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">×</span>
+                            <input type="text" id="boardTitle" placeholder="Enter board title">
+                            <input type="text" id="boardDescription" placeholder="Enter board description">
+                            <button id="saveBoard">Save</button>
+                        </div>
+                    </div>
+                    <!-- 모달을 호출하는 버튼 -->
+                    <button id="createBoard">생성</button>
+
+                    <button class="board-delete-button"><i class="bi bi-trash"></i>삭제</button>
+                </div>
+            </div>
         </div>
+        <!--  End of offcanvas  -->
     </div>
 
     <div class="logo">
@@ -58,12 +74,12 @@
 
     <div class="user-settings">
 
-        <button class="user-settings-btn btn" aria-label="Create">
-            <i class="fas fa-plus" aria-hidden="true"></i>
+        <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
+            <i class="fas fa-plus" aria-hidden="true">마이</i>
         </button>
 
-        <button class="user-settings-btn btn" aria-label="Information">
-            <i class="fas fa-info-circle" aria-hidden="true"></i>
+        <button class="user-settings-btn btn" aria-label="Information" id="logout">
+            <i class="fas fa-info-circle" aria-hidden="true">아웃</i>
         </button>
 
         <button class="user-settings-btn btn" aria-label="Notifications">
@@ -98,12 +114,69 @@
     </div>
 </div>
 
-<!-- End of board modal -->
-
-
 <script src="/js/index.js"></script>
 
 <script>
+    // 마이페이지 이동
+    const mypageBtn = document.getElementById("move-mypage");
+    mypageBtn.addEventListener("click", function () {
+        window.location.href = "/view/mypage";
+    })
+
+    // 로그아웃
+    const logoutBtn = document.getElementById("logout");
+    logoutBtn.addEventListener("click", logout);
+
+    // board 생성
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById('myModal');
+        const createButton = document.getElementById('createBoard');
+        const saveButton = document.getElementById('saveBoard');
+        const closeButton = document.getElementsByClassName('close')[0];
+
+        createButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        saveButton.addEventListener('click', () => {
+            const boardTitle = document.getElementById('boardTitle').value;
+            const boardDescription = document.getElementById('boardDescription').value;
+
+            if (boardTitle) {
+                const boardData = {
+                    title: boardTitle,
+                    description: boardDescription,
+                };
+
+                saveBoardToDatabase(boardData);
+            }
+
+            modal.style.display = 'none';
+        });
+
+        function saveBoardToDatabase(boardData) {
+            fetch('/api/boards', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(boardData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Created board:', data);
+                    // Perform any further actions based on the response
+                })
+                .catch(error => {
+                    console.error('Error creating board:', error);
+                });
+        }
+    });
+
     $(document).ready(function () {
 
         // 내가 속한 보드 리스트 가져오기
@@ -167,7 +240,11 @@
 
                     let temp_html = `
                         <div class="list" id="${columnId}" draggable="true">
-                            <div class="list-header">${columnTitle}</div>
+                            <div class="list-header">${columnTitle}
+                                   <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
+                                   <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
+                            </div>
+
                             <div class="card" draggable="true">Card 1</div>
                             <div class="card" draggable="true">Card 2</div>
                         </div>

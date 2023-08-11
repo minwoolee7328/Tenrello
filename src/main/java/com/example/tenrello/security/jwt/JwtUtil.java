@@ -28,7 +28,7 @@ public class JwtUtil {
     public static final String AUTHORIZATION_HEADER = "Authorization";
     public static final String BEARER_PREFIX = "Bearer ";
 
-    private final long TOKEN_TIME = 60 * 60 * 1000L; // 2분
+    private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
     public static final long REFRESH_TOKEN_TIME = 7 * 24 * 60 * 60 * 1000L; // 7일
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey(application.properties)
@@ -159,13 +159,6 @@ public class JwtUtil {
         Long dateTime = new Date().getTime();
 
         return expirationTime - dateTime;
-    }
-
-    public void expireCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(AUTHORIZATION_HEADER, null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-        response.addCookie(cookie);
     }
 
 }
