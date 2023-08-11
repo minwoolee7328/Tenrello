@@ -28,11 +28,12 @@ public class ColumnServiceImpl implements ColumnService{
 
     @Override
     @Transactional      //컬럼 생성
-    public ResponseEntity<ApiResponseDto> createcolumn(Long boardId, ColumnRequestDto  columnRequestDto) {
+    public ColumnResponseDto createcolumn(Long boardId, ColumnRequestDto  columnRequestDto) {
         Board board = findBoard(boardId);
+        ColumnEntity column;
         if(columnRepository.findAllByBoardId(boardId).isEmpty()){// 해당 Board의 컬럼 DB가 비었을 때
 
-            ColumnEntity column = new ColumnEntity(board,columnRequestDto);
+            column = new ColumnEntity(board,columnRequestDto);
             column.setPrevColumn(null);                         //첫 컬럼 생성 이므로 다음과 이전 컬럼 null
             column.setNextColumn(null);
             column.setFirstnode(1L);                            //첫 마지막 노드 설정
@@ -41,7 +42,7 @@ public class ColumnServiceImpl implements ColumnService{
             columnRepository.save(column);                      //저장
         }
         else{
-            ColumnEntity column = new ColumnEntity(board,columnRequestDto);
+            column = new ColumnEntity(board,columnRequestDto);
             ColumnEntity lastColumn = columnRepository.findByLastnode(1L);      //마지막 컬럼 찾기
             columnRepository.save(column);                                      //컬럼 저장
 
@@ -58,7 +59,7 @@ public class ColumnServiceImpl implements ColumnService{
         }
 
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponseDto("새 컬럼 등록 성공",HttpStatus.OK.value()));
+        return new ColumnResponseDto(column);
     }
 
     @Override

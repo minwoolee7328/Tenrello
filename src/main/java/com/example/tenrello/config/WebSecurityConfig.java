@@ -55,8 +55,7 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers("/api/auth/**").permitAll() // '/api/user/'로 시작하는 요청 모두 접근 허가
                         .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/index/**").permitAll() // 로그인 뷰페이지
-                        .requestMatchers(HttpMethod.GET, "/main/**").permitAll() // 로그인 뷰페이지
+                        .requestMatchers(HttpMethod.GET,"/view/**").permitAll()//view페이지 모두 허용
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 

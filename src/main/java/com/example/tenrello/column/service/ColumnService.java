@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface ColumnService {
 
-    ResponseEntity<ApiResponseDto> createcolumn(Long boardId, ColumnRequestDto columnRequestDto);
+    ColumnResponseDto createcolumn(Long boardId, ColumnRequestDto columnRequestDto);
 
     ResponseEntity<ApiResponseDto> updateColumnName(Long columnId, ColumnRequestDto columnRequestDto, User user);
 
