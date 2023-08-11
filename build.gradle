@@ -44,6 +44,8 @@ dependencies {
 
     // JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    // Batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
     /* mysql */
     runtimeOnly 'com.mysql:mysql-connector-j'
@@ -52,8 +54,6 @@ dependencies {
     // redis lettuce
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    // Batch
-    implementation 'org.springframework.boot:spring-boot-starter-batch'
 }
 
 tasks.named('test') {

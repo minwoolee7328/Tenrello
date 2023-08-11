@@ -16,6 +16,247 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
     <title>Trello Board</title>
+
+    <style>
+        /* Masthead */
+
+        .masthead .btn {
+            background-color: #fff;
+            border-radius: 0.3rem;
+            transition: background-color 150ms;
+        }
+
+        .masthead .btn:hover {
+            background-color: #5a6670;
+        }
+
+        .boards-menu {
+            display: flex;
+            flex-shrink: 0;
+        }
+
+        .boards-btn {
+            flex-basis: 4rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #fff;
+            margin-right: 0.8rem;
+            padding: 0.3rem 0.3rem;
+        }
+
+        .boards-btn-icon {
+            font-size: 1.5rem;
+        }
+
+        .logo:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .logo-icon {
+            padding-right: 0.4rem;
+        }
+
+        .user-settings {
+            display: flex;
+            height: 3rem;
+            color: #fff;
+        }
+
+        .user-settings-btn {
+            font-size: 1.5rem;
+            width: 3rem;
+            margin-right: 0.8rem;
+        }
+
+        .user-settings-btn:last-of-type {
+            margin-right: 0;
+        }
+
+        /* End of head css */
+        /* Your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: left;
+            align-items: flex-start;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .list-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px;
+            margin-top: 70px;
+            /* Adjust this value as needed */
+        }
+
+        .list {
+            background-color: #e0e0e0;
+            min-width: 250px;
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            margin-right: 10px;
+            /* Add spacing between lists */
+        }
+
+        .list-header {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card {
+            background-color: white;
+            margin: 5px 0;
+            padding: 5px;
+            border-radius: 3px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .highlight {
+            border: 2px dashed #666;
+        }
+
+        /* ---------------------------------- */
+        #addList {
+            margin-top: 10px;
+        }
+
+        .highlight {
+            border: 2px dashed #666;
+        }
+
+        .masthead {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #333;
+            box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
+            width: 100%;
+            z-index: 100;
+            /* Ensure the header is on top */
+        }
+
+        .logo {
+            font-family: "Courgette", cursive;
+            font-size: 2rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+
+        .board-container {
+            display: flex;
+            /* Display children horizontally */
+            overflow-x: auto;
+            /* Add horizontal scrolling */
+            padding: 10px;
+            /* Add padding for spacing */
+        }
+
+        /* Custom styling for offcanvas */
+        .offcanvas-footer {
+            margin-top: auto; /* Pushes the footer section to the bottom */
+            padding: 10px; /* Add some padding for spacing */
+            background-color: #f8f9fa; /* Set a background color for the footer */
+            border-top: 1px solid #dee2e6; /* Add a top border for separation */
+        }
+
+        .board-buttons {
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+            align-items: center; /* Vertically center the buttons */
+        }
+
+        .board-delete-button {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Style for icon inside the button */
+        .board-delete-button i {
+            font-size: 1.2rem;
+        }
+
+        #registerBoardModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #boardModalOverlay{
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 900;
+        }
+        #boardModalTitle {
+            margin-bottom: 10px;
+        }
+        /* Style the modal content */
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        /* Style the input fields */
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        /* Style the modal buttons */
+        .modal-buttons {
+            display: flex;
+            justify-content:center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        #passwordModalTitle {
+            margin-bottom: 10px;
+        }
+
+        /* 보드 삭제 버튼 */
+        #deleteThisBoard {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
 <!-- Masthead -->
@@ -37,30 +278,44 @@
             </div>
             <div class="offcanvas-body">
                 <ul class="list-group list-group-flush" id="boardListUl">
-                    <li class="list-group-item">An item</li>
-                    <li class="list-group-item">A second item</li>
-                    <li class="list-group-item">A third item</li>
-                    <li class="list-group-item">A fourth item</li>
-                    <li class="list-group-item">And a fifth one</li>
+
                 </ul>
             </div>
-            <div>
-                <div class="board-buttons" id="board-buttons-button">
-                    <!-- 모달을 위한 HTML -->
-                    <div id="myModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close">×</span>
-                            <input type="text" id="boardTitle" placeholder="Enter board title">
-                            <input type="text" id="boardDescription" placeholder="Enter board description">
-                            <button id="saveBoard">Save</button>
-                        </div>
-                    </div>
-                    <!-- 모달을 호출하는 버튼 -->
-                    <button id="createBoard">생성</button>
 
-                    <button class="board-delete-button"><i class="bi bi-trash"></i>삭제</button>
+            <!-- 보드 변경 모달 -->
+            <div id="boardModalOverlay"></div>
+            <div id="registerBoardModal">
+                <div class="modal-content">
+                    <input type="text" id="boardTitle" placeholder="title">
+                    <input type="text" id="boardDescription" placeholder="description">
+                    <input type="hidden" id="boardNo">
+                    <div class="modal-buttons">
+                        <button id="saveBoard">저장</button>
+                        <button id="close">닫기</button>
+                    </div>
                 </div>
             </div>
+            <!-- 모달을 호출하는 버튼 -->
+            <button id="createBoard">보드생성</button>
+
+            <!--
+                        <button id="updateBoard">보드수정</button>
+                        <div id="editBoardModalOverlay"></div>
+                        <div id="registerEditBoardModal">
+                            <div class="modal-content">
+                                <input type="text" id="title" th:text="${board.title}" placeholder="title">
+                                <input type="text" id="description" th:text="${board.description}" placeholder="description">
+                                <div class="modal-buttons">
+                                    <button id="editBoard" onclick="update()">수정</button>
+                                    <button id="close-edit">닫기</button>
+                                </div>
+                            </div>
+                        </div>-->
+
+            <button id="deleteBoard">보드삭제</button>
+            <button id="accessBoard">권한부여</button>
+            <button id="inviteBoardToUser">유저초대</button>
+
         </div>
         <!--  End of offcanvas  -->
     </div>
@@ -99,7 +354,7 @@
 <div class="modal-board" style="display: none">
     <div id="board">
         <div class="list-container" id="listContainer">
-            <div class="list" id="firstList" draggable="true">
+            <!--<div class="list" id="firstList" draggable="true">
                 <div class="list-header">List 1</div>
                 <div class="card" draggable="true">Card 1</div>
                 <div class="card" draggable="true">Card 2</div>
@@ -108,14 +363,20 @@
                 <div class="list-header">List 2</div>
                 <div class="card" draggable="true">Card 3</div>
                 <div class="card" draggable="true">Card 4</div>
-            </div>
+            </div>-->
             <!-- Add more lists here -->
         </div>
     </div>
+
+    <div>
+        <button id="deleteThisBoard" data-board-id="">보드 삭제</button>
+    </div>
 </div>
+
 
 <script src="/js/index.js"></script>
 
+</body>
 <script>
     // 마이페이지 이동
     const mypageBtn = document.getElementById("move-mypage");
@@ -123,59 +384,61 @@
         window.location.href = "/view/mypage";
     })
 
+    const createBoardButton = document.getElementById('createBoard');
+    const boardModalOverlay = document.getElementById('boardModalOverlay');
+    const registerBoardModal = document.getElementById('registerBoardModal');
+    const boardTitleInput = document.getElementById('boardTitle');
+    const boardDescriptionInput = document.getElementById('boardDescription');
+    const saveBoardButton = document.getElementById('saveBoard');
+    const closeButton = document.getElementById('close');
     // 로그아웃
     const logoutBtn = document.getElementById("logout");
     logoutBtn.addEventListener("click", logout);
 
-    // board 생성
+/*    // board 생성
     document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById('myModal');
         const createButton = document.getElementById('createBoard');
         const saveButton = document.getElementById('saveBoard');
         const closeButton = document.getElementsByClassName('close')[0];
 
-        createButton.addEventListener('click', () => {
-            modal.style.display = 'block';
+        createBoardButton.addEventListener('click', () => {
+            boardModalOverlay.style.display = 'block';
+            registerBoardModal.style.display = 'block';
         });
 
         closeButton.addEventListener('click', () => {
-            modal.style.display = 'none';
+            boardModalOverlay.style.display = 'none';
+            registerBoardModal.style.display = 'none';
         });
+    })
 
-        saveButton.addEventListener('click', () => {
-            const boardTitle = document.getElementById('boardTitle').value;
-            const boardDescription = document.getElementById('boardDescription').value;
+    // 보드 생성
+    saveBoardButton.addEventListener('click', () => {
+        const title = boardTitleInput.value;
+        const description = boardDescriptionInput.value;
 
-            if (boardTitle) {
-                const boardData = {
-                    title: boardTitle,
-                    description: boardDescription,
-                };
-
-                saveBoardToDatabase(boardData);
-            }
-
-            modal.style.display = 'none';
-        });
-
-        function saveBoardToDatabase(boardData) {
-            fetch('/api/boards', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(boardData),
+        fetch('/api/boards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Created board:', data);
-                    // Perform any further actions based on the response
-                })
-                .catch(error => {
-                    console.error('Error creating board:', error);
-                });
-        }
-    });
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+
+                boardModalOverlay.style.display = 'none';
+                registerBoardModal.style.display = 'none';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });*/
 
     $(document).ready(function () {
 
@@ -190,7 +453,6 @@
             success: function (response) {
                 console.log(response);
                 let temp_htmls = '';
-                $('#boardListUl').empty();
 
                 response.forEach((a) => {
                     let boardName = a['title'];
@@ -211,6 +473,21 @@
         });
     })
 
+
+    function toggleElements(responseExists) {
+        if (responseExists) {
+            // Show the board container and other necessary elements
+            modalBoard.style.display = "block";
+            $("#deleteThisBoard").show();
+        } else {
+            // Hide the board container and show only the deleteThisBoard button
+            modalBoard.style.display = "block";
+            $("#listContainer").hide();
+            $("#deleteThisBoard").show();
+        }
+    }
+
+
     const modalBoard = document.querySelector(".modal-board");
 
     // 보드 리스트에서 보드 선택
@@ -221,6 +498,9 @@
         console.log('Clicked Board ID:', clickedBoardId);
         console.log('Clicked Board Name:', clickedBoardName);
 
+        $('#deleteThisBoard').attr('data-board-id', clickedBoardId);
+        // modalBoard.style.display = "block";
+
         $.ajax({
             url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/columns',
             type: 'GET',
@@ -230,7 +510,11 @@
             },
             success: function (response) {
                 console.log(response);
+
+                toggleElements(true);
+
                 let temp_htmls = '';
+
                 $('#listContainer').empty();
 
                 response.forEach((a) => {
@@ -254,15 +538,40 @@
                 });
                 console.log('forEach문 끝');
                 $('#listContainer').append(temp_htmls);
+                modalBoard.style.display = "block";
+
             },
             error: function () {
-                console.log('AJAX 요청 실패');
+                console.log('보드 속 컬럼 AJAX 요청 실패');
+                toggleElements(false);
+                // modalBoard.style.display = "none";
             }
         });
 
-        modalBoard.style.display = "block";
+        // modalBoard.style.display = "block";
     })
 
+    $(document).on("click", "#deleteThisBoard", function () {
+        var boardIdToDelete = $(this).attr('data-board-id');
+
+        console.log(boardIdToDelete);
+        // Now you can use boardIdToDelete for your delete operation or any other logic
+
+        // For example, you can include an AJAX call to delete the board:
+       /* $.ajax({
+            url: 'http://localhost:8080/api/boards/' + boardIdToDelete,
+            type: 'DELETE',
+            // ... other settings ...
+            success: function (response) {
+                console.log('Board deleted:', response);
+                // Perform any other necessary actions after successful deletion
+            },
+            error: function () {
+                console.log('Failed to delete board.');
+                // Handle error case
+            }
+        });*/
+    });
+
 </script>
-</body>
 </html>
