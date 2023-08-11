@@ -197,7 +197,7 @@
             data: JSON.stringify(data),
             success: function (response) {
                 const container = document.getElementById('listContainer');
-                const newList = document.querySelectorAll('.list');
+                const newList = document.createElement('div');
                 newList.className = 'list';
                 newList.draggable = true;
                 newList.innerHTML = `
@@ -263,8 +263,10 @@
                 });
 
                 container.appendChild(newList);
+                const registerNicknameModal = document.getElementById('registerNicknameModal');
+                registerNicknameModal.style.display = 'none';
                 alert("컬럼 등록 완료");
-
+                //창 닫기
             }
         })
     }
@@ -388,145 +390,16 @@
     })//내가 속한 보드리스트 가져오기
 
     const modalBoard = document.querySelector(".modal-board");
-
-    // 보드 리스트에서 보드 선택
-    $(document).on("click", ".list-group-item", function () {
-        var clickedBoardId = $(this).attr('id');
-        localStorage.setItem("boardId",clickedBoardId);
-        var clickedBoardName = $(this).text();
-
-        console.log('Clicked Board ID:', clickedBoardId);
-        console.log('Clicked Board Name:', clickedBoardName);
-
-        $.ajax({
-            url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/columns',
-            type: 'GET',
-            contentType: 'application/json',
-            headers: {
-                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-            },
-            success: function (response) {
-                console.log(response);
-                let temp_htmls = '';
-                $('#listContainer').empty();
-
-                var columnSettingArr = new Array();     //조회하는 컬럼 id를 순서대로 저장
-                var i = 0;                              //response.forEach순서 기정
-
-                response.forEach((a) => {
-                    let columnId = a['id'];
-                    let columnTitle = a['title'];
-
-                    columnSettingArr[i] = columnId;
-                    i+=1;
-                    let temp_html = `
-                        <div class="list" id="${columnId}" draggable="true">
-                            <div class="list-header">${columnTitle}
-                                   <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
-                                   <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
-                            </div>
-                        </div>
-                    `;
-
-                    temp_htmls += temp_html;
-
-                });
-                console.log('forEach문 끝');
-                $('#listContainer').append(temp_htmls);
-
-                columnSettingArr.forEach((col)=>{       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
-                    const newList = document.getElementById(col);
-                    newList.className = 'list';
-                    newList.draggable = true;
-                //
-                    newList.addEventListener('dragstart', e => {
-                        draggedItem = e.target;
-                        setTimeout(() => {
-                            e.target.style.opacity = '0.5';
-                        }, 0);
-                    });
-
-                    newList.addEventListener('dragend', e => {
-                        setTimeout(() => {
-                            e.target.style.opacity = '1';
-                            draggedItem = null;
-                        }, 0);
-                    });
-
-                    newList.addEventListener('dragover', e => {
-                        e.preventDefault();
-                    });
-
-                    newList.addEventListener('dragenter', e => {
-                        e.preventDefault();
-                        newList.classList.add('highlight');
-                    });
-
-                    newList.addEventListener('dragleave', e => {
-                        newList.classList.remove('highlight');
-                    });
-
-                    newList.addEventListener('drop', e => {
-                        if (draggedItem) {
-                            const container = document.getElementById('listContainer');
-                            if (draggedItem.classList.contains('card')) {
-                                if (newList.contains(draggedItem)) {
-                                    return;
-                                }
-                                newList.appendChild(draggedItem);
-                            } else if (draggedItem.classList.contains('list')) {
-                                if (newList.contains(draggedItem)) {
-                                    return;
-                                }
-                                // 이동한 열을 적절한 위치에 삽입합니다.
-                                if (newList.nextSibling === draggedItem.nextSibling) {
-                                    container.insertBefore(draggedItem, newList);
-                                    console.log("if");
-                                }
-                                else {
-                                    var item = draggedItem;
-                                    while(true){
-
-                                        if(item === null|| item.id === newList.id)
-                                            break;
-                                        if(item.nextSibling ===null)
-                                            item = null;
-                                        else
-                                            item =item.nextSibling;
-
-                                    }
-                                    if(item === newList) {
-                                        console.log("오른이동");
-                                        // console.log("draggedItem"+draggedItem);
-                                        // console.log("newList"+newList);
-                                        container.insertBefore(draggedItem, newList.nextSibling);
-                                    }
-                                    else if(item === null){
-                                        // console.log("왼쪽이동");
-                                        container.insertBefore(draggedItem, newList);
-                                    }
-                                }
-
-                                // 이동한 열의 위치를 변경한 후, 리스트 순서를 업데이트합니다.
-                                lists.forEach((list, index) => {
-                                    container.appendChild(list);
-                                });
-                                console.log("함수전");
-                                moveColumn(draggedItem.id,newList.id);
-                            }
-                            newList.classList.remove('highlight');
-                        }
-                    });
-                });
-            //
-            },
-            error: function () {
-                console.log('AJAX 요청 실패');
-            }
-        });
-
-        modalBoard.style.display = "block";
+    var boardId;
+    $(document).on("click", ".list-group-item", function (){
+        boardId = $(this).attr('id');
+        localStorage.setItem("boardId",boardId);
+        showSelectedBoard(boardId);
     })
+    // 보드 리스트에서 보드 선택
+
+
+
 
 </script>
 </body>
