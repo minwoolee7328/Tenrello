@@ -41,7 +41,7 @@
                 </ul>
             </div>
 
-            <!-- 보드 변경 모달 -->
+            <!-- 보드 생성 모달 -->
             <div id="boardModalOverlay"></div>
             <div id="registerBoardModal">
                 <div class="modal-content">
@@ -54,7 +54,6 @@
                     </div>
                 </div>
             </div>
-            <!-- 모달을 호출하는 버튼 -->
             <button id="createBoard">보드생성</button>
             <!--  End of offcanvas  -->
         </div>
@@ -99,15 +98,16 @@
         </div>
     </div>
 
-    <div id="editBoardModal" style="display: none;">
+    <!-- 보드 수정 모달 -->
+    <div class="edit-board" id="editBoardModal" style="display: none;">
         <input type="text" id="editTitle" placeholder="title">
         <input type="text" id="editDescription" placeholder="description">
-        <button id="editButton" onclick="editBoard('${boardId}')">수정</button>
-        <button onclick="closeModal()">닫기</button>
+        <button id="editButton">수정</button>
+        <button id="editClose">닫기</button>
     </div>
 
     <div>
-        <button id="updateBoard" onclick="openEditModal()">보드 수정</button>
+        <button id="updateBoard">보드 수정</button>
     </div>
 
     <div>
@@ -131,8 +131,6 @@
     <input type="text" id="modifyColumnTitle" placeholder="타이틀">
     <button id="modifyBtn" onclick="modifyColumn()">수정</button>
     <button onclick="clsModifyModal()">닫기</button>
-    <script src="/js/index.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>
 
 <script src="/js/index.js"></script>
@@ -140,9 +138,6 @@
 
 </body>
 <script>
-
-
-
     // 마이페이지 이동
     const mypageBtn = document.getElementById("move-mypage");
     mypageBtn.addEventListener("click", function () {
@@ -283,25 +278,6 @@
     logoutBtn.addEventListener("click", logout);
 
     // board 생성
-    const createBoardButton = document.getElementById('createBoard');
-    const boardModalOverlay = document.getElementById('boardModalOverlay');
-    const registerBoardModal = document.getElementById('registerBoardModal');
-    const boardTitleInput = document.getElementById('boardTitle');
-    const boardDescriptionInput = document.getElementById('boardDescription');
-    const saveBoardButton = document.getElementById('saveBoard');
-    const closeButton = document.getElementById('close');
-
-    createBoardButton.addEventListener('click', () => {
-        boardModalOverlay.style.display = 'block';
-        registerBoardModal.style.display = 'block';
-    });
-
-    closeButton.addEventListener('click', () => {
-        boardModalOverlay.style.display = 'none';
-        registerBoardModal.style.display = 'none';
-    });
-
-    // board 생성
     saveBoardButton.addEventListener('click', () => {
         const title = boardTitleInput.value;
         const description = boardDescriptionInput.value;
@@ -319,6 +295,7 @@
             .then(response => response.json())
             .then(data => {
                 console.log(data);
+                location.reload();
 
                 boardModalOverlay.style.display = 'none';
                 registerBoardModal.style.display = 'none';
@@ -328,36 +305,36 @@
             });
     });
 
-    function openEditModal() {
-        openModal("editBoardModal");
-    }
-
     // board 수정
-    function editBoard(boardId) {
-        // document.getElementById("modalBoardIdField").value = boardId;
-        var title = document.getElementById("editTitle").value;
-        var description = document.getElementById("editDescription").value;
+    document.getElementById('editButton').addEventListener('click', () => {
+        const title = document.getElementById("editTitle").value;
+        const description = document.getElementById("editDescription").value;
+        const boardId = localStorage.getItem("boardId");
 
-        console.log(boardId);
-
-        var data = {
+        const data = {
             title: title,
             description: description
         };
 
-        $.ajax({
-            type: "PUT",
-            url: `http://localhost:8080/api/boards/${boardId}`,
-            data: data,
-            success: function(response) {
-                alert("수정되었습니다.")
+        fetch(`http://localhost:8080/api/boards/${boardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': document.cookie
             },
-            error: function(error) {
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("수정되었습니다.")
+                editBoardModal.style.display = 'none';
+            })
+            .catch(error => {
+                alert(error);
                 console.log("수정 오류")
-            }
-        });
-        closeModal("editBoardModal");
-    }
+                editBoardModal.style.display = 'none';
+            });
+    })
 
     // board 삭제
     $(document).on('click', '.board-delete-button', function () {
@@ -398,7 +375,7 @@
                     let boardId = a['boardId'];
 
                     let temp_html = `
-                        <li class="list-group-item" onclick="editBoard('${boardId}')" id="${boardId}">${boardName}</li>
+                        <li class="list-group-item" id="${boardId}">${boardName}</li>
                     `;
 
                     temp_htmls += temp_html;
@@ -426,125 +403,15 @@
         }
     }
 
-
     const modalBoard = document.querySelector(".modal-board");
-
-    // 보드 리스트에서 보드 선택
-    $(document).on("click", ".list-group-item", function () {
-        var clickedBoardId = $(this).attr('id');
-        localStorage.setItem("boardId", clickedBoardId);
-        var clickedBoardName = $(this).text();
-
-        console.log('Clicked Board ID:', clickedBoardId);
-        console.log('Clicked Board Name:', clickedBoardName);
-
-        $('#deleteThisBoard').attr('data-board-id', clickedBoardId);
-
-        $.ajax({
-            url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/columns',
-            type: 'GET',
-            contentType: 'application/json',
-            headers: {
-                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-            },
-            success: function (response) {
-                console.log(response);
-
-                toggleElements(true);
-
-                let temp_htmls = '';
-                $('#listContainer').empty();
-
-                var columnSettingArr = new Array();     //조회하는 컬럼 id를 순서대로 저장
-                var i = 0;                              //response.forEach순서 기정
-
-                response.forEach((a) => {
-                    let columnId = a['id'];
-                    let columnTitle = a['title'];
-
-                    columnSettingArr[i] = columnId;
-                    i += 1;
-
-                    let temp_html = `
-                        <div class="list" id="${columnId}" draggable="true">
-                            <div class="list-header">${columnTitle}
-                                   <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
-                                   <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
-                            </div>
-                        </div>
-                    `;
-
-                    temp_htmls += temp_html;
-                });
-                console.log('forEach문 끝');
-                $('#listContainer').append(temp_htmls);
-                modalBoard.style.display = "block";
-
-                columnSettingArr.forEach((col) => {       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
-                    const newList = document.getElementById(col);
-                    newList.className = 'list';
-                    newList.draggable = true;
-                    //
-                    newList.addEventListener('dragstart', e => {
-                        draggedItem = e.target;
-                        setTimeout(() => {
-                            e.target.style.opacity = '0.5';
-                        }, 0);
-                    });
-
-                    newList.addEventListener('dragend', e => {
-                        setTimeout(() => {
-                            e.target.style.opacity = '1';
-                            draggedItem = null;
-                        }, 0);
-                    });
-
-                    newList.addEventListener('dragover', e => {
-                        e.preventDefault();
-                    });
-
-                    newList.addEventListener('dragenter', e => {
-                        e.preventDefault();
-                        newList.classList.add('highlight');
-                    });
-
-                    newList.addEventListener('dragleave', e => {
-                        newList.classList.remove('highlight');
-                    });
-
-                    newList.addEventListener('drop', e => {
-                        if (draggedItem) {
-                            const container = document.getElementById('listContainer');
-                            if (draggedItem.classList.contains('card')) {
-                                if (newList.contains(draggedItem)) {
-                                    return;
-                                }
-                                newList.appendChild(draggedItem);
-                            } else if (draggedItem.classList.contains('list')) {
-                                if (newList.contains(draggedItem)) {
-                                    return;
-                                }
-                                if (newList.nextSibling === draggedItem) {
-                                    container.insertBefore(draggedItem, newList);
-                                } else {
-                                    container.insertBefore(draggedItem, newList.nextSibling);
-                                }
-                            }
-                            newList.classList.remove('highlight');
-                        }
-                    });
-                });
-                //
-            },
-            error: function () {
-                // 보드 속 컬럼이 없을 때
-                console.log('보드 속 컬럼 AJAX 요청 실패');
-                toggleElements(false);
-            }
-        });
-
-        modalBoard.style.display = "block";
+    var boardId;
+    $(document).on("click", ".list-group-item", function (){
+        boardId = $(this).attr('id');
+        localStorage.setItem("boardId",boardId);
+        showSelectedBoard(boardId);
     })
+    // 보드 리스트에서 보드 선택
+
 
     // 보드 삭제 버튼 눌렀을 때 해당 보드 id 콘솔에 출력
     $(document).on("click", "#deleteThisBoard", function () {
