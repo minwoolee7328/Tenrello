@@ -26,7 +26,13 @@ function DeleteColumnBtn(id){
     });
 
 }
-function modifyColumnBtn(){
+function modifyColumnBtn(id){
+
+    const modifyDiv = document.getElementById("columnModify");
+    console.log(modifyDiv);
+    localStorage.setItem("modifyColumnId",id);
+
+    modifyDiv.style.display = 'block';
 
 }
     function getJwtFromCookie() {
@@ -118,9 +124,6 @@ addListButton.addEventListener('click', () => {
 
         registerNicknameModal.style.display = 'block';
         nicknameModalOverlay.style.display = 'block';
-
-
-
 });
 closeNicknameModalButton.addEventListener('click', function () {
     registerNicknameModal.style.display = 'none';

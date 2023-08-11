@@ -117,7 +117,7 @@
 </div>
 
 
-
+<!--컬럼등록모달-->
 <div id="registerNicknameModal">
     <h3 id="nicknameModalTitle">타이틀 이름</h3>
     <input type="text" id="columnTitle" placeholder="타이틀">
@@ -126,8 +126,56 @@
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </div>
+<!--컬럼수정모달-->
+<div id="columnModify">
+    <h3>타이틀 이름</h3>
+    <input type="text" id="modifyColumnTitle" placeholder="타이틀">
+    <button id="modifyBtn" onclick="modifyColumn()">수정</button>
+    <button onclick="clsModifyModal()">닫기</button>
+    <script src="/js/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</div>
 </body>
 <script>
+    function clsModifyModal(){
+        const modifyDiv = document.getElementById("columnModify");
+        modifyDiv.style.display = 'none';
+        localStorage.setItem("modifyColumnId",null);
+    }
+    function modifyColumn(){
+        const modifyDiv = document.getElementById("columnModify");
+        const title = document.getElementById("modifyColumnTitle");
+
+        if(localStorage.getItem("modifyColumnId") == null){
+            modifyDiv.style.display = 'none';
+            alert("column이 선택되지 않았습니다.");
+            return;
+        }
+        const id = localStorage.getItem("modifyColumnId");
+
+            let columnId = document.getElementById(id);
+            let data = {
+                'title': title.value
+            };
+            $.ajax({
+                type: "PUT",
+                url: `/api/columns/${id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (response) {
+                    alert(response['msg']);
+
+
+                    localStorage.setItem("modifyColumnId",null);
+                    modifyDiv.style.display = 'none';
+                }
+            })
+
+
+        localStorage.setItem("modifyColumnId",null);
+        modifyDiv.style.display = 'none';
+
+    }
     //컬럼 추가
     function addColumn(){
         const columnInputString =  document.getElementById("columnTitle").value;
@@ -342,7 +390,7 @@
                 $('#listContainer').empty();
 
                 var columnSettingArr = new Array();     //조회하는 컬럼 id를 순서대로 저장
-                var i = 0;                              //response.forEach순서 기억
+                var i = 0;                              //response.forEach순서 기정
 
                 response.forEach((a) => {
                     let columnId = a['id'];
