@@ -3,18 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/index.css">
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
     <!-- js Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
     <!--  부트스트랩  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+
     <title>Trello Board</title>
 </head>
 <body>
@@ -43,18 +47,22 @@
             <div>
                 <div class="board-buttons" id="board-buttons-button">
                     <!-- 모달을 위한 HTML -->
-                    <div id="myModal" class="modal">
+                    <!-- 보드 생성 모달 -->
+                    <div id="boardModalOverlay"></div>
+                    <div id="registerBoardModal">
                         <div class="modal-content">
-                            <span class="close">×</span>
-                            <input type="text" id="boardTitle" placeholder="Enter board title">
-                            <input type="text" id="boardDescription" placeholder="Enter board description">
-                            <button id="saveBoard">Save</button>
+                            <input type="text" id="boardTitle" placeholder="title">
+                            <input type="text" id="boardDescription" placeholder="description">
+                            <input type="hidden" id="boardNo">
+                            <div class="modal-buttons">
+                                <button id="saveBoard">저장</button>
+                                <button id="close">닫기</button>
+                            </div>
                         </div>
                     </div>
                     <!-- 모달을 호출하는 버튼 -->
                     <button id="createBoard">생성</button>
 
-                    <button class="board-delete-button"><i class="bi bi-trash"></i>삭제</button>
                 </div>
             </div>
         </div>
@@ -100,11 +108,18 @@
         </div>
     </div>
 
-    <div>
+    <div class="board-actions">
+        <div class="btn-group dropup" id="memberDropdownContainer">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                Member List
+            </button>
+            <ul class="dropdown-menu" id="dropdown-menu">
+                <!-- Dropdown menu links -->
+            </ul>
+        </div>
         <button id="deleteThisBoard" data-board-id="" data-board-name="">보드 삭제</button>
     </div>
 </div>
-
 
 <!--컬럼등록모달-->
 <div id="registerNicknameModal">
@@ -261,61 +276,63 @@
             }
         })
     }
-    // board 삭제
-    /*$(document).on('click', '.board-delete-button', function () {
-        $.ajax({
-            url: `http://localhost:8080/api/boards/${boardId}`,
-            type: 'DELETE',
-            headers: {
-                'Authorization': document.cookie
-            },
-            success: function (response) {
-                if (response.statusCode == 200) {
-                    alert('보드 삭제 성공');
-                }
-            },
-            error: function () {
-                alert('삭제 권한이 없습니다.');
-            }
-        });
-    });//보드 삭제*/
 
     // 로그아웃
     const logoutBtn = document.getElementById("logout");
     logoutBtn.addEventListener("click", logout);
 
     // board 생성
-    document.addEventListener("DOMContentLoaded", function () {
-        const modal = document.getElementById('myModal');
-        const createButton = document.getElementById('createBoard');
-        const saveButton = document.getElementById('saveBoard');
-        const closeButton = document.getElementsByClassName('close')[0];
+    const createBoardButton = document.getElementById('createBoard');
+    const boardModalOverlay = document.getElementById('boardModalOverlay');
+    const registerBoardModal = document.getElementById('registerBoardModal');
+    const boardTitleInput = document.getElementById('boardTitle');
+    const boardDescriptionInput = document.getElementById('boardDescription');
+    const saveBoardButton = document.getElementById('saveBoard');
+    const closeButton = document.getElementById('close');
 
-        createButton.addEventListener('click', () => {
-            modal.style.display = 'block';
-        });
+    createBoardButton.addEventListener('click', () => {
+        boardModalOverlay.style.display = 'block';
+        registerBoardModal.style.display = 'block';
+    });
 
-        closeButton.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
+    closeButton.addEventListener('click', () => {
+        boardModalOverlay.style.display = 'none';
+        registerBoardModal.style.display = 'none';
+    });
 
-        saveButton.addEventListener('click', () => {
-            const boardTitle = document.getElementById('boardTitle').value;
-            const boardDescription = document.getElementById('boardDescription').value;
+    // board 생성
+    saveBoardButton.addEventListener('click', () => {
+        const title = boardTitleInput.value;
+        const description = boardDescriptionInput.value;
 
-            if (boardTitle) {
-                const boardData = {
-                    title: boardTitle,
-                    description: boardDescription,
-                };
+        console.log(title);
+        console.log(description);
 
-                saveBoardToDatabase(boardData);
-            }
+        fetch('/api/boards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
 
-            modal.style.display = 'none';
-        });
+                boardModalOverlay.style.display = 'none';
+                registerBoardModal.style.display = 'none';
+                location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
 
-        function saveBoardToDatabase(boardData) {
+
+    /*function saveBoardToDatabase(boardData) {
             fetch('/api/boards', {
                 method: 'POST',
                 headers: {
@@ -333,7 +350,7 @@
                 });
         }
     });//보드 생성
-
+*/
     $(document).ready(function () {
         localStorage.setItem("boardId",null);
         // 내가 속한 보드 리스트 가져오기
@@ -434,6 +451,9 @@
                 });
                 console.log('forEach문 끝');
                 $('#listContainer').append(temp_htmls);
+
+                showMembersOfBoard(clickedBoardId);
+
                 modalBoard.style.display = "block";
 
                 columnSettingArr.forEach((col)=>{       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
@@ -495,7 +515,9 @@
             error: function () {
                 // 보드 속 컬럼이 없을 때
                 console.log('보드 속 컬럼 AJAX 요청 실패');
+
                 toggleElements(false);
+                showMembersOfBoard(clickedBoardId);
             }
         });
 
@@ -504,6 +526,8 @@
 
     // 현재 보이는 보드 삭제
     $(document).on("click", "#deleteThisBoard", deleteThisBoard);
+
+
 
 </script>
 </html>

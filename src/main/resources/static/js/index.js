@@ -1,4 +1,3 @@
-<!--  offcanvas  -->
 
 
 const jwtToken = getJwtFromCookie();
@@ -162,4 +161,33 @@ function deleteThisBoard() {
             }
         })
     }
+}
+
+function showMembersOfBoard(clickedBoardId) {
+    $.ajax({
+        url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/members',
+        type: 'GET',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie
+        },
+        success: function (response) {
+            console.log(response);
+
+            const memberDropdownList = document.getElementById('dropdown-menu');
+            memberDropdownList.innerHTML = ''; // Clear any previous entries
+
+            response.memberList.forEach(member => {
+                const memberListItem = document.createElement('li');
+                const memberLink = document.createElement('a'); // Create an anchor element
+                memberLink.className = 'dropdown-item'; // Set the class name
+                memberLink.textContent = member.username; // Set the username as text content
+                memberListItem.appendChild(memberLink); // Append the anchor element to the list item
+                memberDropdownList.appendChild(memberListItem); // Append the list item to the dropdown menu
+            });
+        },
+        error: function () {
+            console.log('멤버 목록 불러오기 오류');
+        }
+    });
 }
