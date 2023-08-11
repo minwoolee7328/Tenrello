@@ -28,7 +28,7 @@ public class ColumnController {
 
 
     @PostMapping("/boards/{boardId}/columns")
-    public ResponseEntity<ApiResponseDto> createColumn(@PathVariable Long boardId, @RequestBody ColumnRequestDto columnRequestDto){
+    public ColumnResponseDto createColumn(@PathVariable Long boardId, @RequestBody ColumnRequestDto columnRequestDto){
         return columnService.createcolumn(boardId,columnRequestDto);
     }
     @PutMapping("/columns/{columnId}")
