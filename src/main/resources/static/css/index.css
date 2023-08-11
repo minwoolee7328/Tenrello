@@ -115,7 +115,7 @@ body {
      border-radius: 5px;
      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
  }
- #editBoardModal, #columnModify{
+#columnModify{
      display: none;
      position: fixed;
      z-index: 1000;
@@ -261,6 +261,29 @@ input[type="text"] {
     bottom: 10px;
     right: 10px;
 }
+
+/* 보드 수정 버튼 시작 */
+#updateBoard {
+    position: absolute;
+    bottom: 10px;
+    right: 100px; /* 이 부분을 조정하여 위치 조절 */
+}
+
+#editBoardModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px; /* 모달의 넓이 조정 */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 보드 수정 버튼 끝 */
 
 /* Style the modal buttons */
 .modal-buttons {
