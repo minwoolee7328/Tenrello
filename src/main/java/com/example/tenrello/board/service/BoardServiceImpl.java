@@ -2,9 +2,7 @@ package com.example.tenrello.board.service;
 
 import com.example.tenrello.board.aop.AccessCheck;
 import com.example.tenrello.board.aop.AuthCheck;
-import com.example.tenrello.board.dto.BoardRequestDto;
-import com.example.tenrello.board.dto.BoardResponseDto;
-import com.example.tenrello.board.dto.UserBoardResponseDto;
+import com.example.tenrello.board.dto.*;
 import com.example.tenrello.board.repository.BoardRepository;
 import com.example.tenrello.board.repository.UserBoardRepository;
 import com.example.tenrello.common.exception.NotFoundException;
@@ -109,6 +107,17 @@ public class BoardServiceImpl implements BoardService{
         } else {
             throw new IllegalArgumentException("해당 보드에 유저가 없습니다.");
         }
+    }
+
+    @Override
+    public MemberUserListResponseDto getMembersOfBoard(Long boardId) {
+        Board board = findByBoard(boardId);
+
+        List<MemberUserDto> memberList = board.getUserBoardList()
+                .stream()
+                .map(UserBoard::getUser).map(MemberUserDto::new).toList();
+
+        return new MemberUserListResponseDto(memberList);
     }
 
     public Board findByBoard(Long boardId) {
