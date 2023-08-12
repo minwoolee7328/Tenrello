@@ -273,7 +273,7 @@ input[type="text"] {
 #updateBoard {
     position: absolute;
     bottom: 10px;
-    right: 100px; /* 이 부분을 조정하여 위치 조절 */
+    right: 400px; /* 이 부분을 조정하여 위치 조절 */
 }
 
 #editBoardModal {

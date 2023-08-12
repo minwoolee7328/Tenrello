@@ -157,12 +157,14 @@
         window.location.href = "/view/mypage";
     })
 
+    // 컬럼 수정 모달
     function clsModifyModal() {
         const modifyDiv = document.getElementById("columnModify");
         modifyDiv.style.display = 'none';
         localStorage.setItem("modifyColumnId", null);
     }
 
+    //컬럼 수정
     function modifyColumn() {
         const modifyDiv = document.getElementById("columnModify");
         const title = document.getElementById("modifyColumnTitle");
@@ -341,6 +343,7 @@
             .then(data => {
                 alert("수정되었습니다.")
                 editBoardModal.style.display = 'none';
+                location.reload();
             })
             .catch(error => {
                 alert(error);

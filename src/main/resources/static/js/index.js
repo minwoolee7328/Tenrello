@@ -1,12 +1,10 @@
-
-
 const jwtToken = getJwtFromCookie();
 $(document).ready(function () {
     console.log("(document).ready");
 
 })
 
-function DeleteColumnBtn(id){
+function DeleteColumnBtn(id) {
     $.ajax({
         url: `/api/columns/${id}`, // 요청을 보낼 서버의 URL
         method: 'DELETE', // 요청 메소드 (GET, POST 등)
@@ -14,40 +12,43 @@ function DeleteColumnBtn(id){
             "Authorization": jwtToken,
         },
         success: function (response) {
-            alert("메뉴 삭제 완료")
-            window.location.href = "/view/index";
+            alert("컬럼 삭제 완료")
+            window.location.href = "/view/next";
         },
         error: function (xhr, status, error) {
-            alert("메뉴 삭제 실패")
+            alert("컬럼 삭제 실패")
             console.log(xhr);
         }
     });
 
 }
-function modifyColumnBtn(id){
+
+function modifyColumnBtn(id) {
 
     const modifyDiv = document.getElementById("columnModify");
     console.log(modifyDiv);
-    localStorage.setItem("modifyColumnId",id);
+    localStorage.setItem("modifyColumnId", id);
 
     modifyDiv.style.display = 'block';
 
 }
-    function getJwtFromCookie() {
-        const cookieName = 'Authorization'; // JWT가 저장된 쿠키의 이름
-        const cookies = document.cookie.split(';');
 
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
+function getJwtFromCookie() {
+    const cookieName = 'Authorization'; // JWT가 저장된 쿠키의 이름
+    const cookies = document.cookie.split(';');
 
-            if (cookie.startsWith(`${cookieName} = `)) {
-                const jwtCookie = cookie.substring(cookieName.length + 1);
-                return jwtCookie;
-            }
+    for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+
+        if (cookie.startsWith(`${cookieName} = `)) {
+            const jwtCookie = cookie.substring(cookieName.length + 1);
+            return jwtCookie;
         }
-
-        return null; // JWT가 존재하지 않는 경우 null 반환
     }
+
+    return null; // JWT가 존재하지 않는 경우 null 반환
+}
+
 document.addEventListener("DOMContentLoaded", function () {
     var offcanvasElement = document.querySelector("#offcanvasScrolling");
     var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
@@ -118,8 +119,8 @@ const registerNicknameModal = document.getElementById('registerNicknameModal');
 const nicknameModalOverlay = document.getElementById('nicknameModalOverlay');
 addListButton.addEventListener('click', () => {
 
-        registerNicknameModal.style.display = 'block';
-        nicknameModalOverlay.style.display = 'block';
+    registerNicknameModal.style.display = 'block';
+    nicknameModalOverlay.style.display = 'block';
 });
 closeNicknameModalButton.addEventListener('click', function () {
     registerNicknameModal.style.display = 'none';
@@ -166,7 +167,7 @@ function showSelectedBoard(boardId) {
                 let columnTitle = a['title'];
 
                 columnSettingArr[i] = columnId;
-                i+=1;
+                i += 1;
 
                 let temp_html = `
                         <div class="list" id="${columnId}" draggable="true">
@@ -182,11 +183,11 @@ function showSelectedBoard(boardId) {
             });
             console.log('forEach문 끝');
             $('#listContainer').append(temp_htmls);
-            
+
             showMembersOfBoard(clickedBoardId);
             modalBoard.style.display = "block";
 
-            columnSettingArr.forEach((col)=>{       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
+            columnSettingArr.forEach((col) => {       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
                 const newList = document.getElementById(col);
                 newList.className = 'list';
                 newList.draggable = true;
