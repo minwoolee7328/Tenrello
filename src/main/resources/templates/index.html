@@ -277,22 +277,7 @@
             }
         })
     }
-    function moveColumn(dragColumn, targetColumn){
-        console.log("moveColumn");
-        $.ajax({
-            type: "PUT",
-            url: `/api/columns/${dragColumn}/position/${targetColumn}`,
-            contentType: "application/json",
-            success: function (response) {
-                alert(response['msg']);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                console(xhr);
-                alert("위치이동을 DB에 업데이트하는 과정에서 오류발생");
-            }
-        })
-    }
+
     // board 삭제
     $(document).on('click', '.board-delete-button', function () {
         $.ajax({

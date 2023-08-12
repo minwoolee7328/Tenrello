@@ -191,7 +191,7 @@ function showSelectedBoard(boardId) {
                     `;
 
                 cardTitles.forEach((a)=>{
-                    let card_html =`<div id=${a['id']}" class="card" draggable="true" onclick="model(${a['id']})">${a['title']}</div>`;
+                    let card_html =`<div id="card-${a['id']}" class="card" draggable="true" onclick="model(${a['id']})">${a['title']}</div>`;
 
                     temp_html+=card_html;
                 })
@@ -247,21 +247,40 @@ function showSelectedBoard(boardId) {
                 newList.addEventListener('drop', e => {
                     if (draggedItem) {
                         const container = document.getElementById('listContainer');
-                        if (draggedItem.classList.contains('card')) {
-                            if (newList.contains(draggedItem)) {
-                                return;
+                        if (newList.nextSibling === draggedItem.nextSibling) {
+                            container.insertBefore(draggedItem, newList);
+                            console.log("if");
+                        }
+                        else {
+                            var item = draggedItem;
+                            while(true){
+
+                                if(item === null|| item.id === newList.id)
+                                    break;
+                                if(item.nextSibling ===null)
+                                    item = null;
+                                else
+                                    item =item.nextSibling;
+
                             }
-                            newList.appendChild(draggedItem);
-                        } else if (draggedItem.classList.contains('list')) {
-                            if (newList.contains(draggedItem)) {
-                                return;
-                            }
-                            if (newList.nextSibling === draggedItem) {
-                                container.insertBefore(draggedItem, newList);
-                            } else {
+                            if(item === newList) {
+                                console.log("오른이동");
+                                // console.log("draggedItem"+draggedItem);
+                                // console.log("newList"+newList);
                                 container.insertBefore(draggedItem, newList.nextSibling);
                             }
+                            else if(item === null){
+                                // console.log("왼쪽이동");
+                                container.insertBefore(draggedItem, newList);
+                            }
                         }
+
+                        // 이동한 열의 위치를 변경한 후, 리스트 순서를 업데이트합니다.
+                        lists.forEach((list, index) => {
+                            container.appendChild(list);
+                        });
+                        console.log("함수전");
+                        moveColumn(draggedItem.id,newList.id);
                         newList.classList.remove('highlight');
                     }
                 });
@@ -277,7 +296,22 @@ function showSelectedBoard(boardId) {
 
     modalBoard.style.display = "block";
 }
-
+function moveColumn(dragColumn, targetColumn){
+    console.log("moveColumn");
+    $.ajax({
+        type: "PUT",
+        url: `/api/columns/${dragColumn}/position/${targetColumn}`,
+        contentType: "application/json",
+        success: function (response) {
+            console.log(response['msg']);
+        },
+        error: function (xhr, status, error) {
+            console.error(error);
+            console(xhr);
+            alert("위치이동을 DB에 업데이트하는 과정에서 오류발생");
+        }
+    })
+}
 function logout() {
     Cookies.remove('Authorization', {path: '/'});
     window.location.href = "/view/main";
@@ -325,7 +359,7 @@ function insertData(id, cardid){
         },
         success: function (response) {
             // 저장된 테이터 넣기
-            $(`<div id="${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+            $(`<div id="card-${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
 
             // 추가버튼 / insert버튼 제어
             $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
