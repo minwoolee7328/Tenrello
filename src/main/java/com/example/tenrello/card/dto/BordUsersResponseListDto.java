@@ -8,8 +8,10 @@ import lombok.Setter;
 @Setter
 public class BordUsersResponseListDto {
     private Long userId;
+    private String username;
 
     public BordUsersResponseListDto(UserBoard userList){
         this.userId = userList.getUser().getId();
+        this.username = userList.getUser().getUsername();
     }
 }

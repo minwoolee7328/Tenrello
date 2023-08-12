@@ -365,7 +365,7 @@ function model(id){
             'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
         },
         success: function (response) {
-            console.log(response);
+            console.log(response.commetList.length);
             $("#cardName").text(response.title);
 
             // 카드 내용 부분 생성
@@ -380,6 +380,35 @@ function model(id){
             //카드 메뉴 삭제버튼 생성
             $(`<button id="cardMenuDeleteBtn" onClick="cardDelete(${id})">카드삭제</button>`).prependTo(`#cardRight`);
 
+            // 댓글 입력 생성
+            // div 생성
+            $(`<div id="insertCommentDiv" class="insertCommentDiv"></div>`).prependTo(`.cardComment`);
+            // input 생성
+            $(`<input id="insertCommentInput" class="insertCommentInput" type="text"/>`).appendTo(`#insertCommentDiv`);
+            // 입력버튼 생성
+            $(`<button id="insertCommentBtn" class="insertCommentBtn" onclick="insertComment(${id})">입력</button>`).appendTo(`#insertCommentDiv`);
+
+            //댓글 들어갈 div 생성
+            $(`<div id="cardCommentContainer" class="cardCommentContainer"></div>`).appendTo(`.cardComment`);
+
+            // 댓글 div에 댓글추가
+            for(let i =0; i<response.commetList.length;i++){
+
+                // div 생성
+                $(`<div id="viewCardComment-${response.commetList[i]['id']}" class="viewCardComment"></div>`).appendTo(`.cardCommentContainer`);
+                // 이름 넣을곳
+                $(`<div id="commentUserName">${response.commetList[i]['username']}</div>`).appendTo(`#viewCardComment-${response.commetList[i]['id']}`);
+                // 댓글 내용 넣을곳
+                $(`<div id="userComment">${response.commetList[i]['comment']}</div>`).appendTo(`#viewCardComment-${response.commetList[i]['id']}`);
+
+                // 댓글 수정 버튼
+                $(`<button id="CommentUpdateBtn-${response.commetList[i]['id']}" class="CommentUpdateBtn" onclick="commentUpdateBtn(${response.commetList[i]['id']})">수정</button>`).appendTo(`#viewCardComment-${response.commetList[i]['id']}`);
+                // 댓글 삭제 버튼
+                $(`<button id="CommentDeleteBtn-${response.commetList[i]['id']}" class="CommentDeleteBtn" onclick="commentDelete(${response.commetList[i]['id']})">삭제</button>`).appendTo(`#viewCardComment-${response.commetList[i]['id']}`);
+            }
+
+            // 사용자 할당 버튼 생성
+            $(`<button id="cardAllotUsers" onClick="cardAllotUsersBtn(${id})">유저 추가</button>`).appendTo(`#cardRight`);
 
 
         },
@@ -396,6 +425,8 @@ function cardClose(){
     $("#contentNull").remove();
     $("#contentNotNull").remove();
     $("#cardMenuDeleteBtn").remove();
+    $("#cardCommentContainer").remove();
+    $("#insertCommentDiv").remove();
     $(".cardModal").fadeOut();
 }
 
@@ -521,6 +552,9 @@ function cardDelete(id){
             $("#contentNull").remove();
             $("#contentNotNull").remove();
             $("#cardMenuDeleteBtn").remove();
+            $("#cardCommentContainer").remove();
+            $("#insertCommentDiv").remove();
+
             $(".cardModal").fadeOut();
 
             // 보드 프론트에 반영하기
@@ -533,8 +567,151 @@ function cardDelete(id){
             toggleElements(false);
         }
     });
+
 }
 
+function insertComment(id){
+
+    $.ajax({
+        url: `/api/comment/cards/${id}`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({content: $(`#insertCommentInput`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+          // 댓글창에 추가
+            // // div 생성
+            $(`<div id="viewCardComment-${response.id}" class="viewCardComment"></div>`).appendTo(`.cardCommentContainer`);
+            // // 이름 넣을곳
+            $(`<div id="commentUserName">${response.username}</div>`).appendTo(`#viewCardComment-${response.id}`);
+            // // 댓글 내용 넣을곳
+            $(`<div id="userComment">${response.comment}</div>`).appendTo(`#viewCardComment-${response.id}`);
+            // 댓글 수정 버튼
+            $(`<button id="CommentUpdateBtn-${response.id}" class="CommentUpdateBtn" onclick="commentUpdateBtn(${response.id})">수정</button>`).appendTo(`#viewCardComment-${response.id}`);
+            // 댓글 삭제 버튼
+            $(`<button id="CommentDeleteBtn-${response.id}" class="CommentDeleteBtn" onclick="commentDelete(${response.id})">삭제</button>`).appendTo(`#viewCardComment-${response.id}`);
+
+        },
+        error: function () {
+            alert('카드데이터 불러오기 실패');
+            toggleElements(false);
+        }
+    });
+}
+
+function commentUpdateBtn(id){
+    $(`.cardCommentContainer`).find($(`button[class^='CommentUpdateBtn']`)).show();
+    $(`.cardCommentContainer`).find($(`button[class^='CommentDeleteBtn']`)).show();
+
+    $(`#updateCommentDiv`).remove();
+
+    // 수정 삭제 버튼 숨기기
+    $(`#CommentUpdateBtn-${id}`).hide();
+    $(`#CommentDeleteBtn-${id}`).hide();
+
+    // 댓글 수정창 생성
+    // div 생성
+    $(`<div id="updateCommentDiv" class="updateCommentDiv"></div>`).appendTo(`#viewCardComment-${id}`);
+    // input 생성
+    $(`<input id="updateCommentInput" class="updateCommentInput" type="text"/>`).appendTo(`#updateCommentDiv`);
+    // 입력버튼 생성
+    $(`<button id="updateCommentBtn" class="updateCommentBtn" onclick="commentUpdate(${id})">수정</button>`).appendTo(`#updateCommentDiv`);
+    // 취소버튼 생성
+    $(`<button id="updateCommentCancelBtn" class="updateCommentCancelBtn" onclick="updateCommentCancelBtn(${id})">취소</button>`).appendTo(`#updateCommentDiv`);
+
+}
+function commentUpdate(id){
+
+    $.ajax({
+        url: `/api/comments/${id}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({content: $(`#updateCommentInput`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 댓글 수정창 삭제
+            $(`#updateCommentDiv`).remove();
+
+            $(`.cardCommentContainer`).find($(`button[class^='CommentUpdateBtn']`)).show();
+            $(`.cardCommentContainer`).find($(`button[class^='CommentDeleteBtn']`)).show();
+
+            // 해당 댓글 내용 수정
+            $(`#viewCardComment-${id}`).find($(`div[id^='userComment']`)).text(response.content);
+
+        },
+        error: function () {
+            alert('댓글 작성자가 아닙니다.');
+
+            $(`#updateCommentDiv`).remove();
+
+            $(`.cardCommentContainer`).find($(`button[class^='CommentUpdateBtn']`)).show();
+            $(`.cardCommentContainer`).find($(`button[class^='CommentDeleteBtn']`)).show();
+
+            toggleElements(false);
+        }
+    });
+}
+
+function updateCommentCancelBtn(id){
+    $(`#updateCommentDiv`).remove();
+
+    $(`#CommentUpdateBtn-${id}`).show();
+    $(`#CommentDeleteBtn-${id}`).show();
+}
+
+function commentDelete(id){
+
+    $.ajax({
+        url: `/api/comments/${id}`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+         // 해당 DIV 삭제
+            $(`#viewCardComment-${id}`).remove();
+        },
+        error: function () {
+            alert('댓글 작성자가 아닙니다.');
+            toggleElements(false);
+        }
+    });
+
+}
+
+// 보드 사용자 띄우기
+function cardAllotUsersBtn(id){
+
+    $.ajax({
+        url: `/api/cards/${id}/user`,
+        type: 'POST',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 유저 정보 보여주기
+            $(".cardAllotUsersModal").fadeIn();
+
+            // 유저조회 모달창 닫기버튼 생성
+            $(`<button id="cardAllotUsersModalCancel" class="cardAllotUsersModalCancel" onclick="cardAllotUsersModalCancel(${id})">나가기</button>`).appendTo(`.cardAllotUsersModalContent`);
+        },
+        error: function () {
+            alert('댓글 작성자가 아닙니다.');
+            toggleElements(false);
+        }
+    });
+}
+
+//유저조회 모달창 닫기
+function cardAllotUsersModalCancel(){
+    $(".cardAllotUsersModal").fadeOut();
+}
 // <div id="card-${a['id']}" class="card" draggable="true">
 //     <div id="miniCardDiv-${a['id']}" class="miniCardDiv">
 //         <span id="cardTitleSpan-${a['id']}" onclick="model(${a['id']})">${a['title']}</span>

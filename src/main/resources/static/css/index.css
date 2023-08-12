@@ -391,6 +391,10 @@ input[type="text"] {
     height: 500px;
     border: 1px solid black;
 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }
 .cardState{
     width: 800px;
@@ -434,4 +438,23 @@ input[type="text"] {
 .contentNotNull:hover{
     background-color: cornsilk;
     cursor: pointer;
+}
+
+.cardAllotUsersModal{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.cardAllotUsersModalContent{
+    width:20%; height:20%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
 }

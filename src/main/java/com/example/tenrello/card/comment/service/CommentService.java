@@ -3,6 +3,7 @@ package com.example.tenrello.card.comment.service;
 import com.example.tenrello.card.comment.dto.CommentRequestDto;
 import com.example.tenrello.card.comment.dto.CommentResponseDto;
 import com.example.tenrello.card.comment.repository.CommentRepository;
+import com.example.tenrello.card.dto.CardCommentResponseDto;
 import com.example.tenrello.card.repository.CardRepository;
 import com.example.tenrello.entity.Card;
 import com.example.tenrello.entity.Comment;
@@ -22,7 +23,7 @@ public class CommentService {
     private final CardRepository cardRepository;
 
     // 댓글 생성
-    public CommentResponseDto createComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
+    public CardCommentResponseDto createComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         //카드 정보
         Optional<Card> card = cardRepository.findById(id);
         //유저 정보
@@ -33,7 +34,7 @@ public class CommentService {
 
         commentRepository.save(commet);
 
-        return new CommentResponseDto(commet.getContent());
+        return new CardCommentResponseDto(commet);
     }
 
     @Transactional
