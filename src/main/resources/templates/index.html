@@ -179,7 +179,11 @@
 
 
                     localStorage.setItem("modifyColumnId",null);
+
                     modifyDiv.style.display = 'none';
+                    title.innerText = "null";
+                    console.log(localStorage.getItem("boardId"));
+                    showSelectedBoard(localStorage.getItem("boardId"));
                 }
             })
 
