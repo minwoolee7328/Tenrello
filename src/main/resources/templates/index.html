@@ -137,7 +137,6 @@
     <button id="closeNicknameModal">닫기</button>
 </div>
 
-
 <!--컬럼수정모달-->
 <div id="columnModify">
     <h3>타이틀 이름</h3>
@@ -149,6 +148,21 @@
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+<!--카드 모달창-->
+
+<div class="cardModal">
+<!--    카드 top 엔 카드 이름-->
+    <div class="cardModeContent">
+        <div class="cardTop">
+            <h2 id="cardName" ></h2>
+            <button id="cardClose" onclick="cardClose()"> 카드 끄기</button>
+        </div>
+        <div class="cardMid">
+        </div>
+        <div class="cardBottom"> </div>
+    </div>
+
+</div>
 </body>
 <script>
     // 마이페이지 이동
@@ -189,10 +203,14 @@
                 alert(response['msg']);
 
 
-                localStorage.setItem("modifyColumnId", null);
-                modifyDiv.style.display = 'none';
-            }
-        })
+                    localStorage.setItem("modifyColumnId",null);
+
+                    modifyDiv.style.display = 'none';
+                    title.innerText = "null";
+                    console.log(localStorage.getItem("boardId"));
+                    showSelectedBoard(localStorage.getItem("boardId"));
+                }
+            })
 
 
         localStorage.setItem("modifyColumnId", null);
@@ -282,8 +300,10 @@
                 });
 
                 container.appendChild(newList);
+                const registerNicknameModal = document.getElementById('registerNicknameModal');
+                registerNicknameModal.style.display = 'none';
                 alert("컬럼 등록 완료");
-
+                //창 닫기
             }
         })
     }
@@ -410,6 +430,8 @@
         localStorage.setItem("boardId",boardId);
         showSelectedBoard(boardId);
     })
+    // 보드 리스트에서 보드 선택
+
 
 
 </script>

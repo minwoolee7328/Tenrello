@@ -1,5 +1,6 @@
 package com.example.tenrello.board.repository;
 
+import com.example.tenrello.entity.User;
 import com.example.tenrello.entity.UserBoard;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,4 +14,5 @@ public interface UserBoardRepository extends JpaRepository<UserBoard, Long> {
     @Query("SELECT ub FROM UserBoard ub JOIN FETCH ub.board WHERE ub.user.id = :userId")
     List<UserBoard> findAllByUserIdWithUserFetch(Long userId);
 
+    List<UserBoard> findByBoardId(Long boardId);
 }
