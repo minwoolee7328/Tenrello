@@ -117,7 +117,8 @@
     <div class="board-actions">
         <!-- 보드에 속한 멤버 리스트 보기 -->
         <div class="btn-group dropup" id="memberDropdownContainer">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                 Member List
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
@@ -137,6 +138,7 @@
     <button id="closeNicknameModal">닫기</button>
 </div>
 
+
 <!--컬럼수정모달-->
 <div id="columnModify">
     <h3>타이틀 이름</h3>
@@ -148,21 +150,6 @@
 <script src="/js/index.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<!--카드 모달창-->
-
-<div class="cardModal">
-<!--    카드 top 엔 카드 이름-->
-    <div class="cardModeContent">
-        <div class="cardTop">
-            <h2 id="cardName" ></h2>
-            <button id="cardClose" onclick="cardClose()"> 카드 끄기</button>
-        </div>
-        <div class="cardMid">
-        </div>
-        <div class="cardBottom"> </div>
-    </div>
-
-</div>
 </body>
 <script>
     // 마이페이지 이동
@@ -203,14 +190,10 @@
                 alert(response['msg']);
 
 
-                    localStorage.setItem("modifyColumnId",null);
-
-                    modifyDiv.style.display = 'none';
-                    title.innerText = "null";
-                    console.log(localStorage.getItem("boardId"));
-                    showSelectedBoard(localStorage.getItem("boardId"));
-                }
-            })
+                localStorage.setItem("modifyColumnId", null);
+                modifyDiv.style.display = 'none';
+            }
+        })
 
 
         localStorage.setItem("modifyColumnId", null);
@@ -300,10 +283,8 @@
                 });
 
                 container.appendChild(newList);
-                const registerNicknameModal = document.getElementById('registerNicknameModal');
-                registerNicknameModal.style.display = 'none';
                 alert("컬럼 등록 완료");
-                //창 닫기
+
             }
         })
     }
@@ -375,6 +356,7 @@
     // 현재 보이는 보드 삭제
     $(document).on("click", "#deleteThisBoard", deleteThisBoard);
 
+    // ready
     $(document).ready(function () {
         localStorage.setItem("boardId", null);
         // 내가 속한 보드 리스트 가져오기
@@ -395,7 +377,7 @@
                     let boardId = a['boardId'];
 
                     let temp_html = `
-                        <li class="list-group-item" id="${boardId}">${boardName}</li>
+                        <li class="list-group-item" list-board-id="${boardId}">${boardName}</li>
                     `;
 
                     temp_htmls += temp_html;
@@ -409,29 +391,14 @@
         });
     })//내가 속한 보드리스트 가져오기
 
-    // 보드 속 컬럼이 존재하는지 여부에 따라 보이는 내용이 다르도록
-    function toggleElements(responseExists) {
-        if (responseExists) {
-            // 컬럼이 있을 때
-            modalBoard.style.display = "block";
-            $("#deleteThisBoard").show();
-        } else {
-            // 컬럼이 없을 때 버튼만 보이도록
-            modalBoard.style.display = "block";
-            $("#listContainer").hide();
-            $("#deleteThisBoard").show();
-        }
-    }
 
     const modalBoard = document.querySelector(".modal-board");
     var boardId;
-    $(document).on("click", ".list-group-item", function (){
-        boardId = $(this).attr('id');
-        localStorage.setItem("boardId",boardId);
+    $(document).on("click", ".list-group-item", function () {
+        boardId = $(this).attr('list-board-id');
+        localStorage.setItem("boardId", boardId);
         showSelectedBoard(boardId);
     })
-    // 보드 리스트에서 보드 선택
-
 
 
 </script>

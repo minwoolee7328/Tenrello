@@ -14,7 +14,6 @@ function DeleteColumnBtn(id) {
         success: function (response) {
             alert("컬럼 삭제 완료")
             window.location.href = "/view/next";
-            showSelectedBoard();
         },
         error: function (xhr, status, error) {
             alert("컬럼 삭제 실패")
@@ -47,10 +46,9 @@ function getJwtFromCookie() {
         }
     }
 
-        return null; // JWT가 존재하지 않는 경우 null 반환
-    }
+    return null; // JWT가 존재하지 않는 경우 null 반환
+}
 
-    //더미 데이터로 들어오는 컬럼 혹은 카드들을 움직이게 이벤트 설정 해주는 코드
 document.addEventListener("DOMContentLoaded", function () {
     var offcanvasElement = document.querySelector("#offcanvasScrolling");
     var offcanvas = new bootstrap.Offcanvas(offcanvasElement);
@@ -129,6 +127,13 @@ closeNicknameModalButton.addEventListener('click', function () {
     nicknameModalOverlay.style.display = 'none';
 });
 
+// 로그아웃
+function logout() {
+    Cookies.remove('Authorization', {path: '/'});
+    window.location.href = "/view/main";
+}
+
+// 보드 속 컬럼이 존재하는지 여부에 따라 보이는 내용이 다르도록
 function toggleElements(responseExists) {
     if (responseExists) {
         // 컬럼이 있을 때
@@ -175,10 +180,9 @@ function showSelectedBoard(boardId) {
             response.forEach((a) => {
                 let columnId = a['id'];
                 let columnTitle = a['title'];
-                let cardTitles = a['cardList'];
 
                 columnSettingArr[i] = columnId;
-                i+=1;
+                i += 1;
 
                 let temp_html = `
                         <div class="list" id="${columnId}" draggable="true">
@@ -186,25 +190,11 @@ function showSelectedBoard(boardId) {
                                    <button onclick="DeleteColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
                                    <button onclick="modifyColumnBtn(${columnId})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
                             </div>
+<!--                            카드-->
+                        </div>
                     `;
 
-                cardTitles.forEach((a)=>{
-                    let card_html =`<div id="card-${a['id']}" class="card" draggable="true" onclick="model(${a['id']})">${a['title']}</div>`;
-
-                    temp_html+=card_html;
-                })
-
-                temp_htmls += temp_html +`
-                                             <div id="cardInsertDiv-${columnId}" class="insertDid" style="display: none">
-                                             <input id="cardInsert-${columnId}"  type="text"/>
-                                             <button id="insert" onclick="insertData(${columnId},${a['id']})">확인</button>
-                                             <button id="cancle" onclick="cancleBtn(${columnId})">취소</button>
-                                             </div>
-
-                                             <button id="createBtn-${columnId}" class="createBtn" onclick="createBtn(${columnId})">카드 추가하기</button>
-
-                                       </div>`;
-
+                temp_htmls += temp_html;
             });
             console.log('forEach문 끝');
             $('#listContainer').append(temp_htmls);
@@ -212,7 +202,7 @@ function showSelectedBoard(boardId) {
             showMembersOfBoard(clickedBoardId);
             modalBoard.style.display = "block";
 
-            columnSettingArr.forEach((col)=>{       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
+            columnSettingArr.forEach((col) => {       //조회된 컬럼들 순서대로 드래그 자리 바꾸기 가능하게 설정
                 const newList = document.getElementById(col);
                 newList.className = 'list';
                 newList.draggable = true;
@@ -247,40 +237,21 @@ function showSelectedBoard(boardId) {
                 newList.addEventListener('drop', e => {
                     if (draggedItem) {
                         const container = document.getElementById('listContainer');
-                        if (newList.nextSibling === draggedItem.nextSibling) {
-                            container.insertBefore(draggedItem, newList);
-                            console.log("if");
-                        }
-                        else {
-                            var item = draggedItem;
-                            while(true){
-
-                                if(item === null|| item.id === newList.id)
-                                    break;
-                                if(item.nextSibling ===null)
-                                    item = null;
-                                else
-                                    item =item.nextSibling;
-
+                        if (draggedItem.classList.contains('card')) {
+                            if (newList.contains(draggedItem)) {
+                                return;
                             }
-                            if(item === newList) {
-                                console.log("오른이동");
-                                // console.log("draggedItem"+draggedItem);
-                                // console.log("newList"+newList);
+                            newList.appendChild(draggedItem);
+                        } else if (draggedItem.classList.contains('list')) {
+                            if (newList.contains(draggedItem)) {
+                                return;
+                            }
+                            if (newList.nextSibling === draggedItem) {
+                                container.insertBefore(draggedItem, newList);
+                            } else {
                                 container.insertBefore(draggedItem, newList.nextSibling);
                             }
-                            else if(item === null){
-                                // console.log("왼쪽이동");
-                                container.insertBefore(draggedItem, newList);
-                            }
                         }
-
-                        // 이동한 열의 위치를 변경한 후, 리스트 순서를 업데이트합니다.
-                        lists.forEach((list, index) => {
-                            container.appendChild(list);
-                        });
-                        console.log("함수전");
-                        moveColumn(draggedItem.id,newList.id);
                         newList.classList.remove('highlight');
                     }
                 });
@@ -296,28 +267,6 @@ function showSelectedBoard(boardId) {
     });
 
     modalBoard.style.display = "block";
-}
-
-function moveColumn(dragColumn, targetColumn){
-    console.log("moveColumn");
-    $.ajax({
-        type: "PUT",
-        url: `/api/columns/${dragColumn}/position/${targetColumn}`,
-        contentType: "application/json",
-        success: function (response) {
-            console.log(response['msg']);
-        },
-        error: function (xhr, status, error) {
-            console.error(error);
-            console(xhr);
-            alert("위치이동을 DB에 업데이트하는 과정에서 오류발생");
-        }
-    })
-}
-
-function logout() {
-    Cookies.remove('Authorization', {path: '/'});
-    window.location.href = "/view/main";
 }
 
 // 보드 모달 none, block
@@ -409,95 +358,3 @@ function showMembersOfBoard(clickedBoardId) {
         }
     });
 }
-
-//카드추가 버튼
-function createBtn(id){
-    //추가하기 버튼 해당 컬럼 id 불러오기
-    console.log("id",id);
-
-    $(`#listContainer`).find($(`div[class^='insertDid']`)).hide();
-    $(`#listContainer`).find($(`button[class^='createBtn']`)).show();
-
-    // 카드 부분에 insert 창 만들기
-
-    // 카드 추가하기 버튼 숨기기
-    $(`#createBtn-${id}`).hide();
-
-    //insert 창 만들기 show (컬럼에 해당하는)
-    $(`#cardInsertDiv-${id}`).show();
-
-}
-
-
-
-// 카드추가 취소
-function cancleBtn(id){
-    // 카드 추가하기 버튼 나타내기
-    $(`#createBtn-${id}`).show();
-
-    //컬럼에 해당하는 insert창 숨기기
-    $(`#cardInsertDiv-${id}`).hide();
-}
-
-// 카드추가 기능
-function insertData(id, cardid){
-
-    $.ajax({
-        url: `/api/card/columns/${id}`,
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify({title: $(`#cardInsert-${id}`).val()}),
-        headers: {
-            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-        },
-        success: function (response) {
-            // 저장된 테이터 넣기
-            $(`<div id="card-${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
-
-            // 추가버튼 / insert버튼 제어
-            $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
-            $(`#column-${id}`).find($(`button[id^='createBtn-${id}']`)).show();
-
-        },
-        error: function () {
-
-            console.log('카드생성 실패');
-            toggleElements(false);
-        }
-    });
-}
-
-// 카드 모달창 띄우기
-
-$("#cardName")
-
-
-function model(id){
-    $(".cardModal").fadeIn();
-
-    $("#cardName").text("카드이름");
-    // 카드 데이터 불러오기
-
-    $.ajax({
-        url: `/api/cards/${id}`,
-        type: 'GET',
-        contentType: 'application/json',
-        headers: {
-            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
-        },
-        success: function (response) {
-            $("#cardName").text(response.title);
-
-        },
-        error: function () {
-            alert('카드데이터 불러오기 실패');
-            toggleElements(false);
-        }
-    });
-
-}
-
-function cardClose(){
-    $(".cardModal").fadeOut();
-}
-
