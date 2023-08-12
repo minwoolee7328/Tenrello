@@ -147,11 +147,11 @@ function toggleElements(responseExists) {
     }
 }
 
-function showSelectedBoard(boardId) {
+function showSelectedBoard(boardId, boardTitle) {
 
     var clickedBoardId = localStorage.getItem("boardId");
 
-    var clickedBoardName = $(this).text();
+    var clickedBoardName = localStorage.getItem("boardTitle");
 
     console.log('Clicked Board ID:', clickedBoardId);
     console.log('Clicked Board Name:', clickedBoardName);

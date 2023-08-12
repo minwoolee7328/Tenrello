@@ -394,10 +394,15 @@
 
     const modalBoard = document.querySelector(".modal-board");
     var boardId;
+    var boardTitle;
     $(document).on("click", ".list-group-item", function () {
         boardId = $(this).attr('list-board-id');
         localStorage.setItem("boardId", boardId);
-        showSelectedBoard(boardId);
+
+        boardTitle = $(this).text();
+        localStorage.setItem("boardTitle", boardTitle);
+
+        showSelectedBoard(boardId, boardTitle);
     })
 
 
