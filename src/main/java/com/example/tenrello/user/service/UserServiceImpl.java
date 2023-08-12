@@ -2,15 +2,18 @@ package com.example.tenrello.user.service;
 
 import com.example.tenrello.entity.User;
 import com.example.tenrello.user.CheckPasswordDto;
-import com.example.tenrello.user.dto.NicknameRequestDto;
-import com.example.tenrello.user.dto.PasswordRequestDto;
-import com.example.tenrello.user.dto.ProfileResponseDto;
+import com.example.tenrello.user.dto.*;
 import com.example.tenrello.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -71,5 +74,37 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("존재하지 않는 사용자 아이디입니다.")
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SearchUserResponseDto searchUserByUsername(UserSearchCond userSearchCond) {
+        List<User> searchByUsername
+                = userRepository.searchUserByKeyword(userSearchCond);
+
+
+        List<User> searchByNickname
+                = userRepository.searchNickByKeyword(userSearchCond);
+
+        List<SimpleUserInfoDto> result = mergeUserResultLists(searchByUsername, searchByNickname)
+                .stream()
+                .map(SimpleUserInfoDto::new)
+                .toList();
+
+        return new SearchUserResponseDto(result);
+    }
+
+    private List<User> mergeUserResultLists(List<User> list1, List<User> list2) {
+        Map<Long, User> map = new HashMap<>();
+
+        for (User user1 : list1) {
+            map.put(user1.getId(), user1);
+        }
+
+        for (User user2 : list2) {
+            map.putIfAbsent(user2.getId(), user2);
+        }
+
+        return new ArrayList<>(map.values());
     }
 }

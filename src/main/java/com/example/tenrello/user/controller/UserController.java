@@ -3,9 +3,7 @@ package com.example.tenrello.user.controller;
 import com.example.tenrello.common.dto.ApiResponseDto;
 import com.example.tenrello.security.details.UserDetailsImpl;
 import com.example.tenrello.user.CheckPasswordDto;
-import com.example.tenrello.user.dto.NicknameRequestDto;
-import com.example.tenrello.user.dto.PasswordRequestDto;
-import com.example.tenrello.user.dto.ProfileResponseDto;
+import com.example.tenrello.user.dto.*;
 import com.example.tenrello.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,5 +48,14 @@ public class UserController {
         log.info("비밀번호 변경 컨트롤러");
         userService.updatePassword(userDetails.getUser(), requestDto);
         return ResponseEntity.ok().body(new ApiResponseDto("비밀번호 변경 완료", HttpStatus.OK.value()));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<SearchUserResponseDto> searchUserByUsername(
+            @RequestBody SearchUserRequestDto requestDto
+    ) {
+        log.info("사용자 찾기 컨트롤러");
+        SearchUserResponseDto result = userService.searchUserByUsername(new UserSearchCond(requestDto.getKeyword()));
+        return ResponseEntity.ok().body(result);
     }
 }
