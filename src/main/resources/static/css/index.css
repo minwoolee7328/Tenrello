@@ -325,6 +325,7 @@ input[type="text"] {
     margin-left: 10px;
 }
 
+/* 멤버 보기 + 삭제 버튼 */
 .board-actions {
     display: flex;
     align-items: center;

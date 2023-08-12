@@ -163,6 +163,7 @@ function deleteThisBoard() {
     }
 }
 
+// 보드에 속한 멤버 보기
 function showMembersOfBoard(clickedBoardId) {
     $.ajax({
         url: 'http://localhost:8080/api/boards/' + clickedBoardId + '/members',
