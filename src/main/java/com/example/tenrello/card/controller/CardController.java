@@ -19,25 +19,25 @@ public class CardController {
 
     private final CardService cardService;
 
-    // 카드생성
+    // 카드생성 (프론트완료)
     @PostMapping("/card/columns/{id}")
     public CardResponseDto createCard(@PathVariable Long id, @RequestBody CardRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
       return cardService.createCard(id, requestDto, userDetails);
     }
 
-    // 카드 제목 변경
+    // 카드 제목 변경 (프론트완료)
     @PutMapping("/card/cardTitles/{id}")
     public CardResponseDto updateCardTitle(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
       return cardService.updateCardTitle(id, requestDto);
     }
 
-    // 카드 내용 변경
+    // 카드 내용 변경 (프론트완료)
     @PutMapping("/card/cardContents/{id}")
     public CardResponseDto updateCardContent(@PathVariable Long id, @RequestBody CardRequestDto requestDto){
         return cardService.updateCardContent(id, requestDto);
     }
 
-    //카드 삭제
+    //카드 삭제 (프론트완료)
     @DeleteMapping("/cards/{id}")
     public ResponseEntity<ApiResponseDto> deleteCard(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         cardService.deleteCard(id, userDetails);
@@ -50,7 +50,7 @@ public class CardController {
         return cardService.chId(id, requestDto);
     }
 
-    // 특정 카드 조회
+    // 특정 카드 조회 (프론트완료)
     @GetMapping("/cards/{id}")
     public CardResponseDto getCard(@PathVariable Long id){
         return cardService.getCard(id);

@@ -191,7 +191,19 @@ function showSelectedBoard(boardId) {
                     `;
 
                 cardTitles.forEach((a)=>{
-                    let card_html =`<div id=${a['id']}" class="card" draggable="true" onclick="model(${a['id']})">${a['title']}</div>`;
+                    let card_html =`
+                                            
+                                            <div id="card-${a['id']}" class="card" draggable="true">
+                                                <div id="miniCardDiv-${a['id']}" class="miniCardDiv">
+                                                    <span id="cardTitleSpan-${a['id']}" onclick="model(${a['id']})">${a['title']}</span>
+                                                    <button id="cardDeleteBtn" class="cardDeleteBtn" onclick="cardUpdate(${a['id']})">수정</button>
+                                                </div>
+                                                <div id="updateCard-${a['id']}" class="updateCard" style="display: none">
+                                                    <input id="updateCardInput-${a['id']}" type="text" value="${a['title']}">
+                                                    <button onclick="updateCard(${a['id']})">수정</button>
+                                                    <button onclick="updateCardCancle(${a['id']})">취소</button>
+                                                </div>
+                                            </div>`;
 
                     temp_html+=card_html;
                 })
@@ -199,7 +211,7 @@ function showSelectedBoard(boardId) {
                 temp_htmls += temp_html +`
                                              <div id="cardInsertDiv-${columnId}" class="insertDid" style="display: none">
                                              <input id="cardInsert-${columnId}"  type="text"/>
-                                             <button id="insert" onclick="insertData(${columnId},${a['id']})">확인</button>
+                                             <button id="insert" onclick="insertData(${columnId})">확인</button>
                                              <button id="cancle" onclick="cancleBtn(${columnId})">취소</button>
                                              </div>
 
@@ -302,7 +314,6 @@ function createBtn(id){
 }
 
 
-
 // 카드추가 취소
 function cancleBtn(id){
     // 카드 추가하기 버튼 나타내기
@@ -313,7 +324,7 @@ function cancleBtn(id){
 }
 
 // 카드추가 기능
-function insertData(id, cardid){
+function insertData(id){
 
     $.ajax({
         url: `/api/card/columns/${id}`,
@@ -325,7 +336,7 @@ function insertData(id, cardid){
         },
         success: function (response) {
             // 저장된 테이터 넣기
-            $(`<div id="${cardid}" class="card" draggable="true" onclick="model(${cardid})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+            $(`<div id="card-${response.id}" class="card" draggable="true" onclick="model(${response.id})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
 
             // 추가버튼 / insert버튼 제어
             $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
@@ -341,14 +352,9 @@ function insertData(id, cardid){
 }
 
 // 카드 모달창 띄우기
-
-$("#cardName")
-
-
 function model(id){
     $(".cardModal").fadeIn();
 
-    $("#cardName").text("카드이름");
     // 카드 데이터 불러오기
 
     $.ajax({
@@ -359,7 +365,22 @@ function model(id){
             'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
         },
         success: function (response) {
+            console.log(response);
             $("#cardName").text(response.title);
+
+            // 카드 내용 부분 생성
+            if(response.content == null){
+                $(`<div id="contentNull" class="contentNull" onClick="insertContentBtn(${id})"></div>`).prependTo(`#content`);
+                $("#contentNull").text("내용을 입력하세요");
+            }else {
+                $(`<div id="contentNotNull" class="contentNotNull" onClick="updateContentBtn(${id})"></div>`).prependTo(`#content`);
+                $("#contentNotNull").text(response.content);
+            }
+
+            //카드 메뉴 삭제버튼 생성
+            $(`<button id="cardMenuDeleteBtn" onClick="cardDelete(${id})">카드삭제</button>`).prependTo(`#cardRight`);
+
+
 
         },
         error: function () {
@@ -370,7 +391,158 @@ function model(id){
 
 }
 
+// 카드 모달창 접기
 function cardClose(){
+    $("#contentNull").remove();
+    $("#contentNotNull").remove();
+    $("#cardMenuDeleteBtn").remove();
     $(".cardModal").fadeOut();
 }
 
+function cardUpdate(id){
+    //다른 업데이트 창 숨기기
+    $(`.card`).find($(`div[class^='updateCard']`)).hide();
+    $(`.card`).find($(`div[class^='miniCardDiv']`)).show();
+    //카드 내용 숨기고 업데이트창 출력
+    $(`#miniCardDiv-${id}`).hide();
+    $(`#updateCard-${id}`).show();
+
+}
+
+function updateCardCancle(id){
+    //업데이트 창 숨기고 카드 내용 출력
+    $(`#updateCard-${id}`).hide();
+    $(`#miniCardDiv-${id}`).show();
+}
+
+//카드 제목변경
+function updateCard(id){
+
+    $.ajax({
+        url: `/api/card/cardTitles/${id}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({title: $(`#updateCardInput-${id}`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 노드 title 값 변경
+            $(`.miniCardDiv`).find($(`span[id^='cardTitleSpan-${id}']`)).text(response.title);
+
+            //업데이트 창 숨기고 카드 내용 출력
+            $(`#updateCard-${id}`).hide();
+            $(`#miniCardDiv-${id}`).show();
+        },
+        error: function () {
+            alert('카드데이터 불러오기 실패');
+            toggleElements(false);
+        }
+    });
+}
+function insertContentBtn(id){
+    // 내용입력 버튼 hide
+    $(`#contentNull`).hide();
+
+    // 내용입력창 생성
+    // div 생성
+    $(`<div id="insertContentDiv" class="insertContentDiv"></div>`).prependTo(`#content`);
+    // input 생성
+    $(`<input id="insertContentInput" class="insertContentInput" type="text"/>`).appendTo(`#insertContentDiv`);
+    // 입력버튼 생성
+    $(`<button id="insertContentBtn" class="insertContentBtn" onclick="insertContent(${id})">입력</button>`).appendTo(`#insertContentDiv`);
+    // 취소버튼 생성
+    $(`<button id="insertContentCancelBtn" class="insertContentCancelBtn" onclick="insertContentCancel()">취소</button>`).appendTo(`#insertContentDiv`);
+
+}
+
+
+function insertContent(id){
+    // 내용 저장
+    $.ajax({
+        url: `/api/card/cardContents/${id}`,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify({content: $(`#insertContentInput`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            //입력창 삭제
+            $(`#insertContentDiv`).remove();
+            $(`#contentNull`).remove();
+
+            // 데이터 입력 밑 보여주기
+            $(`<div id="contentNotNull" class="contentNotNull" onClick="updateContentBtn(${id})"></div>`).prependTo(`#content`);
+            $("#contentNotNull").text(response.content);
+        },
+        error: function () {
+            alert('카드데이터 불러오기 실패');
+            toggleElements(false);
+        }
+    });
+
+}
+
+function updateContentBtn(id){
+    // 내용창 생성
+    $(`#contentNotNull`).hide();
+
+    // 내용입력창 생성
+    // div 생성
+    $(`<div id="insertContentDiv" class="insertContentDiv"></div>`).prependTo(`#content`);
+    // input 생성
+    $(`<input id="insertContentInput" class="insertContentInput" type="text"/>`).appendTo(`#insertContentDiv`);
+    // 입력버튼 생성
+    $(`<button id="insertContentBtn" class="insertContentBtn" onclick="insertContent(${id})">수정</button>`).appendTo(`#insertContentDiv`);
+    // 취소버튼 생성
+    $(`<button id="insertContentCancelBtn" class="insertContentCancelBtn" onclick="insertContentCancel()">취소</button>`).appendTo(`#insertContentDiv`);
+}
+
+function insertContentCancel(){
+    $(`#contentNotNull`).show();
+    $(`#contentNull`).show();
+    $(`#insertContentDiv`).remove();
+}
+
+function cardDelete(id){
+    // 카드 삭제시
+
+    // 카드 삭제후 모달창 끄기
+    $.ajax({
+        url: `/api/cards/${id}`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 모달창 끄기
+            $("#contentNull").remove();
+            $("#contentNotNull").remove();
+            $("#cardMenuDeleteBtn").remove();
+            $(".cardModal").fadeOut();
+
+            // 보드 프론트에 반영하기
+            // 컬럼에 헤댕하는 노드 삭제
+            $(`#card-${id}`).remove();
+
+        },
+        error: function () {
+            alert('카드데이터 불러오기 실패');
+            toggleElements(false);
+        }
+    });
+}
+
+// <div id="card-${a['id']}" class="card" draggable="true">
+//     <div id="miniCardDiv-${a['id']}" class="miniCardDiv">
+//         <span id="cardTitleSpan-${a['id']}" onclick="model(${a['id']})">${a['title']}</span>
+//         <button id="cardDeleteBtn" class="cardDeleteBtn" onclick="cardUpdate(${a['id']})">수정</button>
+//     </div>
+//     <div id="updateCard-${a['id']}" class="updateCard" style="display: none">
+//         <input id="updateCardInput-${a['id']}" type="text" value="${a['title']}">
+//             <button onclick="updateCard(${a['id']})">수정</button>
+//             <button onclick="updateCardCancle(${a['id']})">취소</button>
+//     </div>
+// </div>
