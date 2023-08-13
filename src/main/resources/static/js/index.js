@@ -502,3 +502,128 @@ function showMembersOfBoard(clickedBoardId) {
         }
     });
 }
+
+// ======================================================================= 사용자 검색
+$('#searchUserBtn').click(clickSearchUserIcon);
+
+// 검색어 입력 후 검색 버튼 클릭 -> 모달 창에 검색 결과 출력
+function clickSearchUserIcon() {
+    console.log('사용자 검색 클릭');
+    let userSearchKeyword = $('#searchKeywordInput').val();
+    console.log(userSearchKeyword);
+
+    if (userSearchKeyword.trim() === '') {
+        alert('검색어를 입력하세요');
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: `/api/users/search?keyword=${userSearchKeyword}`,
+        headers: {
+            'Authorization': document.cookie
+        },
+        success: function (response) {
+            console.log('검색 요청 성공');
+            console.log(response);
+            // 모달 보이기
+            showModal('showSearchResultModal', 'searchResultModalOverlay');
+
+            // 검색 결과 붙이기
+            let temp_htmls = '';
+            $('#searchedUserListUl').empty();
+
+            response.searchUserResults.forEach((a) => {
+                let searchedUserId = a['userId'];
+                let searchedUsername = a['username'];
+                let searchedUserNickname = a['nickname'];
+
+                let temp_html = `
+                        <li class="list-searched-user-item" list-search-result-id="${searchedUserId}">
+                            <div class="search-result-username" id="list-search-result-username" style="font-weight: bold">${searchedUsername}</div>
+                            <div class="search-result-nickname" id="list-search-result-nickname">${searchedUserNickname}</div>
+                            <button class="invite-button">초대</button>
+                            <div>-----------------</div>
+                        </li>
+                    `;
+
+                temp_htmls += temp_html;
+            });
+            console.log('검색결과 forEach문 끝');
+            $('#searchedUserListUl').append(temp_htmls);
+
+        },
+        error: function (response) {
+            console.log('검색 요청 실패');
+            console.log(response);
+        }
+    })
+}
+
+const closeSearchResultModalBtn = document.getElementById('closeSearchResultModal');
+
+closeSearchResultModalBtn.addEventListener('click', closeModal.bind(null, 'showSearchResultModal', 'searchResultModalOverlay'));
+
+// 모달 열기
+function showModal(modalId, overlayId) {
+    const modal = document.getElementById(modalId);
+    const overlay = document.getElementById(overlayId);
+    modal.style.display = 'block';
+    overlay.style.display = 'block';
+}
+
+// 모달 닫기
+function closeModal(modalId, overlayId) {
+    const modal = document.getElementById(modalId);
+    const overlay = document.getElementById(overlayId);
+    modal.style.display = 'none';
+    overlay.style.display = 'none';
+}
+
+// 검색된 사용자 중 선택
+let clickedUserIdToInvite;
+let clickedUsernameToInvite;
+
+$(document).on("click", ".invite-button", function () {
+    clickedUserIdToInvite = $(this).closest(".list-searched-user-item").attr("list-search-result-id");
+    localStorage.setItem("clickedUserIdToInvite", clickedUserIdToInvite);
+
+    clickedUsernameToInvite = $(this).closest(".list-searched-user-item").find(".search-result-username").text();
+
+    localStorage.setItem("clickedUsernameToInvite", clickedUsernameToInvite);
+    console.log('저장 직전 clickedInviteUsername: ' + clickedUsernameToInvite);
+
+    inviteUserThisBoard(clickedUserIdToInvite, clickedUsernameToInvite)
+})
+
+// 클릭한 사용자 초대
+function inviteUserThisBoard(clickedUserIdToInvite, clickedUsernameToInvite) {
+    let clickedInviteUserId = localStorage.getItem("clickedUserIdToInvite");
+    let clickedInviteUsername = localStorage.getItem("clickedUsernameToInvite");
+    let currentBoardId = localStorage.getItem("boardId");
+    let currentBoardTitle = localStorage.getItem("boardTitle");
+
+    console.log('clickedInviteUserId: ' + clickedInviteUserId);
+    console.log('clickedInviteUsername: ' + clickedInviteUsername);
+    console.log('currentBoardId: ' + currentBoardId);
+
+    if(confirm(clickedInviteUsername + '을(를) ' + currentBoardTitle + ' 보드에 초대하시겠습니까?')) {
+
+        $.ajax({
+            type: "POST",
+            url: `/api/boards/${currentBoardId}/invite/${clickedInviteUserId}`,
+            contentType: "application/json",
+            success: function (xhr) {
+                console.log(xhr);
+                console.log('보드에 초대 요청 성공');
+                alert(xhr.msg);
+            },
+            error: function (response) {
+                console.log('보드에 초대 요청 실패');
+                console.log(response.responseJSON.msg);
+                alert(response.responseJSON.msg);
+            }
+        })
+    }
+
+}
