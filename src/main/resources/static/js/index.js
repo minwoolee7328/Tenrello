@@ -334,6 +334,9 @@ function showMembersOfBoard(clickedBoardId) {
                 const memberLink = document.createElement('a'); // Create an anchor element
                 memberLink.className = 'dropdown-item'; // Set the class name
                 memberLink.textContent = member.username; // Set the username as text content
+                memberLink.onclick = function() {
+                    openPermissionModal(clickedBoardId, member.userId); // Pass the necessary parameters
+                };
                 memberListItem.appendChild(memberLink); // Append the anchor element to the list item
                 memberDropdownList.appendChild(memberListItem); // Append the list item to the dropdown menu
             });
@@ -342,4 +345,41 @@ function showMembersOfBoard(clickedBoardId) {
             console.log('멤버 목록 불러오기 오류');
         }
     });
+}
+
+function openPermissionModal(boardId, userId) {
+    const modal = document.getElementById('permissionModal');
+    const changePermissionsButton = document.getElementById('changePermissions');
+
+    changePermissionsButton.onclick = function() {
+        modal.style.display = 'none';
+        changeBoardPermissions(boardId, userId);
+    };
+
+    const closeModal = document.getElementById('closeModal');
+    closeModal.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    modal.style.display = 'block';
+}
+
+function changeBoardPermissions(boardId, userId) {
+    const url = `http://localhost:8080/api/boards/${boardId}/members/${userId}`;
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': document.cookie
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            alert("권한 변경이 완료되었습니다.")
+        })
+        .catch(error => {
+            console.error('Error changing permissions:', error);
+            alert("권한 변경 오류")
+        });
 }
