@@ -492,7 +492,10 @@ function showMembersOfBoard(clickedBoardId) {
                 const memberListItem = document.createElement('li');
                 const memberLink = document.createElement('a'); // Create an anchor element
                 memberLink.className = 'dropdown-item'; // Set the class name
-                memberLink.textContent = member.username; // Set the username as text content
+                memberLink.textContent = `${member.username} (${member.role})`; // Set the username as text content
+                memberLink.onclick = function() {
+                    openPermissionModal(clickedBoardId, member.userId); // Pass the necessary parameters
+                };
                 memberListItem.appendChild(memberLink); // Append the anchor element to the list item
                 memberDropdownList.appendChild(memberListItem); // Append the list item to the dropdown menu
             });
@@ -502,6 +505,50 @@ function showMembersOfBoard(clickedBoardId) {
         }
     });
 }
+
+// 권한 변경 모달 열고 닫기
+function openPermissionModal(boardId, userId) {
+    const modal = document.getElementById('permissionModal');
+    const changePermissionsButton = document.getElementById('changePermissions');
+
+    changePermissionsButton.onclick = function() {
+        modal.style.display = 'none';
+        changeBoardPermissions(boardId, userId);
+    };
+
+    const closeModal = document.getElementById('closeModal');
+    closeModal.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    modal.style.display = 'block';
+}
+
+// 권한 변경
+function changeBoardPermissions(boardId, userId) {
+    console.log(boardId);
+    console.log(userId);
+
+    const url = `http://localhost:8080/api/boards/${boardId}/members/${userId}`;
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': document.cookie
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data.message);
+            alert("권한 변경이 완료되었습니다.")
+            location.reload();
+        })
+        .catch(error => {
+            console.error('Error changing permissions:', error);
+            alert("권한 변경 오류")
+        });
+}
+
 
 // ======================================================================= 사용자 검색
 $('#searchUserBtn').click(clickSearchUserIcon);
