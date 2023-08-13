@@ -52,10 +52,10 @@ public class UserController {
 
     @GetMapping("/search")
     public ResponseEntity<SearchUserResponseDto> searchUserByUsername(
-            @RequestBody SearchUserRequestDto requestDto
+            @RequestParam("keyword") String keyword
     ) {
         log.info("사용자 찾기 컨트롤러");
-        SearchUserResponseDto result = userService.searchUserByUsername(new UserSearchCond(requestDto.getKeyword()));
+        SearchUserResponseDto result = userService.searchUserByUsername(new UserSearchCond(keyword));
         return ResponseEntity.ok().body(result);
     }
 }
