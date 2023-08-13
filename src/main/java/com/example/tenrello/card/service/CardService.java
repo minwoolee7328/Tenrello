@@ -241,7 +241,10 @@ public class CardService {
         // 해당 카드에 달린 댓글 같이출력
         List<Comment> commentList = commentRepository.findAllByCardId(card.get().getId());
 
-        return new CardResponseDto(card.get(),commentList);
+        // 해당 카드에 할당된 작업자 같이 출력
+        List<UserCard> UserCardList = userCardRepository.findAllByCardId(card.get().getId());
+
+        return new CardResponseDto(card.get(),commentList,UserCardList);
     }
 
     // 시간 데이터 저장
@@ -256,6 +259,7 @@ public class CardService {
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
         System.out.println("timeRequestDto.getEndTime() = " + timeRequestDto.getEndTime());
+
         // 시작 날짜 는 생성할때 시간으로 고정 (시작날짜를 선택했는지 여부)
         if(timeRequestDto.isStartTime()){
             // 시작 날짜와 마감날짜의 데이터를 저장
@@ -322,14 +326,20 @@ public class CardService {
         // 보드 id 에 해당하는 유저들을 뽑아서
         Long boardId = card.get().getColumn().getBoard().getId();
 
+        //선택한 카드 id
+        Long cardId = card.get().getId();
+
+        // 보드에 있는 유저만 조회
         List<UserBoard> userList = userBoardRepository.findByBoardId(boardId);
 
+        // 유저테이블 정보를 같이 저장
+        List<UserCard> UserCardList = userCardRepository.findAllByCardId(cardId);
 
-        return new BordUsersResponseDto(userList);
+        return new BordUsersResponseDto(userList,UserCardList);
     }
 
     // 유저 작업 할당
-    public void allotUser(Long id, Long userid) {
+    public BordAllotCardUsersResponseListDto allotUser(Long id, Long userid) {
 
         Optional<UserCard> checkUserCard = userCardRepository.findByCardIdAndUserId(id,userid);
 
@@ -348,6 +358,8 @@ public class CardService {
         UserCard userCard = new UserCard(user.get(),card.get());
 
         userCardRepository.save(userCard);
+
+        return new BordAllotCardUsersResponseListDto(userCard);
     }
 
     // 카드 작업자 변경
@@ -362,12 +374,8 @@ public class CardService {
 
         //유저 정보가 있다면 사용자를 userCard 테이블에서 삭제
 
-        Optional<Card> card = cardRepository.findById(id);
-        Optional<User> user = userRepository.findById(userid);
-
-        UserCard userCard = new UserCard(user.get(),card.get());
-
-        userCardRepository.delete(userCard);
+        userCardRepository.delete(checkUserCard.get());
 
     }
+
 }

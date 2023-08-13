@@ -62,20 +62,20 @@ public class CardController {
        return cardService.createTime(id, timeRequestDto);
     }
 
-    // 보드에 속한 유저들 불러오기
+    // 보드에 속한 유저들 불러오기 (프론트완료)
     @PostMapping("/cards/{id}/user")
     public BordUsersResponseDto Users(@PathVariable Long id){
        return cardService.Users(id);
     }
 
-    // 카드에 유저 할당하기
+    // 카드에 유저 할당하기 (프론트완료)
     @PostMapping("/cards/{id}/users/{userid}")
-    public void allotUser(@PathVariable Long id,@PathVariable Long userid){
-        cardService.allotUser(id,userid);
+    public BordAllotCardUsersResponseListDto allotUser(@PathVariable Long id, @PathVariable Long userid){
+      return cardService.allotUser(id,userid);
     }
 
-    // 카드 작업자 변경
-    @PutMapping("/cards/{id}/users/{userid}")
+    // 카드 작업자 변경 (프론트완료)
+    @DeleteMapping("/cards/{id}/users/{userid}")
     public void updateUser(@PathVariable Long id,@PathVariable Long userid){
         cardService.updateUser(id, userid);
     }

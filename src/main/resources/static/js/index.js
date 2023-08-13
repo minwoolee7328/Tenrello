@@ -365,7 +365,7 @@ function model(id){
             'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
         },
         success: function (response) {
-            console.log(response.commetList.length);
+            console.log("cardData",response);
             $("#cardName").text(response.title);
 
             // 카드 내용 부분 생성
@@ -410,7 +410,23 @@ function model(id){
             // 사용자 할당 버튼 생성
             $(`<button id="cardAllotUsers" onClick="cardAllotUsersBtn(${id})">유저 추가</button>`).appendTo(`#cardRight`);
 
+            // 어떤 사용자가 할당되었는지 이름 표시
 
+            // 사용자 할당용 div 생성
+            $(`<div id="cardAllotUsersViewDiv" class="cardAllotUsersViewDiv"><h2>Members</h2></div>`).appendTo(`.cardState`);
+
+            // 카드에 할당된 인원 출력
+            for(let i =0; i<response.allotCardUserList.length;i++){
+                // 할당된 유저 네임 div
+                $(`<div id="cardAllotUserViewDiv-${response.allotCardUserList[i]['userId']}" class="cardAllotUserViewDiv">${response.allotCardUserList[i]['userName']}</div>`).appendTo(`.cardAllotUsersViewDiv`);
+
+            }
+
+            // 시간 데이터 추가 버튼 생성
+            $(`<button id="timeSetBtn" onClick="timeSetBtn(${id})">마감 시간</button>`).appendTo(`#cardRight`);
+
+            // 카드 이동 버튼 생성
+            $(`<button id="cardMoveBtn" onClick="">카드 이동</button>`).appendTo(`#cardRight`);
         },
         error: function () {
             alert('카드데이터 불러오기 실패');
@@ -427,6 +443,10 @@ function cardClose(){
     $("#cardMenuDeleteBtn").remove();
     $("#cardCommentContainer").remove();
     $("#insertCommentDiv").remove();
+    $("#cardAllotUsers").remove();
+    $("#cardAllotUsersViewDiv").remove();
+    $("#timeSetBtn").remove();
+    $("#cardMoveBtn").remove();
     $(".cardModal").fadeOut();
 }
 
@@ -554,6 +574,10 @@ function cardDelete(id){
             $("#cardMenuDeleteBtn").remove();
             $("#cardCommentContainer").remove();
             $("#insertCommentDiv").remove();
+            $("#cardAllotUsers").remove();
+            $("#cardAllotUsersViewDiv").remove();
+            $("#timeSetBtn").remove();
+            $("#cardMoveBtn").remove();
 
             $(".cardModal").fadeOut();
 
@@ -695,11 +719,44 @@ function cardAllotUsersBtn(id){
             'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
         },
         success: function (response) {
-            // 유저 정보 보여주기
+            //유저 모달창 띄우기
             $(".cardAllotUsersModal").fadeIn();
-
             // 유저조회 모달창 닫기버튼 생성
-            $(`<button id="cardAllotUsersModalCancel" class="cardAllotUsersModalCancel" onclick="cardAllotUsersModalCancel(${id})">나가기</button>`).appendTo(`.cardAllotUsersModalContent`);
+            $(`<button id="cardAllotUsersModalCancel" class="cardAllotUsersModalCancel" onclick="cardAllotUsersModalCancel(${id})">나가기</button>`).appendTo(`.cardAllotUsersContentTop`);
+
+            // 유저를 담을 div
+            $(`<div id="cardAllotUsersDiv" class="cardAllotUsersDiv"></div>`).appendTo(`.cardAllotUsersContentBottom`);
+
+            // 불러올때 이미 할당 유저면 추가 버튼 다른걸로 바꾸기 allotCardUserList (1)
+
+            for(let i = 0; i<response.userList.length;i++){
+
+                //유저 div
+                $(`<div id="cardAllotUserDiv-${response.userList[i].userId}" class="cardAllotUserDiv"></div>`).appendTo(`#cardAllotUsersDiv`);
+
+                // 유저 이름
+                $(`<div id="cardAllotUserName" class="cardAllotUserName">${response.userList[i].username}</div>`).appendTo(`#cardAllotUserDiv-${response.userList[i].userId}`);
+
+                // 추가 버튼
+                $(`<button id="cardAllotUserBtn" class="cardAllotUserBtn" onclick="cardAllotUsers(${id}, ${response.userList[i].userId})">추가</button>`).appendTo(`#cardAllotUserDiv-${response.userList[i].userId}`);
+
+            }
+
+            // (1)
+            for(let i = 0; i<response.allotCardUserList.length;i++){
+                //추가버튼 삭제
+                $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${response.allotCardUserList[i].userId}']`)).find($(`button[id^='cardAllotUserBtn']`)).remove();
+
+                let temp_html =
+                                    `
+                                        <button id="cardAllotUserBtn" class="cardAllotUserBtn" onclick="cardAllotCancelUsers(${response.allotCardUserList[i].cardId},${response.allotCardUserList[i].userId} )">빼기</button>
+                                    `;
+                //빼기 버튼 추가
+                $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${response.allotCardUserList[i].userId}']`)).append(temp_html);
+            }
+
+
+            // console.log(response);
         },
         error: function () {
             alert('댓글 작성자가 아닙니다.');
@@ -709,9 +766,97 @@ function cardAllotUsersBtn(id){
 }
 
 //유저조회 모달창 닫기
-function cardAllotUsersModalCancel(){
+function cardAllotUsersModalCancel() {
+
+    $("#cardAllotUsersModalCancel").remove();
+    $("#cardAllotUsersDiv").remove();
+
     $(".cardAllotUsersModal").fadeOut();
 }
+
+// 유저 할당 테이블 데이터 넣기
+function cardAllotUsers(id, userid){
+
+    $.ajax({
+        url: `/api/cards/${id}/users/${userid}`,
+        type: 'POST',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            console.log("users :",response)
+            // 추가버튼 지우기
+            $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${userid}']`)).find($(`button[id^='cardAllotUserBtn']`)).remove();
+            // 빼기버튼 추가
+            let temp_html =
+                                    `
+                                        <button id="cardAllotUserBtn" class="cardAllotUserBtn" onclick="cardAllotCancelUsers(${id}, ${userid})">빼기</button>
+                                    `;
+
+            $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${userid}']`)).append(temp_html);
+
+            let temp_cardHtml =
+                                `
+                                <div id="cardAllotUserViewDiv-${userid}" class="cardAllotUserViewDiv">${response.userName}</div>
+                                `;
+
+            // 카드 모달창에 표시하기
+            $(`#cardAllotUsersViewDiv`).append(temp_cardHtml);
+
+
+        },
+        error: function () {
+            alert('이미 할당된 유저 입니다.');
+            toggleElements(false);
+        }
+    });
+}
+function cardAllotCancelUsers(id, userid){
+     // console.log(id);
+    $.ajax({
+        url: `/api/cards/${id}/users/${userid}`,
+        type: 'DELETE',
+        contentType: 'application/json',
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            // 빼기 버튼 삭제
+            $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${userid}']`)).find($(`button[id^='cardAllotUserBtn']`)).remove();
+
+            let temp_html =
+                `
+                                        <button id="cardAllotUserBtn" class="cardAllotUserBtn" onclick="cardAllotUsers(${id}, ${userid})">추가</button>
+                                    `;
+            //  추가 버튼 추가
+            $(`#cardAllotUsersDiv`).find($(`div[id^='cardAllotUserDiv-${userid}']`)).append(temp_html);
+
+            //카드 모달창에 반영
+            $(`#cardAllotUsersViewDiv`).find($(`div[id^='cardAllotUserViewDiv-${userid}']`)).remove();
+        },
+        error: function () {
+            alert('삭제할 유저가 없습니다.');
+            toggleElements(false);
+        }
+    });
+
+}
+
+function  timeSetBtn(id){
+    // 시간 설정 모달창 띄우기
+    $(".timeSetModal").fadeIn();
+    // 시간 설정 모달창 닫기버튼 생성
+    $(`<button id="timeSetModalCancel" class="timeSetModalCancel" onclick="timeSetModalCancel()">나가기</button>`).appendTo(`.timeSetModalTop`);
+}
+
+// 시간 성정 모달창 닫기
+function timeSetModalCancel(){
+    $(".timeSetModalCancel").remove();
+
+    $(".timeSetModal").fadeOut();
+}
+
 // <div id="card-${a['id']}" class="card" draggable="true">
 //     <div id="miniCardDiv-${a['id']}" class="miniCardDiv">
 //         <span id="cardTitleSpan-${a['id']}" onclick="model(${a['id']})">${a['title']}</span>
