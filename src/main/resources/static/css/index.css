@@ -1,5 +1,29 @@
 /* Masthead */
 
+/* 검색창 */
+.search {
+    position: relative;
+    width: 300px;
+}
+
+input {
+    width: 100%;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+img {
+    position: absolute;
+    width: 17px;
+    top: 10px;
+    right: 12px;
+    margin: 0;
+}
+
+/* 검색창 끝 */
+
 .masthead .btn {
     background-color: #fff;
     border-radius: 0.3rem;
@@ -43,7 +67,7 @@
 }
 
 .user-settings-btn {
-    font-size: 1.5rem;
+    font-size: 0.8rem;
     width: 3rem;
     margin-right: 0.8rem;
 }
@@ -108,33 +132,22 @@ body {
     border: 2px dashed #666;
 }
 
- #registerNicknameModal {
-     display: none;
-     position: fixed;
-     z-index: 1000;
-     left: 50%;
-     top: 50%;
-     transform: translate(-50%, -50%);
-     width: 300px;
-     padding: 20px;
-     background-color: #fff;
-     border-radius: 5px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- }
- #columnModify{
-     display: none;
-     position: fixed;
-     z-index: 1000;
-     left: 50%;
-     top: 50%;
-     transform: translate(-50%, -50%);
-     width: 300px;
-     padding: 20px;
-     background-color: #fff;
-     border-radius: 5px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- }
-#modalOverlay, #nicknameModalOverlay{
+#registerNicknameModal, #columnModify, #registerPermissionChangeModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+#boardModalOverlay, #modalOverlay, #nicknameModalOverlay, #permissionChangeModalOverlay {
     display: none;
     position: absolute;
     top: 50%;
@@ -144,9 +157,11 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 900;
 }
+
 #nicknameModalTitle {
     margin-bottom: 10px;
 }
+
 /* ---------------------------------- */
 #addList {
     margin-top: 10px;
@@ -212,72 +227,7 @@ body {
     align-items: center; /* Vertically center the buttons */
 }
 
-.board-delete-button {
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-/* Style for icon inside the button */
-.board-delete-button i {
-    font-size: 1.2rem;
-}
-
-/*모달*/
-/* Style for the modal container */
-/*.modal {*/
-/*    display: none; !* Hide the modal by default *!*/
-/*    position: fixed;*/
-/*    z-index: 1000; !* Adjust z-index as needed *!*/
-/*    left: 0;*/
-/*    top: 0;*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*    background-color: rgba(0, 0, 0, 0.4); !* Semi-transparent background *!*/
-/*    overflow: auto; !* Enable scrolling if modal content exceeds screen height *!*/
-/*}*/
-
-/*!* Style for the modal content *!*/
-/*!* Style for the modal content *!*/
-/*.modal-content {*/
-/*    position: absolute;*/
-/*    top: 50%;*/
-/*    left: 50%;*/
-/*    transform: translate(-50%, -50%);*/
-/*    width: 80%; !* Adjust the width of the modal content *!*/
-/*    max-width: 400px; !* Optionally, set a maximum width *!*/
-/*    background-color: white;*/
-/*    padding: 20px;*/
-/*    border-radius: 5px;*/
-/*    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2);*/
-/*}*/
-
-
-/*!* Style for the close button *!*/
-/*.close {*/
-/*    position: absolute;*/
-/*    top: 10px;*/
-/*    right: 15px;*/
-/*    font-size: 20px;*/
-/*    font-weight: bold;*/
-/*    color: #aaa;*/
-/*    cursor: pointer;*/
-/*}*/
-
-/*!* Other modal styles as needed *!*/
-
-/*!* Ensure the modal-content does not exceed screen width *!*/
-/*@media screen and (max-width: 600px) {*/
-/*    .modal-content {*/
-/*        width: 90%;*/
-/*    }*/
-/*}*/
-/*모달 끝*/
-
- #registerBoardModal {
+#registerBoardModal {
     display: none;
     position: fixed;
     z-index: 1000;
@@ -290,7 +240,8 @@ body {
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
-#boardModalOverlay{
+
+#boardModalOverlay {
     display: none;
     position: fixed;
     top: 0;
@@ -300,64 +251,189 @@ body {
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 900;
 }
+
 #boardModalTitle {
     margin-bottom: 10px;
 }
+
 /* Style the modal content */
 .modal-content {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 /* Style the input fields */
 input[type="text"] {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 /* Style the modal buttons */
 .modal-buttons {
     display: flex;
-    justify-content:center;
+    justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
+
 #passwordModalTitle {
     margin-bottom: 10px;
 }
 
 /* 보드 삭제 버튼 */
 #deleteThisBoard {
+    margin-left: 10px;
+}
+
+/* 멤버 보기 + 삭제 버튼 */
+.board-actions {
+    display: flex;
+    align-items: center;
     position: absolute;
     bottom: 10px;
     right: 10px;
 }
 
-.cardModal{
-    position:absolute;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.8);
-    top:0; left:0;
-    display:none;
+/* 카드 css */
+.cardModal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    top: 0;
+    left: 0;
+    display: none;
 }
 
-.cardModelContent{
-    width:70%; height:80%;
-    background:#fff; border-radius:10px;
-    position:relative; top:50%; left:50%;
-    margin-top:-300px;
-    margin-left:-600px;
-    text-align:center;
-    box-sizing:border-box; padding:20px 30px;
-    line-height:23px;
-    /*cursor:pointer;*/
+.cardModeContent {
+    width: 70%;
+    height: 80%;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    margin-top: -300px;
+    margin-left: -600px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 74px 0;
+    line-height: 23px;
+    cursor: pointer;
 }
 
-.cardTop{
+.cardTop {
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+}
+
+/* 보드 수정 버튼 시작 */
+#updateBoard {
+    position: absolute;
+    bottom: 10px;
+    right: 250px; /* 이 부분을 조정하여 위치 조절 */
+}
+
+#editBoardModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px; /* 모달의 넓이 조정 */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 검색 결과 모달 */
+#showSearchResultModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#searchResultModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+
+#searchResultModalTitle {
+    margin-bottom: 10px;
+}
+
+.modal-content ul li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-buttons button:hover {
+    background-color: #555;
+}
+
+/* 권한변경 모달 */
+.roelModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#changePermissions {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
 
 .miniCardDiv{

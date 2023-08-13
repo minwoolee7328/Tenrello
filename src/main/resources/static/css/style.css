@@ -20,7 +20,7 @@
 body {
     align-items: center;
     background-color: var(--gray);
-    /*background: url("https://res.cloudinary.com/dci1eujqw/image/upload/v1616769558/Codepen/waldemar-brandt-aThdSdgx0YM-unsplash_cnq4sb.jpg");*/
+    /*background: url("https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/819/bbc4cd5ea3eba56a9bb878247be7610f_crop.jpeg");*/
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
@@ -96,7 +96,9 @@ body {
 }
 
 .form {
-    background-color: var(--lightblue);
+    /*background-color: var(--lightblue);*/
+    background: url("https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/819/bbc4cd5ea3eba56a9bb878247be7610f_crop.jpeg");
+
     display: flex;
     align-items: center;
     justify-content: center;

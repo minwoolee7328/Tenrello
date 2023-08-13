@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- static 스타일 시트 -->
     <link rel="stylesheet" type="text/css" href="/css/index.css">
+
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
 
     <!-- js Cookie -->
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
     <!--  부트스트랩  -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+
     <title>Trello Board</title>
+
 </head>
 <body>
 <!-- Masthead -->
-
-
-
 <header class="masthead">
 
     <div class="boards-menu">
@@ -39,30 +41,55 @@
                         aria-label="Close"></button>
             </div>
             <div class="offcanvas-body">
+                <!-- 내가 속한 보드 리스트 -->
                 <ul class="list-group list-group-flush" id="boardListUl">
 
                 </ul>
             </div>
-            <div>
-                <div class="board-buttons" id="board-buttons-button">
-                    <!-- 모달을 위한 HTML -->
-                    <div id="myModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close">×</span>
-                            <input type="text" id="boardTitle" placeholder="Enter board title">
-                            <input type="text" id="boardDescription" placeholder="Enter board description">
-                            <button id="saveBoard">Save</button>
-                        </div>
-                    </div>
-                    <!-- 모달을 호출하는 버튼 -->
-                    <button id="createBoard">생성</button>
 
-                    <button class="board-delete-button"><i class="bi bi-trash"></i>삭제</button>
+            <!-- 보드 생성 모달 -->
+            <div id="boardModalOverlay"></div>
+            <div id="registerBoardModal">
+                <div class="modal-content">
+                    <input type="text" id="boardTitle" placeholder="title">
+                    <input type="text" id="boardDescription" placeholder="description">
+                    <input type="hidden" id="boardNo">
+                    <div class="modal-buttons">
+                        <button id="saveBoard">저장</button>
+                        <button id="close">닫기</button>
+                    </div>
                 </div>
             </div>
+            <button id="createBoard">보드생성</button>
+
         </div>
         <!--  End of offcanvas  -->
     </div>
+
+    <!-- 검색창 -->
+    <div class="search">
+        <input type="text" id="searchKeywordInput" placeholder="사용자 검색">
+        <button id="searchUserBtn">
+            <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png">
+        </button>
+    </div>
+    <!-- 검색창 끝 -->
+
+    <!-- 검색 결과 -->
+    <div id="searchResultModalOverlay"></div>
+    <div id="showSearchResultModal">
+        <h3 id="searchResultModalTitle">사용자 검색 결과</h3>
+        <div class="modal-content">
+            <ul class="list-group list-group-flush" id="searchedUserListUl">
+
+            </ul>
+
+            <div class="modal-buttons">
+                <button id="closeSearchResultModal">닫기</button>
+            </div>
+        </div>
+    </div>
+    <!-- 검색 결과 끝 -->
 
     <div class="logo">
         <h1><i class="fab fa-trello logo-icon" aria-hidden="true"></i>Tenrello</h1>
@@ -90,6 +117,7 @@
         </button>
 
     </div>
+<!--    </div>-->
 
 </header>
 <!-- End of masthead -->
@@ -103,11 +131,47 @@
         </div>
     </div>
 
+    <!-- 보드 수정 모달 -->
+    <div class="edit-board" id="editBoardModal" style="display: none;">
+        <input type="text" id="editTitle" placeholder="title">
+        <input type="text" id="editDescription" placeholder="description">
+        <button id="editButton">수정</button>
+        <button id="editClose">닫기</button>
+    </div>
+
     <div>
-        <button id="deleteThisBoard" data-board-id="">보드 삭제</button>
+        <button id="updateBoard">보드 수정</button>
+    </div>
+
+    <div class="board-actions">
+        <!-- 보드에 속한 멤버 리스트 보기 -->
+        <div class="btn-group dropup" id="memberDropdownContainer">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                Member List
+            </button>
+            <ul class="dropdown-menu" id="dropdown-menu">
+                <!-- 멤버 리스트 -->
+            </ul>
+        </div>
+        <!-- 현재 보드 삭제 -->
+        <button id="deleteThisBoard" data-board-id="" data-board-name="">보드 삭제</button>
     </div>
 </div>
 
+<!--권한 변경 모달-->
+<div id="permissionChangeModalOverlay"></div>
+<div id="registerPermissionChangeModal">
+    <div class="modal-content">
+        <h2>권한 변경</h2>
+        <p>권한을 변경하시겠습니까?</p>
+        <div class="modal-buttons">
+            <button id="changePermissions">확인</button>
+            <button id="closePermissionChange">닫기</button>
+        </div>
+    </div>
+</div>
+<!-- 권한 변경 모달 끝 -->
 
 <!--컬럼등록모달-->
 <div id="registerNicknameModal">
@@ -133,7 +197,7 @@
 <!--    카드 top 엔 카드 이름-->
     <div class="cardModelContent">
         <div class="cardTop">
-            <h2 id="cardName" ></h2>
+            <h2 id="cardName"></h2>
             <button id="cardClose" onclick="cardClose()"> 카드 끄기</button>
         </div>
        <div class="cardBottom">
@@ -166,6 +230,7 @@
         <div class="cardAllotUsersContentBottom">
 
         </div>
+        <div class="cardBottom"></div>
     </div>
 </div>
 
@@ -187,49 +252,58 @@
     mypageBtn.addEventListener("click", function () {
         window.location.href = "/view/mypage";
     })
-    function clsModifyModal(){
+
+    // 컬럼 수정 모달
+    function clsModifyModal() {
         const modifyDiv = document.getElementById("columnModify");
         modifyDiv.style.display = 'none';
-        localStorage.setItem("modifyColumnId",null);
+        localStorage.setItem("modifyColumnId", null);
     }
-    function modifyColumn(){
+
+    //컬럼 수정
+    function modifyColumn() {
         const modifyDiv = document.getElementById("columnModify");
         const title = document.getElementById("modifyColumnTitle");
 
-        if(localStorage.getItem("modifyColumnId") == null){
+        if (localStorage.getItem("modifyColumnId") == null) {
             modifyDiv.style.display = 'none';
             alert("column이 선택되지 않았습니다.");
             return;
         }
         const id = localStorage.getItem("modifyColumnId");
 
-            let columnId = document.getElementById(id);
-            let data = {
-                'title': title.value
-            };
-            $.ajax({
-                type: "PUT",
-                url: `/api/columns/${id}`,
-                contentType: "application/json",
-                data: JSON.stringify(data),
-                success: function (response) {
-                    alert(response['msg']);
+        let columnId = document.getElementById(id);
+        let data = {
+            'title': title.value
+        };
+        $.ajax({
+            type: "PUT",
+            url: `/api/columns/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert(response['msg']);
 
 
-                    localStorage.setItem("modifyColumnId",null);
-                    modifyDiv.style.display = 'none';
-                }
-            })
+                localStorage.setItem("modifyColumnId", null);
+
+                modifyDiv.style.display = 'none';
+                title.innerText = "null";
+                console.log(localStorage.getItem("boardId"));
+                showSelectedBoard(localStorage.getItem("boardId"));
+            }
+        })
 
 
-        localStorage.setItem("modifyColumnId",null);
+        localStorage.setItem("modifyColumnId", null);
         modifyDiv.style.display = 'none';
 
     }
+
     //컬럼 추가
-    function addColumn(){
-        const columnInputString =  document.getElementById("columnTitle").value;
-        if(localStorage.getItem("boardId") == null){
+    function addColumn() {
+        const columnInputString = document.getElementById("columnTitle").value;
+        if (localStorage.getItem("boardId") == null) {
             alert("보드를 선택해주세요.")
             return;
         }
@@ -315,97 +389,79 @@
             }
         })
     }
-    function moveColumn(dragColumn, targetColumn){
-        console.log("moveColumn");
-        $.ajax({
-            type: "PUT",
-            url: `/api/columns/${dragColumn}/position/${targetColumn}`,
-            contentType: "application/json",
-            success: function (response) {
-                alert(response['msg']);
-            },
-            error: function (xhr, status, error) {
-                console.error(error);
-                console(xhr);
-                alert("위치이동을 DB에 업데이트하는 과정에서 오류발생");
-            }
-        })
-    }
-    // board 삭제
-    $(document).on('click', '.board-delete-button', function () {
-        $.ajax({
-            url: `http://localhost:8080/api/boards/${boardId}`,
-            type: 'DELETE',
-            headers: {
-                'Authorization': document.cookie
-            },
-            success: function (response) {
-                if (response.statusCode == 200) {
-                    alert('보드 삭제 성공');
-                }
-            },
-            error: function () {
-                alert('삭제 권한이 없습니다.');
-            }
-        });
-    });//보드 삭제
 
     // 로그아웃
     const logoutBtn = document.getElementById("logout");
     logoutBtn.addEventListener("click", logout);
 
     // board 생성
-    document.addEventListener("DOMContentLoaded", function () {
-        const modal = document.getElementById('myModal');
-        const createButton = document.getElementById('createBoard');
-        const saveButton = document.getElementById('saveBoard');
-        const closeButton = document.getElementsByClassName('close')[0];
+    saveBoardButton.addEventListener('click', () => {
+        const title = boardTitleInput.value;
+        const description = boardDescriptionInput.value;
+        const boardTitle = localStorage.getItem('boardTitle');
 
-        createButton.addEventListener('click', () => {
-            modal.style.display = 'block';
-        });
-
-        closeButton.addEventListener('click', () => {
-            modal.style.display = 'none';
-        });
-
-        saveButton.addEventListener('click', () => {
-            const boardTitle = document.getElementById('boardTitle').value;
-            const boardDescription = document.getElementById('boardDescription').value;
-
-            if (boardTitle) {
-                const boardData = {
-                    title: boardTitle,
-                    description: boardDescription,
-                };
-
-                saveBoardToDatabase(boardData);
-            }
-
-            modal.style.display = 'none';
-        });
-
-        function saveBoardToDatabase(boardData) {
-            fetch('/api/boards', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(boardData),
+        fetch('/api/boards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Created board:', data);
-                    // Perform any further actions based on the response
-                })
-                .catch(error => {
-                    console.error('Error creating board:', error);
-                });
-        }
-    });//보드 생성
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                location.reload();
+
+                boardModalOverlay.style.display = 'none';
+                registerBoardModal.style.display = 'none';
+                showSelectedBoard(boardId, boardTitle);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    // board 수정
+    document.getElementById('editButton').addEventListener('click', () => {
+        const title = document.getElementById("editTitle").value;
+        const description = document.getElementById("editDescription").value;
+        const boardId = localStorage.getItem("boardId");
+        const boardTitle = localStorage.getItem('boardTitle');
+
+        const data = {
+            title: title,
+            description: description
+        };
+
+        fetch(`http://localhost:8080/api/boards/${boardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': document.cookie
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("수정되었습니다.")
+                editBoardModal.style.display = 'none';
+                location.reload();
+            })
+            .catch(error => {
+                alert(error);
+                console.log("수정 오류")
+                editBoardModal.style.display = 'none';
+            });
+    })
+
+    // 현재 보이는 보드 삭제
+    $(document).on("click", "#deleteThisBoard", deleteThisBoard);
 
     $(document).ready(function () {
-        localStorage.setItem("boardId",null);
+        localStorage.setItem("boardId", null);
         // 내가 속한 보드 리스트 가져오기
         $.ajax({
             url: 'http://localhost:8080/api/boards/include',
@@ -424,7 +480,7 @@
                     let boardId = a['boardId'];
 
                     let temp_html = `
-                        <li class="list-group-item" id="${boardId}">${boardName}</li>
+                        <li class="list-group-item" list-board-id="${boardId}">${boardName}</li>
                     `;
 
                     temp_htmls += temp_html;
@@ -440,21 +496,19 @@
 
     const modalBoard = document.querySelector(".modal-board");
     var boardId;
-    $(document).on("click", ".list-group-item", function (){
-        boardId = $(this).attr('id');
-        localStorage.setItem("boardId",boardId);
-        showSelectedBoard(boardId);
+    var boardTitle;
+    $(document).on("click", ".list-group-item", function () {
+        boardId = $(this).attr('list-board-id');
+        localStorage.setItem("boardId", boardId);
+
+        boardTitle = $(this).text();
+        localStorage.setItem("boardTitle", boardTitle);
+
+        showSelectedBoard(boardId, boardTitle);
     })
-    // 보드 리스트에서 보드 선택
 
-
-    // 보드 삭제 버튼 눌렀을 때 해당 보드 id 콘솔에 출력
-    $(document).on("click", "#deleteThisBoard", function () {
-        var boardIdToDelete = $(this).attr('data-board-id');
-
-        console.log(boardIdToDelete);
-
-    });
+    // 현재 보이는 보드 삭제
+    $(document).on("click", "#deleteThisBoard", deleteThisBoard);
 
 </script>
 </html>

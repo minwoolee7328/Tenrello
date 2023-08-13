@@ -2,9 +2,7 @@ package com.example.tenrello.user.service;
 
 import com.example.tenrello.entity.User;
 import com.example.tenrello.user.CheckPasswordDto;
-import com.example.tenrello.user.dto.NicknameRequestDto;
-import com.example.tenrello.user.dto.PasswordRequestDto;
-import com.example.tenrello.user.dto.ProfileResponseDto;
+import com.example.tenrello.user.dto.*;
 
 public interface UserService {
     /**
@@ -39,4 +37,12 @@ public interface UserService {
      * @return user
      */
     User findUser(Long userId);
+
+    /**
+     * username 으로 user 찾기
+     *
+     * @param userSearchCond 찾을 username (조건)
+     * @return 찾은 user 정보
+     */
+    SearchUserResponseDto searchUserByUsername(UserSearchCond userSearchCond);
 }
