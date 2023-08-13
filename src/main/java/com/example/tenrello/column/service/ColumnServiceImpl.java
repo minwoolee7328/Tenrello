@@ -43,10 +43,11 @@ public class ColumnServiceImpl implements ColumnService{
         }
         else{
             column = new ColumnEntity(board,columnRequestDto);
-            ColumnEntity lastColumn = columnRepository.findByLastnode(1L);      //마지막 컬럼 찾기
+            ColumnEntity lastColumn = columnRepository.findByBoardIdAndLastnode(boardId,1L);      //마지막 컬럼 찾기
             columnRepository.save(column);                                      //컬럼 저장
 
             Long id =column.getId();                                            //컬럼 id받아와서 마지막 컬럼의 다음 컬럼을 가리키는 id값에 넣어주기
+            System.out.println("columnId = " + id);
             lastColumn.setNextColumn(id);
             lastColumn.setLastnode(0L);                                         //마지막 컬럼 설정풀기, 등록할 컬럼이 마지막 컬럼이 될 것이기 때문
 
