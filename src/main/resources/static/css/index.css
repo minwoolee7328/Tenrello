@@ -307,7 +307,7 @@ input[type="text"] {
     display: none;
 }
 
-.cardModeContent {
+.cardModelContent {
     width: 70%;
     height: 80%;
     background: #fff;
@@ -324,7 +324,145 @@ input[type="text"] {
     cursor: pointer;
 }
 
-.cardTop {
+.cardTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.miniCardDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardDeleteBtn{
+    display: none;
+}
+
+.cardBottom{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardLeft{
+    width: 900px;
+    height: 500px;
+}
+
+.cardRight{
+    width: 400px;
+    height: 500px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.cardState{
+    width: 800px;
+    height: 100px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardContent{
+    width: 800px;
+    height: 100px;
+}
+.cardComment{
+    width: 800px;
+    height: 100px;
+}
+
+.contentNull{
+    background-color: white;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.contentNull:hover{
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+.contentNotNull{
+    background-color: white;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.contentNotNull:hover{
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+.cardAllotUsersModal{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.cardAllotUsersModalContent{
+    width:30%; height:30%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
+}
+.cardAllotUsersContentTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardAllotUserDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.timeSetModal{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.timeSetModalContent{
+    width:30%; height:30%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
+}
+
+.timeSetModalTop{
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -434,146 +572,4 @@ input[type="text"] {
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-}
-
-.miniCardDiv{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.cardDeleteBtn{
-    display: none;
- }
-
-.cardBottom{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-}
-
-.cardLeft{
-    width: 900px;
-    height: 500px;
-    border: 1px solid black;
-}
-
-.cardRight{
-    width: 400px;
-    height: 500px;
-    border: 1px solid black;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-}
-.cardState{
-    width: 800px;
-    height: 100px;
-    border: 1px solid black;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-}
-
-.cardContent{
-    width: 800px;
-    height: 100px;
-    border: 1px solid black;
-}
-.cardComment{
-    width: 800px;
-    height: 100px;
-    border: 1px solid black;
-}
-
-.contentNull{
-    background-color: white;
-    margin: 5px 0;
-    padding: 5px;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-.contentNull:hover{
-    background-color: cornsilk;
-    cursor: pointer;
-}
-
-.contentNotNull{
-    background-color: white;
-    margin: 5px 0;
-    padding: 5px;
-    border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    cursor: pointer;
-}
-
-.contentNotNull:hover{
-    background-color: cornsilk;
-    cursor: pointer;
-}
-
-.cardAllotUsersModal{
-    position:absolute;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.8);
-    top:0; left:0;
-    display:none;
-}
-
-.cardAllotUsersModalContent{
-    width:30%; height:30%;
-    background:#fff; border-radius:10px;
-    position:relative; top:50%; left:50%;
-    margin-top:-100px;
-    margin-left:-100px;
-    text-align:center;
-    box-sizing:border-box; padding:20px 30px;
-    line-height:23px;
-}
-.cardAllotUsersContentTop{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.cardAllotUserDiv{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.timeSetModal{
-    position:absolute;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.8);
-    top:0; left:0;
-    display:none;
-}
-
-.timeSetModalContent{
-    width:30%; height:30%;
-    background:#fff; border-radius:10px;
-    position:relative; top:50%; left:50%;
-    margin-top:-100px;
-    margin-left:-100px;
-    text-align:center;
-    box-sizing:border-box; padding:20px 30px;
-    line-height:23px;
-}
-
-.timeSetModalTop{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
 }
