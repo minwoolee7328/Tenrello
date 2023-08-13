@@ -125,19 +125,21 @@ body {
     border: 2px dashed #666;
 }
 
- #registerNicknameModal {
-     display: none;
-     position: fixed;
-     z-index: 1000;
-     left: 50%;
-     top: 50%;
-     transform: translate(-50%, -50%);
-     width: 300px;
-     padding: 20px;
-     background-color: #fff;
-     border-radius: 5px;
-     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- }
+#registerNicknameModal, #columnModify, #registerPermissionChangeModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/*
  #columnModify{
      display: none;
      position: fixed;
@@ -150,8 +152,9 @@ body {
      background-color: #fff;
      border-radius: 5px;
      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
- }
-#boardModalOverlay, #modalOverlay, #nicknameModalOverlay{
+ }*/
+
+#boardModalOverlay, #modalOverlay, #nicknameModalOverlay, #permissionChangeModalOverlay {
     display: none;
     position: absolute;
     top: 50%;
@@ -261,11 +264,11 @@ body {
 }
 
 /* Style the modal content */
-.modal-content {
+/*.modal-content {
     display: flex;
     flex-direction: column;
     gap: 10px;
-}
+}*/
 
 /* Style the input fields */
 input[type="text"] {
@@ -340,7 +343,7 @@ input[type="text"] {
 #updateBoard {
     position: absolute;
     bottom: 10px;
-    right: 400px; /* 이 부분을 조정하여 위치 조절 */
+    right: 250px; /* 이 부분을 조정하여 위치 조절 */
 }
 
 #editBoardModal {
@@ -427,19 +430,6 @@ input[type="text"] {
     z-index: 9999;
 }
 
-.modal-content {
-    background-color: white;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px; /* Add padding to create space */
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    max-width: 80%; /* Limit the width of the modal */
-    width: 400px; /* Set a fixed width for smaller screens */
-}
-
 .close {
     position: absolute;
     top: 10px;
@@ -450,8 +440,6 @@ input[type="text"] {
 }
 
 #changePermissions {
-    /*background-color: white;*/
-    /*color: black; !* Add color for contrast *!*/
     border: none;
     padding: 10px 20px;
     border-radius: 5px;

@@ -60,8 +60,9 @@
                     </div>
                 </div>
             </div>
+            <button id="createBoard">보드생성</button>
+
         </div>
-        <button id="createBoard">보드생성</button>
         <!--  End of offcanvas  -->
     </div>
 
@@ -90,32 +91,32 @@
     </div>
     <!-- 검색 결과 끝 -->
 
-        <div class="logo">
-            <h1><i class="fab fa-trello logo-icon" aria-hidden="true"></i>Tenrello</h1>
-        </div>
-        <div>
-            <button id="addList">Add List</button>
-        </div>
+    <div class="logo">
+        <h1><i class="fab fa-trello logo-icon" aria-hidden="true"></i>Tenrello</h1>
+    </div>
+    <div>
+        <button id="addList">Add List</button>
+    </div>
 
-        <div class="user-settings">
+    <div class="user-settings">
 
-            <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
-                <i class="fas fa-plus" aria-hidden="true">마이</i>
-            </button>
+        <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
+            <i class="fas fa-plus" aria-hidden="true">마이</i>
+        </button>
 
-            <button class="user-settings-btn btn" aria-label="Information" id="logout">
-                <i class="fas fa-info-circle" aria-hidden="true">아웃</i>
-            </button>
+        <button class="user-settings-btn btn" aria-label="Information" id="logout">
+            <i class="fas fa-info-circle" aria-hidden="true">아웃</i>
+        </button>
 
-            <button class="user-settings-btn btn" aria-label="Notifications">
-                <i class="fas fa-bell" aria-hidden="true"></i>
-            </button>
+        <button class="user-settings-btn btn" aria-label="Notifications">
+            <i class="fas fa-bell" aria-hidden="true"></i>
+        </button>
 
-            <button class="user-settings-btn btn" aria-label="User Settings">
-                <i class="fas fa-user-circle" aria-hidden="true"></i>
-            </button>
+        <button class="user-settings-btn btn" aria-label="User Settings">
+            <i class="fas fa-user-circle" aria-hidden="true"></i>
+        </button>
 
-        </div>
+    </div>
     </div>
 
 </header>
@@ -158,16 +159,18 @@
 </div>
 
 <!--권한 변경 모달-->
-<div id="permissionModal" class="roelModal">
-    <div class="modal-overlay"></div>
+<div id="permissionChangeModalOverlay"></div>
+<div id="registerPermissionChangeModal">
     <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
         <h2>권한 변경</h2>
         <p>권한을 변경하시겠습니까?</p>
-        <button id="changePermissions">확인</button>
+        <div class="modal-buttons">
+            <button id="changePermissions">확인</button>
+            <button id="closePermissionChange">닫기</button>
+        </div>
     </div>
 </div>
-<!-- End of board modal -->
+<!-- 권한 변경 모달 끝 -->
 
 <!--컬럼등록모달-->
 <div id="registerNicknameModal">
@@ -190,7 +193,7 @@
 <!--카드 모달창-->
 
 <div class="cardModal">
-<!--    카드 top 엔 카드 이름-->
+    <!--    카드 top 엔 카드 이름-->
     <div class="cardModeContent">
         <div class="cardTop">
             <h2 id="cardName" ></h2>
@@ -242,14 +245,14 @@
                 alert(response['msg']);
 
 
-                    localStorage.setItem("modifyColumnId",null);
+                localStorage.setItem("modifyColumnId",null);
 
-                    modifyDiv.style.display = 'none';
-                    title.innerText = "null";
-                    console.log(localStorage.getItem("boardId"));
-                    showSelectedBoard(localStorage.getItem("boardId"));
-                }
-            })
+                modifyDiv.style.display = 'none';
+                title.innerText = "null";
+                console.log(localStorage.getItem("boardId"));
+                showSelectedBoard(localStorage.getItem("boardId"));
+            }
+        })
 
 
         localStorage.setItem("modifyColumnId", null);
@@ -355,6 +358,7 @@
     saveBoardButton.addEventListener('click', () => {
         const title = boardTitleInput.value;
         const description = boardDescriptionInput.value;
+        const boardTitle = localStorage.getItem('boardTitle');
 
         fetch('/api/boards', {
             method: 'POST',
@@ -373,6 +377,7 @@
 
                 boardModalOverlay.style.display = 'none';
                 registerBoardModal.style.display = 'none';
+                showSelectedBoard(boardId, boardTitle);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -384,6 +389,7 @@
         const title = document.getElementById("editTitle").value;
         const description = document.getElementById("editDescription").value;
         const boardId = localStorage.getItem("boardId");
+        const boardTitle = localStorage.getItem('boardTitle');
 
         const data = {
             title: title,
@@ -402,7 +408,7 @@
             .then(data => {
                 alert("수정되었습니다.")
                 editBoardModal.style.display = 'none';
-                location.reload();
+                showSelectedBoard(boardId, boardTitle);
             })
             .catch(error => {
                 alert(error);

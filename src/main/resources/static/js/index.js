@@ -494,6 +494,7 @@ function showMembersOfBoard(clickedBoardId) {
                 memberLink.className = 'dropdown-item'; // Set the class name
                 memberLink.textContent = `${member.username} (${member.role})`; // Set the username as text content
                 memberLink.onclick = function() {
+                    localStorage.setItem("clickedUserIdToChangeRole", member.userId);
                     openPermissionModal(clickedBoardId, member.userId); // Pass the necessary parameters
                 };
                 memberListItem.appendChild(memberLink); // Append the anchor element to the list item
@@ -508,17 +509,20 @@ function showMembersOfBoard(clickedBoardId) {
 
 // 권한 변경 모달 열고 닫기
 function openPermissionModal(boardId, userId) {
-    const modal = document.getElementById('permissionModal');
+    const modal = document.getElementById('registerPermissionChangeModal');
+    const modalOverlay = document.getElementById('permissionChangeModalOverlay');
     const changePermissionsButton = document.getElementById('changePermissions');
 
     changePermissionsButton.onclick = function() {
         modal.style.display = 'none';
+        modalOverlay.style.display = 'none';
         changeBoardPermissions(boardId, userId);
     };
 
-    const closeModal = document.getElementById('closeModal');
+    const closeModal = document.getElementById('closePermissionChange');
     closeModal.onclick = function() {
         modal.style.display = 'none';
+        modalOverlay.style.display = 'none';
     };
 
     modal.style.display = 'block';
@@ -528,6 +532,7 @@ function openPermissionModal(boardId, userId) {
 function changeBoardPermissions(boardId, userId) {
     console.log(boardId);
     console.log(userId);
+    const boardTitle = localStorage.getItem('boardTitle');
 
     const url = `http://localhost:8080/api/boards/${boardId}/members/${userId}`;
     fetch(url, {
@@ -541,7 +546,7 @@ function changeBoardPermissions(boardId, userId) {
         .then(data => {
             console.log(data.message);
             alert("권한 변경이 완료되었습니다.")
-            location.reload();
+            showSelectedBoard(boardId, boardTitle);
         })
         .catch(error => {
             console.error('Error changing permissions:', error);
@@ -623,8 +628,13 @@ function showModal(modalId, overlayId) {
 function closeModal(modalId, overlayId) {
     const modal = document.getElementById(modalId);
     const overlay = document.getElementById(overlayId);
+
     modal.style.display = 'none';
     overlay.style.display = 'none';
+
+    const boardId = localStorage.getItem('boardId');
+    const boardTitle = localStorage.getItem('boardTitle');
+    showSelectedBoard(boardId, boardTitle);
 }
 
 // 검색된 사용자 중 선택
