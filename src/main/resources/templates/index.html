@@ -146,7 +146,8 @@
     <div class="board-actions">
         <!-- 보드에 속한 멤버 리스트 보기 -->
         <div class="btn-group dropup" id="memberDropdownContainer">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                 Member List
             </button>
             <ul class="dropdown-menu" id="dropdown-menu">
@@ -196,12 +197,12 @@
     <!--    카드 top 엔 카드 이름-->
     <div class="cardModeContent">
         <div class="cardTop">
-            <h2 id="cardName" ></h2>
+            <h2 id="cardName"></h2>
             <button id="cardClose" onclick="cardClose()"> 카드 끄기</button>
         </div>
         <div class="cardMid">
         </div>
-        <div class="cardBottom"> </div>
+        <div class="cardBottom"></div>
     </div>
 
 </div>
@@ -245,7 +246,7 @@
                 alert(response['msg']);
 
 
-                localStorage.setItem("modifyColumnId",null);
+                localStorage.setItem("modifyColumnId", null);
 
                 modifyDiv.style.display = 'none';
                 title.innerText = "null";
@@ -408,7 +409,7 @@
             .then(data => {
                 alert("수정되었습니다.")
                 editBoardModal.style.display = 'none';
-                showSelectedBoard(boardId, boardTitle);
+                location.reload();
             })
             .catch(error => {
                 alert(error);
