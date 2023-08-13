@@ -5,7 +5,9 @@ import java.time.LocalDateTime;
 
 @Getter
 public class CardTimeRequestDto {
-    private boolean startTime;
-    private String endTime;
+    private String startTime;
+    private LocalDateTime endTime;
 
+//    private boolean startTime;
+//    private String endTime;
 }

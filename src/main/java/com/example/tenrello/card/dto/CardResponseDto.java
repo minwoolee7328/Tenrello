@@ -21,6 +21,7 @@ public class CardResponseDto {
     private String username;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
+    private String result;
     private List<CardCommentResponseDto> commetList = new ArrayList<>();
     private List<BordAllotCardUsersResponseListDto> allotCardUserList = new ArrayList<>();
 
@@ -33,7 +34,6 @@ public class CardResponseDto {
         this.username = card.getUser().getUsername();
         this.startTime = card.getStartTime();
         this.endTime = card.getEndTime();
-
     }
 
     public CardResponseDto(Card card, List<Comment> commentList,List<UserCard> UserCardList){
@@ -44,6 +44,7 @@ public class CardResponseDto {
         this.username = card.getUser().getUsername();
         this.startTime = card.getStartTime();
         this.endTime = card.getEndTime();
+        this.result = card.getResult();
         setCommentList(commentList);
         setAllotCardList(UserCardList);
     }

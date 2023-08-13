@@ -22,7 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
 
-    // 댓글 생성
+    // 댓글 생성 (프론트완료)
     public CardCommentResponseDto createComment(Long id, CommentRequestDto requestDto, UserDetailsImpl userDetails) {
         //카드 정보
         Optional<Card> card = cardRepository.findById(id);
@@ -47,7 +47,7 @@ public class CommentService {
             throw new IllegalArgumentException("해달 댓글이 존재하지 않습니다.");
         }
 
-        //유저 확인
+        //유저 확인 (프론트완료)
         User user = userDetails.getUser();
 
         //사용자가 작성한 댓글만 수정 가능
@@ -63,7 +63,7 @@ public class CommentService {
         return new CommentResponseDto(comment.get().getContent());
     }
 
-    // 댓글 삭제
+    // 댓글 삭제 (프론트완료)
     public void deleteComment(Long id, UserDetailsImpl userDetails) {
         // 댓글 확인
         Optional<Comment> comment = commentRepository.findById(id);

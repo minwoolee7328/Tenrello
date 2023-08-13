@@ -425,6 +425,22 @@ function model(id){
             // 시간 데이터 추가 버튼 생성
             $(`<button id="timeSetBtn" onClick="timeSetBtn(${id})">마감 시간</button>`).appendTo(`#cardRight`);
 
+            // 시간 데이터 시각화 div
+            $(`<div id="timeSetViewDiv" class="timeSetViewDiv"><h2>EndTime</h2></div>`).appendTo(`.cardState`);
+
+            // 시간데이터 시각화  (시간 데이터가 없을때는 안보이도록)
+            if(!(response.endTime == null)){
+                if(response.startTime == null){
+                    //시작시간이 없을 때
+                    $(`<div id="setTimeViewZone" class="setTimeViewZone">${response.endTime} ${response.result}</div>`).appendTo(`.timeSetViewDiv`);
+                }else {
+                    //시작시간이 있을 때
+                    $(`<div id="setTimeViewZone" class="setTimeViewZone">${response.startTime} ~ ${response.endTime} ${response.result}</div>`).appendTo(`.timeSetViewDiv`);
+                }
+            }
+
+
+
             // 카드 이동 버튼 생성
             $(`<button id="cardMoveBtn" onClick="">카드 이동</button>`).appendTo(`#cardRight`);
         },
@@ -447,6 +463,9 @@ function cardClose(){
     $("#cardAllotUsersViewDiv").remove();
     $("#timeSetBtn").remove();
     $("#cardMoveBtn").remove();
+    $("#setTimeViewZone").remove();
+    $("#timeSetViewDiv").remove();
+
     $(".cardModal").fadeOut();
 }
 
@@ -578,6 +597,8 @@ function cardDelete(id){
             $("#cardAllotUsersViewDiv").remove();
             $("#timeSetBtn").remove();
             $("#cardMoveBtn").remove();
+            $("#setTimeViewZone").remove();
+            $("#timeSetViewDiv").remove();
 
             $(".cardModal").fadeOut();
 
@@ -848,14 +869,94 @@ function  timeSetBtn(id){
     $(".timeSetModal").fadeIn();
     // 시간 설정 모달창 닫기버튼 생성
     $(`<button id="timeSetModalCancel" class="timeSetModalCancel" onclick="timeSetModalCancel()">나가기</button>`).appendTo(`.timeSetModalTop`);
+
+    // 시간 설정 div
+    $(`<div id="endTimeSetViewDiv" class="endTimeSetViewDiv"></div>`).appendTo(`.timeSetModalBottom`);
+
+    // 시작시간 div
+    $(`<div id="startTimeSetDiv" class="startTimeSetDiv"></div>`).appendTo(`.endTimeSetViewDiv`);
+
+    // 시작 시간 활성화 버튼
+    $(`<button id="endTimeSetBtn" class="endTimeSetBtn" onclick="startTimeSet()">시작 시간</button>`).appendTo(`.startTimeSetDiv`);
+
+
+    // 마감시간 div
+
+    $(`<div id="endTimeSetDiv" class="endTimeSetDiv"></div>`).appendTo(`.endTimeSetViewDiv`);
+    // 마감 시간
+    $(`<input id="endTimeSetInput" type="datetime-local" name="starttime">`).appendTo(`.endTimeSetDiv`);
+    // 시간 저장 버튼
+    $(`<button id="endTimeSetBtn" class="endTimeSetBtn" onclick="endTimeSet(${id})">시간 저장</button>`).appendTo(`.endTimeSetDiv`);
 }
 
 // 시간 성정 모달창 닫기
 function timeSetModalCancel(){
     $(".timeSetModalCancel").remove();
+    $(".endTimeSetViewDiv").remove();
 
     $(".timeSetModal").fadeOut();
 }
+
+function endTimeSet(id){
+
+    $.ajax({
+        url: `/api/cards/${id}/time`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({startTime:$("#datepicker").val() , endTime: $(`#endTimeSetInput`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            console.log(response);
+            // 시간 데이터가 들어갔을때
+            // 카드에 반영 하기
+
+
+            if(response.startTime==null){
+                //시작 시간이 없을시
+                $("#setTimeViewZone").remove();
+                $(`<div id="setTimeViewZone" class="setTimeViewZone">${response.endTime} ${response.result}</div>`).appendTo(`.timeSetViewDiv`);
+            }else {
+                //시작 시간이 있을시
+                $("#setTimeViewZone").remove();
+                $(`<div id="setTimeViewZone" class="setTimeViewZone">${response.startTime} ~ ${response.endTime} ${response.result}</div>`).appendTo(`.timeSetViewDiv`);
+            }
+
+
+        },
+        error: function () {
+            alert('삭제할 유저가 없습니다.');
+            toggleElements(false);
+        }
+    });
+}
+
+function startTimeSet(){
+
+    $(`<input type="date" id="datepicker" name="datepicker" >`).prependTo(`.startTimeSetDiv`);
+
+    var today = new Date().toISOString().substr(0, 10);
+    document.getElementById("datepicker").value = today;
+
+    //시작시간 버튼 지우기
+    $("#endTimeSetBtn").remove();
+
+    //시작시간 지우기 버튼
+    $(`<button id="endTimeSetBtnDel" class="endTimeSetBtnDel" onclick="startTimeBtnDel()">빼기</button>`).appendTo(`.startTimeSetDiv`);
+
+}
+
+function startTimeBtnDel(){
+    $("#datepicker").remove();
+    $("#endTimeSetBtnDel").remove();
+
+    //시작시간 버튼 생성
+    $(`<button id="endTimeSetBtn" class="endTimeSetBtn" onclick="startTimeSet()">시작 시간</button>`).appendTo(`.startTimeSetDiv`);
+}
+
+
+
 
 // <div id="card-${a['id']}" class="card" draggable="true">
 //     <div id="miniCardDiv-${a['id']}" class="miniCardDiv">

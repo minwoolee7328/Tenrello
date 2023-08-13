@@ -247,7 +247,7 @@ public class CardService {
         return new CardResponseDto(card.get(),commentList,UserCardList);
     }
 
-    // 시간 데이터 저장
+    // 시간 데이터 저장 CardTimeResponseDto
     @Transactional
     public CardTimeResponseDto createTime(Long id, CardTimeRequestDto timeRequestDto) {
 
@@ -255,13 +255,15 @@ public class CardService {
         // 선택한 카드
         Optional<Card> card = cardRepository.findById(id);
 
+//        System.out.println("timeRequestDto.getEndTime() = " + timeRequestDto.getEndTime());
+//        System.out.println("timeRequestDto.getStartTime() = " + timeRequestDto.getStartTime());
+
         if(!card.isPresent()){
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
-        System.out.println("timeRequestDto.getEndTime() = " + timeRequestDto.getEndTime());
 
         // 시작 날짜 는 생성할때 시간으로 고정 (시작날짜를 선택했는지 여부)
-        if(timeRequestDto.isStartTime()){
+        if(!(timeRequestDto.getStartTime() == null)){
             // 시작 날짜와 마감날짜의 데이터를 저장
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -271,14 +273,14 @@ public class CardService {
 
             card.get().updateStartTime(startLocalTime);
 
-            // 사용자에게 받아온 시간 데이터를 변환
-            LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+//            // 사용자에게 받아온 시간 데이터를 변환
+//            LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
 
             // 마감시간 저장
-            card.get().updateEndTime(endLocalTime);
+            card.get().updateEndTime(timeRequestDto.getEndTime());
 
             // 시간을 저장할때 이미 과거시간을 넣으면 result에 마감이라고 넣기
-            boolean result = endLocalTime.isBefore(startLocalTime);
+            boolean result = timeRequestDto.getEndTime().isBefore(startLocalTime);
 
             if(result){
                 // 마감시간이 지남
@@ -287,7 +289,7 @@ public class CardService {
                 card.get().updateResult("진행중");
             }
 
-            return new CardTimeResponseDto(startLocalTime,endLocalTime);
+            return new CardTimeResponseDto(startLocalTime,timeRequestDto.getEndTime(),card.get().getResult());
         }
 
         // 시작날짜가 선택 안되었을때
@@ -296,14 +298,17 @@ public class CardService {
         String startTime =  LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         LocalDateTime startLocalTime = LocalDateTime.parse(startTime,formatter);
 
-        // 사용자에게 받아온 시간 데이터를 변환
-        LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
+//        // 사용자에게 받아온 시간 데이터를 변환
+//        LocalDateTime endLocalTime = LocalDateTime.parse(timeRequestDto.getEndTime(), formatter);
 
         // 마감시간 저장
-        card.get().updateEndTime(endLocalTime);
+        card.get().updateEndTime(timeRequestDto.getEndTime());
+        card.get().updateStartTime(null);
+
+        System.out.println("startLocalTime = " + startLocalTime);
 
         // 시간을 저장할때 이미 과거시간을 넣으면 result에 마감이라고 넣기
-        boolean result = startLocalTime.isBefore(endLocalTime);
+        boolean result = timeRequestDto.getEndTime().isBefore(startLocalTime);
 
         if(result){
             // 마감시간이 지남
@@ -312,7 +317,7 @@ public class CardService {
             card.get().updateResult("진행중");
         }
 
-        return new CardTimeResponseDto(endLocalTime);
+        return new CardTimeResponseDto(timeRequestDto.getEndTime(),card.get().getResult());
     }
 
     // 보드에 속한 유저들 불러오기

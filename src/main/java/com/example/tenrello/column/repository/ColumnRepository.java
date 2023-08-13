@@ -11,7 +11,7 @@ public interface ColumnRepository extends JpaRepository<ColumnEntity,Long> {
 
     List<ColumnEntity> findAllByBoardId(Long boardId);
 
-    ColumnEntity findByLastnode(Long i);
+    ColumnEntity findByBoardIdAndLastnode(Long boardId, Long i);
 
     ColumnEntity findAllByBoardIdAndFirstnode(Long boardId, long l);
 }
