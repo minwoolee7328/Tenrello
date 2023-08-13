@@ -115,7 +115,7 @@ public class BoardServiceImpl implements BoardService{
 
         List<MemberUserDto> memberList = board.getUserBoardList()
                 .stream()
-                .map(UserBoard::getUser).map(MemberUserDto::new).toList();
+                .map(MemberUserDto::new).toList();
 
         return new MemberUserListResponseDto(memberList);
     }
