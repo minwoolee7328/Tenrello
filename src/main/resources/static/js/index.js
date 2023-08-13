@@ -493,7 +493,7 @@ function showMembersOfBoard(clickedBoardId) {
                 const memberLink = document.createElement('a'); // Create an anchor element
                 memberLink.className = 'dropdown-item'; // Set the class name
                 memberLink.textContent = `${member.username} (${member.role})`; // Set the username as text content
-                memberLink.onclick = function() {
+                memberLink.onclick = function () {
                     localStorage.setItem("clickedUserIdToChangeRole", member.userId);
                     openPermissionModal(clickedBoardId, member.userId); // Pass the necessary parameters
                 };
@@ -513,14 +513,14 @@ function openPermissionModal(boardId, userId) {
     const modalOverlay = document.getElementById('permissionChangeModalOverlay');
     const changePermissionsButton = document.getElementById('changePermissions');
 
-    changePermissionsButton.onclick = function() {
+    changePermissionsButton.onclick = function () {
         modal.style.display = 'none';
         modalOverlay.style.display = 'none';
         changeBoardPermissions(boardId, userId);
     };
 
     const closeModal = document.getElementById('closePermissionChange');
-    closeModal.onclick = function() {
+    closeModal.onclick = function () {
         modal.style.display = 'none';
         modalOverlay.style.display = 'none';
     };
@@ -664,7 +664,7 @@ function inviteUserThisBoard(clickedUserIdToInvite, clickedUsernameToInvite) {
     console.log('clickedInviteUsername: ' + clickedInviteUsername);
     console.log('currentBoardId: ' + currentBoardId);
 
-    if(confirm(clickedInviteUsername + '을(를) ' + currentBoardTitle + ' 보드에 초대하시겠습니까?')) {
+    if (confirm(clickedInviteUsername + '을(를) ' + currentBoardTitle + ' 보드에 초대하시겠습니까?')) {
 
         $.ajax({
             type: "POST",

@@ -15,12 +15,13 @@ input {
 }
 
 img {
-    position : absolute;
+    position: absolute;
     width: 17px;
     top: 10px;
     right: 12px;
     margin: 0;
 }
+
 /* 검색창 끝 */
 
 .masthead .btn {
@@ -303,7 +304,6 @@ input[type="text"] {
     right: 10px;
 }
 
-
 /* 카드 css */
 .cardModal {
     position: absolute;
@@ -360,8 +360,6 @@ input[type="text"] {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 보드 수정 버튼 끝 */
-
 /* 검색 결과 모달 */
 #showSearchResultModal {
     display: none;
@@ -392,7 +390,7 @@ input[type="text"] {
     margin-bottom: 10px;
 }
 
-.modal-content ul li{
+.modal-content ul li {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -401,7 +399,7 @@ input[type="text"] {
 
 .modal-buttons {
     display: flex;
-    justify-content:center;
+    justify-content: center;
     gap: 10px;
     margin-top: 20px;
 }
