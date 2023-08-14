@@ -84,8 +84,7 @@
 <img width="787" alt="스크린샷 2023-08-13 215445" src="https://github.com/minwoolee7328/Tenrello/assets/130745679/ac35d739-165c-4f40-bf8e-fdc4b7eba375">
 
 <h2>API</h2>
-https://documenter.getpostman.com/view/27971774/2s9Xy5MqRa
-
+https://documenter.getpostman.com/view/27929820/2s9Xy5MqVy
 ----------------------------------------------------------
 <h2>협업 방식</h2>
 
