@@ -3,6 +3,9 @@ package com.example.tenrello.user.service;
 import com.example.tenrello.entity.User;
 import com.example.tenrello.user.CheckPasswordDto;
 import com.example.tenrello.user.dto.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 public interface UserService {
     /**
@@ -45,4 +48,12 @@ public interface UserService {
      * @return 찾은 user 정보
      */
     SearchUserResponseDto searchUserByUsername(UserSearchCond userSearchCond);
+
+    /**
+     * 프로필 사진 업로드
+     *
+     * @param multipartFile 이미지 파일
+     * @param user          변경할 user
+     */
+    void uploadProfileImage(MultipartFile multipartFile, User user) throws IOException;
 }

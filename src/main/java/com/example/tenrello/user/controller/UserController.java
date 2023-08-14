@@ -11,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -57,5 +60,14 @@ public class UserController {
         log.info("사용자 찾기 컨트롤러");
         SearchUserResponseDto result = userService.searchUserByUsername(new UserSearchCond(keyword));
         return ResponseEntity.ok().body(result);
+    }
+
+    @PostMapping("/profileImg")
+    public ResponseEntity<ApiResponseDto> uploadProfileImage(
+            @RequestPart (required = false) MultipartFile multipartFile,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+            ) throws IOException {
+        userService.uploadProfileImage(multipartFile, userDetails.getUser());
+        return ResponseEntity.status(201).body(new ApiResponseDto("프로필 사진이 업로드 되었습니다.", HttpStatus.CREATED.value()));
     }
 }

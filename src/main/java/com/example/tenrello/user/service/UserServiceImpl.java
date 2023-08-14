@@ -1,5 +1,6 @@
 package com.example.tenrello.user.service;
 
+import com.example.tenrello.S3.AwsS3FileUpload;
 import com.example.tenrello.entity.User;
 import com.example.tenrello.user.CheckPasswordDto;
 import com.example.tenrello.user.dto.*;
@@ -9,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AwsS3FileUpload fileUpload;
 
     @Override
     public void deleteUser(User user, CheckPasswordDto passwordDto) {
@@ -92,6 +96,11 @@ public class UserServiceImpl implements UserService {
                 .toList();
 
         return new SearchUserResponseDto(result);
+    }
+
+    @Override
+    public void uploadProfileImage(MultipartFile multipartFile, User user) throws IOException {
+        fileUpload.upload(multipartFile, "profile");
     }
 
     private List<User> mergeUserResultLists(List<User> list1, List<User> list2) {
