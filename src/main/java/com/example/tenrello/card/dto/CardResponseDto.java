@@ -38,6 +38,7 @@ public class CardResponseDto {
 
     public CardResponseDto(Card card, List<Comment> commentList,List<UserCard> UserCardList){
         this.id = card.getId();
+        this.columnId = card.getColumn().getId();
         this.createAt = card.getCreatedAt();
         this.title = card.getTitle();
         this.content = card.getContent();

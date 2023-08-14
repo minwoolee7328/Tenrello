@@ -245,6 +245,47 @@
     </div>
 </div>
 
+<!--카드 이동 모달창-->
+<div class="cardMoveModel">
+    <div class="cardMoveModelContent">
+        <div class="cardMoveModelTop">
+            <h2>CardMove</h2>
+        </div>
+        <div class="cardMoveModelBottom">
+            <nav>
+                <ul class="cardMoveColumnUl">
+                    <li class="dropdown">
+                        <a href="#">column</a>
+                        <ul class="submenu">
+                            <li><div>1</div></li>
+                            <li><div>1</div></li>
+                            <li><div>1</div></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">position</a>
+                        <ul class="submenu">
+                            <li><div id="divb-1" onclick="testDiv(1)">1</div></li>
+                            <li><div id="divb-2" onclick="testDiv(2)">2</div></li>
+                            <li><div>1</div></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="choiceColumn">
+            choiceColumn
+            <input id="choiceColumnInput" value=""type="text">
+        </div>
+        <div class="choicePosition">
+            choicePosition
+            <input id="choicePositionInput" value="" type="text">
+        </div>
+
+    </div>
+</div>
+
 </body>
 <script>
     // 마이페이지 이동
@@ -330,7 +371,14 @@
                                    <button onclick="modifyColumnBtn(${response.id})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
                             </div>
 <!--                카드추가-->
-                `;
+                            <div id="cardInsertDiv-${response.id}" class="insertDid" style="display: none">
+                            <input id="cardInsert-${response.id}"  type="text"/>
+                            <button id="insert" onclick="insertData(${response.id})">확인</button>
+                            <button id="cancle" onclick="cancleBtn(${response.id})">취소</button>
+                            </div>
+
+                            <button id="createBtn-${response.id}" class="createBtn" onclick="createBtn(${response.id})">카드 추가하기</button>
+                             `;
 
                 newList.addEventListener('dragstart', e => {
                     draggedItem = e.target;

@@ -179,8 +179,10 @@ function showSelectedBoard(boardId, boardTitle) {
             response.forEach((a) => {
                 let columnId = a['id'];
                 let columnTitle = a['title'];
-                let cardTitles = a['cardList'];
+                // let cardTitles = a['cardList'];
+                let positionSortTitles = a['posisionCardList'];
 
+                console.log("positionSortTitles",positionSortTitles[0].title);
                 columnSettingArr[i] = columnId;
                 i += 1;
 
@@ -192,7 +194,10 @@ function showSelectedBoard(boardId, boardTitle) {
                             </div>
                     `;
 
-                cardTitles.forEach((a)=>{
+                // position 으로 정렬된 title을 넣어주기위한 값
+                // let positionSortTitlesTemp = 0;
+
+                positionSortTitles.forEach((a)=>{
                     let card_html =`
                                             
                                             <div id="card-${a['id']}" class="card" draggable="true">
@@ -209,6 +214,9 @@ function showSelectedBoard(boardId, boardTitle) {
 
                     temp_html += card_html;
                 })
+
+
+
 
                 temp_htmls += temp_html + `
                                              <div id="cardInsertDiv-${columnId}" class="insertDid" style="display: none">
@@ -376,7 +384,23 @@ function insertData(id){
         },
         success: function (response) {
             // 저장된 테이터 넣기
-            $(`<div id="card-${response.id}" class="card" draggable="true" onclick="model(${response.id})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+            // $(`<div id="card-${response.id}" class="card" draggable="true" onclick="model(${response.id})">${response.title}</div>`).insertBefore(`#cardInsertDiv-${id}`);
+
+            let temp = ` <div id="card-${response.id}"  class="card cardColumn-${response.columnId}" draggable="true">
+                                    <div id="miniCardDiv-${response.id}" class="miniCardDiv">
+                                        <span id="cardTitleSpan-${response.id}" onClick="model(${response.id})">${response.title}</span>
+                                        <button id="cardDeleteBtn" class="cardDeleteBtn" onClick="cardUpdate(${response.id})">수정</button>
+                                    </div>
+                                    <div id="updateCard-${response.id}" class="updateCard" style="display: none">
+                                        <input id="updateCardInput-${response.id}" type="text" value="${response.title}">
+                                            <button onClick="updateCard(${response.id})">수정</button>
+                                            <button onClick="updateCardCancle(${response.id})">취소</button>
+                                    </div>
+                                </div>`;
+
+            $(`${temp}`).insertBefore(`#cardInsertDiv-${id}`);
+
+
 
             // 추가버튼 / insert버튼 제어
             $(`#column-${id}`).find($(`div[id^='cardInsertDiv-${id}']`)).hide();
@@ -479,10 +503,10 @@ function model(id){
                 }
             }
 
-
-
             // 카드 이동 버튼 생성
-            $(`<button id="cardMoveBtn" onClick="">카드 이동</button>`).appendTo(`#cardRight`);
+            $(`<button id="cardMoveBtn" onClick="cardMoveBtn(${id},${response.columnId})">카드 이동</button>`).appendTo(`#cardRight`);
+
+
         },
         error: function () {
             alert('카드데이터 불러오기 실패');
@@ -995,20 +1019,54 @@ function startTimeBtnDel(){
     $(`<button id="endTimeSetBtn" class="endTimeSetBtn" onclick="startTimeSet()">시작 시간</button>`).appendTo(`.startTimeSetDiv`);
 }
 
+// 카드 이동 모달 창 띄우기
+function cardMoveBtn(id){
+    $(".cardMoveModel").fadeIn();
+
+    $(`<button id="cardMovBtnCancel" class="cardMovBtnCancel" onclick="cardMovBtnCancel()">닫기</button>`).appendTo(`.cardMoveModelTop`);
+
+    $(`<button id="cardMoveDataSet" onClick="cardMoveDataSet(${id})">확인</button>`).appendTo(`.cardMoveModelContent`);
+
+}
+
+// 카드 이동 모달 창 닥기
+
+function cardMovBtnCancel(){
+    $(".cardMovBtnCancel").remove();
+    $("#cardMoveDataSet").remove();
+
+    $(".cardMoveModel").fadeOut();
+}
+
+// 선택한 값 input에 넣기
+function testDiv(id){
+    let temp = $(`#divb-${id}`).text();
+    $("#choicePositionInput").attr('value',temp);
+
+}
+// 카드이동 데이터 set
+function cardMoveDataSet(id, columnid){
+        alert(id)
+    $.ajax({
+        url: `/api/cards/${id}`,
+        type: 'PATCH',
+        contentType: 'application/json',
+        data: JSON.stringify({position:$("#choicePositionInput").val() , columnId: $(`#choiceColumnInput`).val()}),
+        headers: {
+            'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+        },
+        success: function (response) {
+            $("#cardMoveDataSet").remove();
 
 
-
-// <div id="card-${a['id']}" class="card" draggable="true">
-//     <div id="miniCardDiv-${a['id']}" class="miniCardDiv">
-//         <span id="cardTitleSpan-${a['id']}" onclick="model(${a['id']})">${a['title']}</span>
-//         <button id="cardDeleteBtn" class="cardDeleteBtn" onclick="cardUpdate(${a['id']})">수정</button>
-//     </div>
-//     <div id="updateCard-${a['id']}" class="updateCard" style="display: none">
-//         <input id="updateCardInput-${a['id']}" type="text" value="${a['title']}">
-//             <button onclick="updateCard(${a['id']})">수정</button>
-//             <button onclick="updateCardCancle(${a['id']})">취소</button>
-//     </div>
-// </div>
+            showSelectedBoard(1, 1);
+        },
+        error: function () {
+            alert('삭제할 유저가 없습니다.');
+            toggleElements(false);
+        }
+    });
+}
 
 const editBoardModal = document.getElementById('editBoardModal');
 const editClose = document.getElementById('editClose');

@@ -48,7 +48,7 @@ public class CardService {
         // 컬럼 id 필요 / 컬럼의 최종 포지션값 필요
 
         // 컬럼의 최종 포지션값
-        List<Card> cardS = cardRepository.findAllByColumn_id(columnId);
+        List<Card> cardS = cardRepository.findAllByColumn_idOrderByPosition(columnId);
 
         Optional<ColumnEntity> column = columnRepository.findById(columnId);
 
@@ -110,7 +110,14 @@ public class CardService {
 
         //카드 삭제전 position 값 변경
         // 해당하는 컬럼
-        List<Card> cardList = cardRepository.findAllByColumn_id(card.get().getColumn().getId());
+        List<Card> cardList = cardRepository.findAllByColumn_idOrderByPosition(card.get().getColumn().getId());
+
+        System.out.println("card.get().getPosition() = " + card.get().getPosition());
+        System.out.println("cardList.size() = " + cardList.size());
+
+        for(Card cards:cardList){
+            System.out.println("cards = " + cards.getPosition());
+        }
 
         for(int i = card.get().getPosition()-1; i<cardList.size(); i++){
             cardList.get(i).updatePosition(cardList.get(i).getPosition()-1);
@@ -132,8 +139,8 @@ public class CardService {
             throw new IllegalArgumentException("해당 카드가 존재하지 않습니다.");
         }
 
-        // 도착할 카드의 모든값을 가져옴
-        List<Card> cardList = cardRepository.findAllByColumn_id(requestDto.getColumnId());
+        // 도착할 카드의 모든값을 가져옴 (가져올때 position 값으로 순서)
+        List<Card> cardList = cardRepository.findAllByColumn_idOrderByPosition(requestDto.getColumnId());
 
         // 움직일 번호 (어떤 컬럼의 카드인지)
         int ids = card.get().getPosition();
@@ -209,7 +216,7 @@ public class CardService {
             }
 
             // 기존 컬럼에 속하는 카드들
-            List<Card> cards = cardRepository.findAllByColumn_id(col);
+            List<Card> cards = cardRepository.findAllByColumn_idOrderByPosition(col);
 
             // 기존 컬럼 데이터 정렬
             // ex> 0 <= 1
