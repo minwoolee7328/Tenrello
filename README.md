@@ -94,6 +94,8 @@ https://documenter.getpostman.com/view/27929820/2s9Xy5MqVy
     -> 기능 단위 별 브랜치 — 병합 → 디벨롭 브랜치 —최종병합 순으로 프로젝트 진행
 3. 화면 공유로 다같이 확인하며 병합
 
+<br>
+
 <h2>프로젝트 기능 (📋 이런 기능을 구현했어요!)</h2>
 
 1. Redis를 활용해 refresh token, 로그인 연장, 로그아웃 구현
@@ -105,7 +107,7 @@ https://documenter.getpostman.com/view/27929820/2s9Xy5MqVy
 2. QueryDsl을 활용해 입력받은 keyword와 관련된 user 검색 구현
     - keyword가 username, 또는 nickname에 포함된 사용자 검색
 
-
+<br>
 
 <h2>🤯 어려웠던 점</h2>
 
