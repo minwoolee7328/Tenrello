@@ -16,11 +16,23 @@ public class User {
     @Column(nullable = false, unique = true)
     private String username;
 
+    @Column(nullable = false, unique = true)
+    private String nickname;
+
     @Column(nullable = false)
     private String password;
 
-    public User(String username, String password) {
+    public User(String username, String nickname, String password) {
         this.username = username;
+        this.nickname = nickname;
         this.password = password;
+    }
+
+    public void updateNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }

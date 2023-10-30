@@ -27,12 +27,18 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void signup(SignupRequestDto requestDto) {
         String username = requestDto.getUsername();
+        String nickname = requestDto.getNickname();
         String password = passwordEncoder.encode(requestDto.getPassword());
+
         if (userRepository.findByUsername(username).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 회원입니다.");
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
 
-        User user = new User(username, password);
+        if (userRepository.findByNickname(nickname).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
+        }
+
+        User user = new User(username, nickname, password);
         userRepository.save(user);
     }
 
@@ -42,7 +48,7 @@ public class AuthServiceImpl implements AuthService {
         String password = requestDto.getPassword();
 
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("존재하지 않는 사용자입니다.")
+                () -> new IllegalArgumentException("존재하지 않는 사용자 아이디입니다.")
         );
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
@@ -75,8 +81,6 @@ public class AuthServiceImpl implements AuthService {
         // access token blacklist 로 저장
         log.info("액세스 토큰 블랙리스트로 저장 : " + accessToken);
         redisUtil.addBlackList(accessToken, jwtUtil.remainExpireTime(accessToken));
-
-        jwtUtil.expireCookie(response);
     }
 
 }

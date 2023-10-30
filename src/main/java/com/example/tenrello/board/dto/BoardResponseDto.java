@@ -14,12 +14,14 @@ public class BoardResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
 
+//    private List<ColumnResponseDto> columnEntities = new LinkedList<>();
+
     public BoardResponseDto(Board board) {
         this.userId = board.getUser().getId();
         this.boardId = board.getId();
         this.title = board.getTitle();
         this.description = board.getDescription();
-        this.createAt = board.getCreateAt();
+        this.createAt = board.getCreatedAt();
         this.modifiedAt = board.getModifiedAt();
     }
 }

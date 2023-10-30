@@ -2,6 +2,7 @@ package com.example.tenrello.board.controller;
 
 import com.example.tenrello.board.dto.BoardRequestDto;
 import com.example.tenrello.board.dto.BoardResponseDto;
+import com.example.tenrello.board.dto.MemberUserListResponseDto;
 import com.example.tenrello.board.dto.UserBoardResponseDto;
 import com.example.tenrello.board.service.BoardServiceImpl;
 import com.example.tenrello.common.dto.ApiResponseDto;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/board")
+@RequestMapping("/api/boards")
 public class BoardController {
 
     private final BoardServiceImpl boardService;
@@ -65,12 +66,19 @@ public class BoardController {
     }
 
     /*보드 권한 부여*/
-    @PutMapping("/{boardId}/member/{userId}")
+    @PutMapping("/{boardId}/members/{userId}")
     public ResponseEntity<ApiResponseDto> changeUserRoleInBoard(@PathVariable Long boardId,
                                                                 @PathVariable Long userId,
                                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         boardService.changeUserRoleInBoard(userDetails.getUser(), boardId, userId);
         return ResponseEntity.ok().body(new ApiResponseDto("권한 변경 완료", HttpStatus.OK.value()));
+    }
+
+    /*보드에 속한 사용자 정보 조회*/
+    @GetMapping("/{boardId}/members")
+    public ResponseEntity<MemberUserListResponseDto> getMembersOfBoard(@PathVariable Long boardId) {
+        MemberUserListResponseDto result = boardService.getMembersOfBoard(boardId);
+        return ResponseEntity.ok().body(result);
     }
 }

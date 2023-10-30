@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- static 스타일 시트 -->
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <!-- js Cookie -->
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+
+    <!--  부트스트랩  -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css">
+
+    <title>Trello Board</title>
+
+</head>
+<body>
+<!-- Masthead -->
+<header class="masthead">
+
+    <div class="boards-menu">
+
+        <!--  offcanvas  -->
+        <button class="boards-btn btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling"
+                aria-controls="offcanvasScrolling"><i class="fab fa-trello boards-btn-icon"></i>Boards
+        </button>
+
+        <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1"
+             id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">My boards</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <!-- 내가 속한 보드 리스트 -->
+                <ul class="list-group list-group-flush" id="boardListUl">
+
+                </ul>
+            </div>
+
+            <!-- 보드 생성 모달 -->
+            <div id="boardModalOverlay"></div>
+            <div id="registerBoardModal">
+                <div class="modal-content">
+                    <input type="text" id="boardTitle" placeholder="title">
+                    <input type="text" id="boardDescription" placeholder="description">
+                    <input type="hidden" id="boardNo">
+                    <div class="modal-buttons">
+                        <button id="saveBoard">저장</button>
+                        <button id="close">닫기</button>
+                    </div>
+                </div>
+            </div>
+            <button id="createBoard">보드생성</button>
+
+        </div>
+        <!--  End of offcanvas  -->
+    </div>
+
+    <!-- 검색창 -->
+    <div class="search">
+        <input type="text" id="searchKeywordInput" placeholder="사용자 검색">
+        <button id="searchUserBtn">
+            <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png">
+        </button>
+    </div>
+    <!-- 검색창 끝 -->
+
+    <!-- 검색 결과 -->
+    <div id="searchResultModalOverlay"></div>
+    <div id="showSearchResultModal">
+        <h3 id="searchResultModalTitle">사용자 검색 결과</h3>
+        <div class="modal-content">
+            <ul class="list-group list-group-flush" id="searchedUserListUl">
+
+            </ul>
+
+            <div class="modal-buttons">
+                <button id="closeSearchResultModal">닫기</button>
+            </div>
+        </div>
+    </div>
+    <!-- 검색 결과 끝 -->
+
+    <div class="logo">
+        <h1><i class="fab fa-trello logo-icon" aria-hidden="true"></i>Tenrello</h1>
+    </div>
+    <div>
+        <button id="addList">Add List</button>
+    </div>
+
+    <div class="user-settings">
+
+        <button class="user-settings-btn btn" aria-label="Create" id="move-mypage">
+            <i class="fas fa-plus" aria-hidden="true">마이</i>
+        </button>
+
+        <button class="user-settings-btn btn" aria-label="Information" id="logout">
+            <i class="fas fa-info-circle" aria-hidden="true">아웃</i>
+        </button>
+
+        <button class="user-settings-btn btn" aria-label="Notifications">
+            <i class="fas fa-bell" aria-hidden="true"></i>
+        </button>
+
+        <button class="user-settings-btn btn" aria-label="User Settings">
+            <i class="fas fa-user-circle" aria-hidden="true"></i>
+        </button>
+
+    </div>
+<!--    </div>-->
+
+</header>
+<!-- End of masthead -->
+
+<!-- Board modal -->
+<div class="modal-board" style="display: none">
+    <div id="board">
+        <div class="list-container" id="listContainer">
+
+            <!-- Add more lists here -->
+        </div>
+    </div>
+
+    <!-- 보드 수정 모달 -->
+    <div class="edit-board" id="editBoardModal" style="display: none;">
+        <input type="text" id="editTitle" placeholder="title">
+        <input type="text" id="editDescription" placeholder="description">
+        <button id="editButton">수정</button>
+        <button id="editClose">닫기</button>
+    </div>
+
+    <div>
+        <button id="updateBoard">보드 수정</button>
+    </div>
+
+    <div class="board-actions">
+        <!-- 보드에 속한 멤버 리스트 보기 -->
+        <div class="btn-group dropup" id="memberDropdownContainer">
+            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                Member List
+            </button>
+            <ul class="dropdown-menu" id="dropdown-menu">
+                <!-- 멤버 리스트 -->
+            </ul>
+        </div>
+        <!-- 현재 보드 삭제 -->
+        <button id="deleteThisBoard" data-board-id="" data-board-name="">보드 삭제</button>
+    </div>
+</div>
+
+<!--권한 변경 모달-->
+<div id="permissionChangeModalOverlay"></div>
+<div id="registerPermissionChangeModal">
+    <div class="modal-content">
+        <h2>권한 변경</h2>
+        <p>권한을 변경하시겠습니까?</p>
+        <div class="modal-buttons">
+            <button id="changePermissions">확인</button>
+            <button id="closePermissionChange">닫기</button>
+        </div>
+    </div>
+</div>
+<!-- 권한 변경 모달 끝 -->
+
+<!--컬럼등록모달-->
+<div id="registerNicknameModal">
+    <h3 id="nicknameModalTitle">타이틀 이름</h3>
+    <input type="text" id="columnTitle" placeholder="타이틀">
+    <button onclick="addColumn()">등록</button>
+    <button id="closeNicknameModal">닫기</button>
+</div>
+<!--컬럼수정모달-->
+<div id="columnModify">
+    <h3>타이틀 이름</h3>
+    <input type="text" id="modifyColumnTitle" placeholder="타이틀">
+    <button id="modifyBtn" onclick="modifyColumn()">수정</button>
+    <button onclick="clsModifyModal()">닫기</button>
+</div>
+
+<script src="/js/index.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!--카드 모달창-->
+
+<div class="cardModal">
+<!--    카드 top 엔 카드 이름-->
+    <div class="cardModelContent">
+        <div class="cardTop">
+            <h2 id="cardName"></h2>
+            <button id="cardClose" onclick="cardClose()"> 카드 끄기</button>
+        </div>
+       <div class="cardBottom">
+           <div class="cardLeft">
+               <div class="cardState">
+
+               </div>
+               <div class="cardContent">
+                    <h2>Description</h2>
+                    <div id="content">
+                    </div>
+               </div>
+               <div class="cardComment">
+
+               </div>
+           </div>
+           <div id="cardRight" class="cardRight">
+
+           </div>
+       </div>
+    </div>
+</div>
+
+<!--유저 정보 모달창-->
+<div class="cardAllotUsersModal">
+    <div class="cardAllotUsersModalContent">
+        <div class="cardAllotUsersContentTop">
+            <h2>Members</h2>
+        </div>
+        <div class="cardAllotUsersContentBottom">
+
+        </div>
+        <div class="cardBottom"></div>
+    </div>
+</div>
+
+<!--마감 시간 설정 모달창-->
+<div class="timeSetModal">
+    <div class="timeSetModalContent">
+        <div class="timeSetModalTop">
+            <h2>TimeSet</h2>
+        </div>
+        <div class="timeSetModalBottom">
+        </div>
+    </div>
+</div>
+
+<!--카드 이동 모달창-->
+<div class="cardMoveModel">
+    <div class="cardMoveModelContent">
+        <div class="cardMoveModelTop">
+            <h2>CardMove</h2>
+        </div>
+        <div class="cardMoveModelBottom">
+            <nav>
+                <ul class="cardMoveColumnUl">
+                    <li class="dropdown">
+                        <a href="#">column</a>
+                        <ul class="submenu">
+                            <li><div>1</div></li>
+                            <li><div>1</div></li>
+                            <li><div>1</div></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#">position</a>
+                        <ul class="submenu">
+                            <li><div id="divb-1" onclick="testDiv(1)">1</div></li>
+                            <li><div id="divb-2" onclick="testDiv(2)">2</div></li>
+                            <li><div>1</div></li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="choiceColumn">
+            choiceColumn
+            <input id="choiceColumnInput" value=""type="text">
+        </div>
+        <div class="choicePosition">
+            choicePosition
+            <input id="choicePositionInput" value="" type="text">
+        </div>
+
+    </div>
+</div>
+
+</body>
+<script>
+    // 마이페이지 이동
+    const mypageBtn = document.getElementById("move-mypage");
+    mypageBtn.addEventListener("click", function () {
+        window.location.href = "/view/mypage";
+    })
+
+    // 컬럼 수정 모달
+    function clsModifyModal() {
+        const modifyDiv = document.getElementById("columnModify");
+        modifyDiv.style.display = 'none';
+        localStorage.setItem("modifyColumnId", null);
+    }
+
+    //컬럼 수정
+    function modifyColumn() {
+        const modifyDiv = document.getElementById("columnModify");
+        const title = document.getElementById("modifyColumnTitle");
+
+        if (localStorage.getItem("modifyColumnId") == null) {
+            modifyDiv.style.display = 'none';
+            alert("column이 선택되지 않았습니다.");
+            return;
+        }
+        const id = localStorage.getItem("modifyColumnId");
+
+        let columnId = document.getElementById(id);
+        let data = {
+            'title': title.value
+        };
+        $.ajax({
+            type: "PUT",
+            url: `/api/columns/${id}`,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                alert(response['msg']);
+
+
+                localStorage.setItem("modifyColumnId", null);
+
+                modifyDiv.style.display = 'none';
+                title.innerText = "null";
+                console.log(localStorage.getItem("boardId"));
+                showSelectedBoard(localStorage.getItem("boardId"));
+            }
+        })
+
+
+        localStorage.setItem("modifyColumnId", null);
+        modifyDiv.style.display = 'none';
+
+    }
+
+    //컬럼 추가
+    function addColumn() {
+        const columnInputString = document.getElementById("columnTitle").value;
+        if (localStorage.getItem("boardId") == null) {
+            alert("보드를 선택해주세요.")
+            return;
+        }
+
+        const boardId = localStorage.getItem("boardId")
+        console.log(columnInputString)
+        console.log(boardId)
+        let data = {
+            'title': columnInputString
+        };
+        $.ajax({
+            type: "POST",
+            url: `/api/boards/${boardId}/columns`,
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function (response) {
+                const container = document.getElementById('listContainer');
+                const newList = document.createElement('div');
+                newList.className = 'list';
+                newList.draggable = true;
+                newList.innerHTML = `
+                            <div class="list-header">${response.title}
+                                   <button onclick="DeleteColumnBtn(${response.id})" style="float: right; margin-right: 5px;" class="bi bi-trash3 fs-20"></button>
+                                   <button onclick="modifyColumnBtn(${response.id})" style="float: right; margin-right: 5px;" class="bi bi-pencil fs-20"></button>
+                            </div>
+<!--                카드추가-->
+                            <div id="cardInsertDiv-${response.id}" class="insertDid" style="display: none">
+                            <input id="cardInsert-${response.id}"  type="text"/>
+                            <button id="insert" onclick="insertData(${response.id})">확인</button>
+                            <button id="cancle" onclick="cancleBtn(${response.id})">취소</button>
+                            </div>
+
+                            <button id="createBtn-${response.id}" class="createBtn" onclick="createBtn(${response.id})">카드 추가하기</button>
+                             `;
+
+                newList.addEventListener('dragstart', e => {
+                    draggedItem = e.target;
+                    setTimeout(() => {
+                        e.target.style.opacity = '0.5';
+                    }, 0);
+                });
+
+                newList.addEventListener('dragend', e => {
+                    setTimeout(() => {
+                        e.target.style.opacity = '1';
+                        draggedItem = null;
+                    }, 0);
+                });
+
+                newList.addEventListener('dragover', e => {
+                    e.preventDefault();
+                });
+
+                newList.addEventListener('dragenter', e => {
+                    e.preventDefault();
+                    newList.classList.add('highlight');
+                });
+
+                newList.addEventListener('dragleave', e => {
+                    newList.classList.remove('highlight');
+                });
+
+                newList.addEventListener('drop', e => {
+                    if (draggedItem) {
+                        const container = document.getElementById('listContainer');
+                        if (draggedItem.classList.contains('card')) {
+                            if (newList.contains(draggedItem)) {
+                                return;
+                            }
+                            newList.appendChild(draggedItem);
+                        } else if (draggedItem.classList.contains('list')) {
+                            if (newList.contains(draggedItem)) {
+                                return;
+                            }
+                            if (newList.nextSibling === draggedItem) {
+                                container.insertBefore(draggedItem, newList);
+                            } else {
+                                container.insertBefore(draggedItem, newList.nextSibling);
+                            }
+                        }
+                        newList.classList.remove('highlight');
+                    }
+                });
+
+                container.appendChild(newList);
+                const registerNicknameModal = document.getElementById('registerNicknameModal');
+                registerNicknameModal.style.display = 'none';
+                alert("컬럼 등록 완료");
+                //창 닫기
+            }
+        })
+    }
+
+    // 로그아웃
+    const logoutBtn = document.getElementById("logout");
+    logoutBtn.addEventListener("click", logout);
+
+    // board 생성
+    saveBoardButton.addEventListener('click', () => {
+        const title = boardTitleInput.value;
+        const description = boardDescriptionInput.value;
+        const boardTitle = localStorage.getItem('boardTitle');
+
+        fetch('/api/boards', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                location.reload();
+
+                boardModalOverlay.style.display = 'none';
+                registerBoardModal.style.display = 'none';
+                showSelectedBoard(boardId, boardTitle);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+    // board 수정
+    document.getElementById('editButton').addEventListener('click', () => {
+        const title = document.getElementById("editTitle").value;
+        const description = document.getElementById("editDescription").value;
+        const boardId = localStorage.getItem("boardId");
+        const boardTitle = localStorage.getItem('boardTitle');
+
+        const data = {
+            title: title,
+            description: description
+        };
+
+        fetch(`http://localhost:8080/api/boards/${boardId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': document.cookie
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert("수정되었습니다.")
+                editBoardModal.style.display = 'none';
+                location.reload();
+            })
+            .catch(error => {
+                alert(error);
+                console.log("수정 오류")
+                editBoardModal.style.display = 'none';
+            });
+    })
+
+    // 현재 보이는 보드 삭제
+    $(document).on("click", "#deleteThisBoard", deleteThisBoard);
+
+    $(document).ready(function () {
+        localStorage.setItem("boardId", null);
+        // 내가 속한 보드 리스트 가져오기
+        $.ajax({
+            url: 'http://localhost:8080/api/boards/include',
+            type: 'GET',
+            contentType: 'application/json',
+            headers: {
+                'Authorization': document.cookie // 클라이언트 쿠키의 값을 전달
+            },
+            success: function (response) {
+                console.log(response);
+                let temp_htmls = '';
+                $('#boardListUl').empty();
+
+                response.forEach((a) => {
+                    let boardName = a['title'];
+                    let boardId = a['boardId'];
+
+                    let temp_html = `
+                        <li class="list-group-item" list-board-id="${boardId}">${boardName}</li>
+                    `;
+
+                    temp_htmls += temp_html;
+                });
+                console.log('forEach문 끝');
+                $('#boardListUl').append(temp_htmls);
+            },
+            error: function () {
+                console.log('AJAX 요청 실패');
+            }
+        });
+    })//내가 속한 보드리스트 가져오기
+
+    const modalBoard = document.querySelector(".modal-board");
+    var boardId;
+    var boardTitle;
+    $(document).on("click", ".list-group-item", function () {
+        boardId = $(this).attr('list-board-id');
+        localStorage.setItem("boardId", boardId);
+
+        boardTitle = $(this).text();
+        localStorage.setItem("boardTitle", boardTitle);
+
+        showSelectedBoard(boardId, boardTitle);
+    })
+
+    // 현재 보이는 보드 삭제
+    $(document).on("click", "#deleteThisBoard", deleteThisBoard);
+
+</script>
+</html>

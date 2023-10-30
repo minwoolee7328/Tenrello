@@ -3,6 +3,7 @@ package com.example.tenrello.board.service;
 
 import com.example.tenrello.board.dto.BoardRequestDto;
 import com.example.tenrello.board.dto.BoardResponseDto;
+import com.example.tenrello.board.dto.MemberUserListResponseDto;
 import com.example.tenrello.board.dto.UserBoardResponseDto;
 import com.example.tenrello.entity.User;
 
@@ -11,6 +12,7 @@ import java.util.List;
 public interface BoardService {
     /**
      * 보드 생성
+     *
      * @param requestDto
      * @param user
      * @return
@@ -27,6 +29,7 @@ public interface BoardService {
 
     /**
      * 보드 수정
+     *
      * @param boardId
      * @param requestDto
      * @param user
@@ -36,6 +39,7 @@ public interface BoardService {
 
     /**
      * 보드 삭제
+     *
      * @param boardId
      * @param user
      */
@@ -43,6 +47,7 @@ public interface BoardService {
 
     /**
      * 보드 초대
+     *
      * @param boardId
      * @param invitedUserId
      * @param user
@@ -51,10 +56,17 @@ public interface BoardService {
 
     /**
      * 권한 부여
+     *
      * @param userId
      * @param user
      */
     void changeUserRoleInBoard(User user, Long boardId, Long userId);
 
-
+    /**
+     * 보드에 속한 멤버 조회
+     *
+     * @param boardId 조회할 보드 id
+     * @return 멤버 정보 리스트
+     */
+    MemberUserListResponseDto getMembersOfBoard(Long boardId);
 }

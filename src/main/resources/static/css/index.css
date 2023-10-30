@@ -1,0 +1,665 @@
+/* Masthead */
+
+/* 검색창 */
+.search {
+    position: relative;
+    width: 300px;
+}
+
+input {
+    width: 100%;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+img {
+    position: absolute;
+    width: 17px;
+    top: 10px;
+    right: 12px;
+    margin: 0;
+}
+
+/* 검색창 끝 */
+
+.masthead .btn {
+    background-color: #fff;
+    border-radius: 0.3rem;
+    transition: background-color 150ms;
+}
+
+.masthead .btn:hover {
+    background-color: #5a6670;
+}
+
+.boards-menu {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.boards-btn {
+    flex-basis: 4rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #fff;
+    margin-right: 0.8rem;
+    padding: 0.3rem 0.3rem;
+}
+
+.boards-btn-icon {
+    font-size: 1.5rem;
+}
+
+.logo:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.logo-icon {
+    padding-right: 0.4rem;
+}
+
+.user-settings {
+    display: flex;
+    height: 3rem;
+    color: #fff;
+}
+
+.user-settings-btn {
+    font-size: 0.8rem;
+    width: 3rem;
+    margin-right: 0.8rem;
+}
+
+.user-settings-btn:last-of-type {
+    margin-right: 0;
+}
+
+/* End of head css */
+/* Your CSS styles here */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.list-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px;
+    margin-top: 70px;
+    /* Adjust this value as needed */
+}
+
+.list {
+    background-color: #e0e0e0;
+    min-width: 250px;
+    margin-right: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+    margin-right: 10px;
+    /* Add spacing between lists */
+}
+
+.list-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card {
+    background-color: white;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+
+}
+
+.card:hover .cardDeleteBtn{
+  display: block;
+}
+
+
+.highlight {
+    border: 2px dashed #666;
+}
+
+#registerNicknameModal, #columnModify, #registerPermissionChangeModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+#boardModalOverlay, #modalOverlay, #nicknameModalOverlay, #permissionChangeModalOverlay {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+
+#nicknameModalTitle {
+    margin-bottom: 10px;
+}
+
+/* ---------------------------------- */
+#addList {
+    margin-top: 10px;
+}
+
+.highlight {
+    border: 2px dashed #666;
+}
+
+.masthead {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #333;
+    box-shadow: 0 0.1rem 0.1rem rgba(0, 0, 0, 0.1);
+    width: 100%;
+    z-index: 100;
+    /* Ensure the header is on top */
+}
+
+.logo {
+    font-family: "Courgette", cursive;
+    font-size: 2rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+.board-container {
+    display: flex;
+    /* Display children horizontally */
+    overflow-x: auto;
+    /* Add horizontal scrolling */
+    padding: 10px;
+    /* Add padding for spacing */
+}
+
+/* Custom styling for offcanvas */
+.offcanvas-footer {
+    margin-top: auto; /* Pushes the footer section to the bottom */
+    padding: 10px; /* Add some padding for spacing */
+    background-color: #f8f9fa; /* Set a background color for the footer */
+    border-top: 1px solid #dee2e6; /* Add a top border for separation */
+}
+
+.board-buttons {
+    display: flex;
+    justify-content: flex-end; /* Align buttons to the right */
+    align-items: center; /* Vertically center the buttons */
+}
+
+#registerBoardModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#boardModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+
+#boardModalTitle {
+    margin-bottom: 10px;
+}
+
+/* Style the modal content */
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Style the input fields */
+input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style the modal buttons */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+#passwordModalTitle {
+    margin-bottom: 10px;
+}
+
+/* 보드 삭제 버튼 */
+#deleteThisBoard {
+    margin-left: 10px;
+}
+
+/* 멤버 보기 + 삭제 버튼 */
+.board-actions {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+/* 카드 css */
+.cardModal {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    top: 0;
+    left: 0;
+    display: none;
+}
+
+.cardModelContent {
+    width: 70%;
+    height: 80%;
+    background: #fff;
+    border-radius: 10px;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    margin-top: -300px;
+    margin-left: -600px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 74px 0;
+    line-height: 23px;
+    cursor: pointer;
+}
+
+.cardTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.miniCardDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardDeleteBtn{
+    display: none;
+}
+
+.cardBottom{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardLeft{
+    width: 900px;
+    height: 500px;
+}
+
+.cardRight{
+    width: 400px;
+    height: 500px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.cardState{
+    width: 800px;
+    height: 100px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardContent{
+    width: 800px;
+    height: 130px;
+}
+.cardComment{
+    width: 800px;
+    height: 100px;
+}
+
+.contentNull{
+    background-color: white;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.contentNull:hover{
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+.contentNotNull{
+    background-color: white;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.contentNotNull:hover{
+    background-color: cornsilk;
+    cursor: pointer;
+}
+
+.cardAllotUsersModal{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.cardAllotUsersModalContent{
+    width:30%; height:30%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
+}
+.cardAllotUsersContentTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cardAllotUserDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.timeSetModal{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.timeSetModalContent{
+    width:30%; height:30%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
+}
+
+.timeSetModalTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/*카드이동 시작*/
+
+.cardMoveModel{
+    position:absolute;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    top:0; left:0;
+    display:none;
+}
+
+.cardMoveModelContent{
+    width:30%; height:30%;
+    background:#fff; border-radius:10px;
+    position:relative; top:50%; left:50%;
+    margin-top:-100px;
+    margin-left:-100px;
+    text-align:center;
+    box-sizing:border-box; padding:20px 30px;
+    line-height:23px;
+}
+
+.cardMoveModelTop{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+nav {
+    background-color: #333;
+    color: white;
+    text-align: center;
+}
+
+.cardMoveColumnUl {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.cardMoveColumnUl li {
+    margin: 0 20px;
+    position: relative;
+}
+
+.cardMoveColumnUl li a {
+    text-decoration: none;
+    color: white;
+    transition: color 0.3s;
+}
+
+.cardMoveColumnUl li a:hover {
+    color: #FF5733;
+}
+
+/* 드롭다운 메뉴 스타일 */
+.submenu {
+    display: none;
+    position: absolute;
+    background-color: #333;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    width: 120px;
+    z-index: 1;
+}
+
+.dropdown:hover .submenu {
+    display: block;
+}
+
+.submenu li {
+    margin: 0;
+    text-align: left;
+    padding: 10px;
+}
+
+.submenu li div {
+    color: white;
+    text-decoration: none;
+    display: block;
+}
+
+.submenu li div:hover {
+    background-color: #444;
+}
+
+
+/* 보드 수정 버튼 시작 */
+#updateBoard {
+    position: absolute;
+    bottom: 10px;
+    right: 250px; /* 이 부분을 조정하여 위치 조절 */
+}
+
+#editBoardModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 350px; /* 모달의 넓이 조정 */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 검색 결과 모달 */
+#showSearchResultModal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#searchResultModalOverlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 900;
+}
+
+#searchResultModalTitle {
+    margin-bottom: 10px;
+}
+
+.modal-content ul li {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.modal-buttons button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.modal-buttons button:hover {
+    background-color: #555;
+}
+
+/* 권한변경 모달 */
+.roelModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+
+.close {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#changePermissions {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
